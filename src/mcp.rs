@@ -280,6 +280,85 @@ pub fn get_tools() -> Vec<Value> {
                 "required": ["decision_id"]
             }
         }),
+
+        // ============================================================================
+        // SWARM INTEGRATION TOOLS (v2) - For Zesty/swarmd coordination
+        // ============================================================================
+
+        // Sync Thompson posteriors for distributed learning
+        json!({
+            "name": "sync_posteriors",
+            "description": "Get Thompson Sampling posteriors for all principles. Used by swarm daemons to synchronize learning across workers. Returns alpha/beta/pulls for each principle, optionally filtered by timestamp.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "since_ts": {
+                        "type": "integer",
+                        "description": "Unix epoch timestamp - only return posteriors updated since this time"
+                    },
+                    "domain": {
+                        "type": "string",
+                        "description": "Optional domain filter to get domain-specific posteriors"
+                    }
+                }
+            }
+        }),
+
+        // Batch outcome recording for catch-up sync
+        json!({
+            "name": "record_outcomes_batch",
+            "description": "Record multiple decision outcomes in batch. Used for offline worker catch-up or daemon restart recovery. Each outcome updates Thompson posteriors.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "outcomes": {
+                        "type": "array",
+                        "description": "Array of outcome records",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "decision_id": { "type": "string" },
+                                "success": { "type": "boolean" },
+                                "principle_ids": {
+                                    "type": "array",
+                                    "items": { "type": "string" }
+                                },
+                                "domain": { "type": "string" },
+                                "confidence_score": { "type": "number" },
+                                "failure_stage": { "type": "string" }
+                            },
+                            "required": ["decision_id", "success"]
+                        }
+                    }
+                },
+                "required": ["outcomes"]
+            }
+        }),
+
+        // Counterfactual simulation (Phase 2)
+        json!({
+            "name": "counterfactual_sim",
+            "description": "Simulate counsel response excluding specific principles. Used to understand principle importance and explore alternatives.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "question": {
+                        "type": "string",
+                        "description": "The decision question"
+                    },
+                    "excluded_principles": {
+                        "type": "array",
+                        "description": "Principle IDs to exclude from selection",
+                        "items": { "type": "string" }
+                    },
+                    "domain": {
+                        "type": "string",
+                        "description": "Optional domain hint"
+                    }
+                },
+                "required": ["question", "excluded_principles"]
+            }
+        }),
     ]
 }
 

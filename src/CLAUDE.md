@@ -16,7 +16,6 @@
 | #99052 | 4:43 PM | ✅ | Added status field to Story struct initialization in test | ~176 |
 | #99048 | 4:42 PM | 🔴 | Fixed mutability issue in run_compute_embeddings function | ~238 |
 | #99015 | 4:40 PM | ✅ | ONNX tensor type imported for embeddings | ~193 |
-| #99012 | " | ✅ | Fixed ONNX tensor conversion in embedding inference | ~204 |
 | #99008 | 4:39 PM | 🟣 | Implemented CLI commands for outcome recording, semantic search, and learning statistics | ~446 |
 | #99003 | 4:38 PM | ✅ | Added five new command-line subcommands for semantic search and outcome learning | ~295 |
 | #99000 | 4:37 PM | ✅ | Outcome module added to library exports | ~185 |

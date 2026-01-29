@@ -70,6 +70,16 @@ pub struct CounselResponse {
     pub summary: String,
     pub provenance: ProvenanceInfo,
     pub created_at: DateTime<Utc>,
+    // === SWARM INTEGRATION FIELDS (v2) ===
+    /// Principle IDs for outcome tracking
+    #[serde(default)]
+    pub principle_ids: Vec<String>,
+    /// Urgency adjustment suggestion: "escalate" | "defer" | null
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub urgency_adjustment: Option<String>,
+    /// Causal reasoning for why these principles were selected
+    #[serde(default)]
+    pub causal_hints: Vec<String>,
 }
 
 /// Provenance information for audit trail
@@ -141,6 +151,44 @@ pub struct RecordOutcomeRequest {
     pub decision_id: String,
     pub success: bool,
     pub notes: Option<String>,
+    // === SWARM INTEGRATION FIELDS (v2) ===
+    /// Principle IDs that were used in this decision
+    #[serde(default)]
+    pub principle_ids: Vec<String>,
+    /// Domain for contextual learning
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub domain: Option<String>,
+    /// Worker's self-reported confidence (0.0-1.0)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub confidence_score: Option<f64>,
+    /// Failure stage if not success: "lint" | "types" | "build" | "test"
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub failure_stage: Option<String>,
+}
+
+/// Batch outcome recording for catch-up sync
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RecordOutcomesBatchRequest {
+    pub outcomes: Vec<RecordOutcomeRequest>,
+}
+
+/// Response from sync_posteriors
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SyncPosteriorsResponse {
+    /// Per-principle Thompson posteriors
+    pub posteriors: std::collections::HashMap<String, PrinciplePosterior>,
+    /// Per-domain per-principle posteriors
+    pub domains: std::collections::HashMap<String, std::collections::HashMap<String, PrinciplePosterior>>,
+    /// Unix timestamp of last update
+    pub last_updated: i64,
+}
+
+/// Thompson Sampling posterior for a principle
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PrinciplePosterior {
+    pub alpha: f64,
+    pub beta: f64,
+    pub pulls: u32,
 }
 
 /// Challenge request for additional devil's advocate
@@ -202,6 +250,30 @@ impl CounselResponse {
         provenance: ProvenanceInfo,
     ) -> Self {
         let summary = Self::generate_summary(&positions, &challenge);
+
+        // Extract principle IDs from positions
+        let principle_ids: Vec<String> = positions
+            .iter()
+            .flat_map(|p| p.principles_cited.clone())
+            .collect();
+
+        // Generate causal hints explaining why principles were selected
+        let causal_hints: Vec<String> = positions
+            .iter()
+            .filter_map(|p| {
+                if !p.principles_cited.is_empty() {
+                    Some(format!(
+                        "{} cites {} for {} stance",
+                        p.thinker,
+                        p.principles_cited.join(", "),
+                        p.stance.name()
+                    ))
+                } else {
+                    None
+                }
+            })
+            .collect();
+
         Self {
             decision_id: Uuid::new_v4().to_string(),
             question,
@@ -210,6 +282,9 @@ impl CounselResponse {
             summary,
             provenance,
             created_at: Utc::now(),
+            principle_ids,
+            urgency_adjustment: None,
+            causal_hints,
         }
     }
 

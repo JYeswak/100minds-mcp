@@ -362,6 +362,146 @@ pub fn print_learning_stats(stats: &LearningStats) {
     }
 }
 
+// ============================================================================
+// SWARM INTEGRATION - Distributed learning synchronization
+// ============================================================================
+
+use crate::types::{SyncPosteriorsResponse, PrinciplePosterior, RecordOutcomeRequest};
+use std::collections::HashMap;
+
+/// Sync Thompson posteriors for distributed swarm learning
+///
+/// Returns all posteriors, optionally filtered by timestamp
+pub fn sync_posteriors(
+    conn: &Connection,
+    since_ts: Option<i64>,
+    domain: Option<&str>,
+) -> Result<SyncPosteriorsResponse> {
+    // Initialize schema if needed
+    init_thompson_schema(conn)?;
+
+    let mut posteriors: HashMap<String, PrinciplePosterior> = HashMap::new();
+    let mut domains: HashMap<String, HashMap<String, PrinciplePosterior>> = HashMap::new();
+
+    // Get global posteriors
+    let global_query = if since_ts.is_some() {
+        "SELECT principle_id, alpha, beta, pulls FROM thompson_arms
+         WHERE strftime('%s', updated_at) > ?"
+    } else {
+        "SELECT principle_id, alpha, beta, pulls FROM thompson_arms"
+    };
+
+    let mut stmt = conn.prepare(global_query)?;
+    let rows = if let Some(ts) = since_ts {
+        stmt.query([ts.to_string()])?
+    } else {
+        stmt.query([])?
+    };
+
+    let mut rows = rows;
+    while let Some(row) = rows.next()? {
+        let principle_id: String = row.get(0)?;
+        let alpha: f64 = row.get(1)?;
+        let beta: f64 = row.get(2)?;
+        let pulls: u32 = row.get::<_, i64>(3)? as u32;
+
+        posteriors.insert(principle_id, PrinciplePosterior { alpha, beta, pulls });
+    }
+
+    // Get domain-specific posteriors
+    let domain_query = if let Some(d) = domain {
+        format!(
+            "SELECT principle_id, domain, alpha, beta FROM thompson_domain_arms WHERE domain = '{}'",
+            d.replace('\'', "''")
+        )
+    } else {
+        "SELECT principle_id, domain, alpha, beta FROM thompson_domain_arms".to_string()
+    };
+
+    let mut stmt = conn.prepare(&domain_query)?;
+    let mut rows = stmt.query([])?;
+
+    while let Some(row) = rows.next()? {
+        let principle_id: String = row.get(0)?;
+        let domain_name: String = row.get(1)?;
+        let alpha: f64 = row.get(2)?;
+        let beta: f64 = row.get(3)?;
+
+        let domain_map = domains.entry(domain_name).or_default();
+        domain_map.insert(principle_id, PrinciplePosterior {
+            alpha,
+            beta,
+            pulls: 0, // Domain arms don't track pulls separately
+        });
+    }
+
+    // Get last updated timestamp
+    let last_updated: i64 = conn.query_row(
+        "SELECT COALESCE(MAX(strftime('%s', updated_at)), 0) FROM thompson_arms",
+        [],
+        |row| row.get(0),
+    ).unwrap_or(0);
+
+    Ok(SyncPosteriorsResponse {
+        posteriors,
+        domains,
+        last_updated,
+    })
+}
+
+/// Record outcomes in batch (for worker catch-up sync)
+pub fn record_outcomes_batch(
+    conn: &Connection,
+    outcomes: &[RecordOutcomeRequest],
+) -> Result<Vec<OutcomeResult>> {
+    let mut results = Vec::new();
+
+    for outcome in outcomes {
+        let context = outcome.domain.as_ref().map(|d| {
+            serde_json::json!({
+                "domain": d,
+                "confidence_score": outcome.confidence_score,
+                "failure_stage": outcome.failure_stage,
+            }).to_string()
+        });
+
+        let result = record_outcome(
+            conn,
+            &outcome.decision_id,
+            outcome.success,
+            &outcome.principle_ids,
+            outcome.notes.as_deref().unwrap_or(""),
+            context.as_deref(),
+        )?;
+
+        results.push(result);
+    }
+
+    Ok(results)
+}
+
+/// Enhanced record outcome with swarm fields
+pub fn record_outcome_v2(
+    conn: &Connection,
+    request: &RecordOutcomeRequest,
+) -> Result<OutcomeResult> {
+    // Build context with swarm-specific fields
+    let context = serde_json::json!({
+        "domain": request.domain,
+        "confidence_score": request.confidence_score,
+        "failure_stage": request.failure_stage,
+    });
+
+    record_outcome(
+        conn,
+        &request.decision_id,
+        request.success,
+        &request.principle_ids,
+        request.notes.as_deref().unwrap_or(""),
+        Some(&context.to_string()),
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -372,5 +512,15 @@ mod tests {
         assert_eq!(category_to_domain("[CI-RETRY]"), "quality");
         assert_eq!(category_to_domain("[AUDIT]"), "entrepreneurship");
         assert_eq!(category_to_domain("[FEATURE]"), "systems-thinking");
+    }
+
+    #[test]
+    fn test_sync_posteriors_empty() {
+        let conn = Connection::open_in_memory().unwrap();
+        init_thompson_schema(&conn).unwrap();
+
+        let result = sync_posteriors(&conn, None, None).unwrap();
+        assert!(result.posteriors.is_empty());
+        assert!(result.domains.is_empty());
     }
 }

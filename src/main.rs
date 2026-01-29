@@ -694,6 +694,10 @@ fn handle_command(engine: &CounselEngine, line: &str) -> Result<()> {
                 decision_id: decision_id.to_string(),
                 success,
                 notes,
+                principle_ids: vec![],
+                domain: None,
+                confidence_score: None,
+                failure_stage: None,
             };
 
             engine.record_outcome(&request)?;
