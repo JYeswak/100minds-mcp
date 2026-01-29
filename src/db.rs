@@ -5,13 +5,13 @@
 //! single file, zero network dependencies, works offline.
 
 use anyhow::{Context, Result};
-use rusqlite::{Connection, params};
+use rusqlite::{params, Connection};
 use std::path::Path;
 
 /// Initialize the database with schema
 pub fn init_db(path: &Path) -> Result<Connection> {
-    let conn = Connection::open(path)
-        .with_context(|| format!("Failed to open database at {:?}", path))?;
+    let conn =
+        Connection::open(path).with_context(|| format!("Failed to open database at {:?}", path))?;
 
     conn.execute_batch(SCHEMA)?;
 
@@ -181,22 +181,25 @@ CREATE INDEX IF NOT EXISTS idx_hard_negatives_question ON hard_negatives(questio
 
 /// Get the latest decision hash for chain linking
 pub fn get_latest_decision_hash(conn: &Connection) -> Result<Option<String>> {
-    let mut stmt = conn.prepare(
-        "SELECT content_hash FROM decisions ORDER BY created_at DESC LIMIT 1"
-    )?;
+    let mut stmt =
+        conn.prepare("SELECT content_hash FROM decisions ORDER BY created_at DESC LIMIT 1")?;
 
     let hash: Option<String> = stmt.query_row([], |row| row.get(0)).ok();
     Ok(hash)
 }
 
 /// Search principles by query using FTS5, with LIKE fallback
-pub fn search_principles(conn: &Connection, query: &str, limit: usize) -> Result<Vec<PrincipleMatch>> {
+pub fn search_principles(
+    conn: &Connection,
+    query: &str,
+    limit: usize,
+) -> Result<Vec<PrincipleMatch>> {
     // Extract keywords from query (alphanumeric words only)
     // Take more keywords to support expanded queries
     let keywords: Vec<&str> = query
         .split(|c: char| !c.is_alphanumeric())
         .filter(|w| w.len() > 2)
-        .take(15)  // Increased to support semantic expansion
+        .take(15) // Increased to support semantic expansion
         .collect();
 
     if keywords.is_empty() {
@@ -214,7 +217,7 @@ pub fn search_principles(conn: &Connection, query: &str, limit: usize) -> Result
         WHERE principles_fts MATCH ?1
         ORDER BY score
         LIMIT ?2
-        "#
+        "#,
     );
 
     if let Ok(mut stmt) = fts_result {
@@ -244,20 +247,21 @@ pub fn search_principles(conn: &Connection, query: &str, limit: usize) -> Result
         WHERE name LIKE ?1 OR description LIKE ?1
         ORDER BY learned_confidence DESC
         LIMIT ?2
-        "#
+        "#,
     )?;
 
-    let matches = stmt.query_map(params![like_pattern, limit as i64], |row| {
-        Ok(PrincipleMatch {
-            id: row.get(0)?,
-            thinker_id: row.get(1)?,
-            name: row.get(2)?,
-            description: row.get(3)?,
-            confidence: row.get(4)?,
-            relevance_score: row.get(5)?,
-        })
-    })?
-    .collect::<Result<Vec<_>, _>>()?;
+    let matches = stmt
+        .query_map(params![like_pattern, limit as i64], |row| {
+            Ok(PrincipleMatch {
+                id: row.get(0)?,
+                thinker_id: row.get(1)?,
+                name: row.get(2)?,
+                description: row.get(3)?,
+                confidence: row.get(4)?,
+                relevance_score: row.get(5)?,
+            })
+        })?
+        .collect::<Result<Vec<_>, _>>()?;
 
     Ok(matches)
 }
@@ -280,21 +284,22 @@ pub fn get_principles_by_domain(conn: &Connection, domain: &str) -> Result<Vec<P
         FROM principles p
         WHERE p.domain_tags LIKE ?1
         ORDER BY p.learned_confidence DESC
-        "#
+        "#,
     )?;
 
-    let pattern = format!("%\"{}\"%" , domain);
-    let matches = stmt.query_map([pattern], |row| {
-        Ok(PrincipleMatch {
-            id: row.get(0)?,
-            thinker_id: row.get(1)?,
-            name: row.get(2)?,
-            description: row.get(3)?,
-            confidence: row.get(4)?,
-            relevance_score: row.get(5)?,
-        })
-    })?
-    .collect::<Result<Vec<_>, _>>()?;
+    let pattern = format!("%\"{}\"%", domain);
+    let matches = stmt
+        .query_map([pattern], |row| {
+            Ok(PrincipleMatch {
+                id: row.get(0)?,
+                thinker_id: row.get(1)?,
+                name: row.get(2)?,
+                description: row.get(3)?,
+                confidence: row.get(4)?,
+                relevance_score: row.get(5)?,
+            })
+        })?
+        .collect::<Result<Vec<_>, _>>()?;
 
     Ok(matches)
 }
@@ -317,8 +322,16 @@ pub fn insert_decision(
                                previous_hash, content_hash, signature, agent_pubkey)
         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)
         "#,
-        params![id, question, context_json, counsel_json,
-                previous_hash, content_hash, signature, agent_pubkey],
+        params![
+            id,
+            question,
+            context_json,
+            counsel_json,
+            previous_hash,
+            content_hash,
+            signature,
+            agent_pubkey
+        ],
     )?;
     Ok(())
 }
@@ -393,8 +406,8 @@ pub fn update_contextual_arm(
         params![
             principle_id,
             domain,
-            if success { 2.0 } else { 1.0 },  // Add 1 to alpha on success
-            if success { 1.0 } else { 2.0 },  // Add 1 to beta on failure
+            if success { 2.0 } else { 1.0 }, // Add 1 to alpha on success
+            if success { 1.0 } else { 2.0 }, // Add 1 to beta on failure
         ],
     )?;
 
@@ -407,27 +420,27 @@ pub fn get_contextual_confidence(
     principle_id: &str,
     domain: &str,
 ) -> Result<Option<f64>> {
-    let result: Option<(f64, f64)> = conn.query_row(
-        "SELECT alpha, beta FROM contextual_arms WHERE principle_id = ?1 AND domain = ?2",
-        params![principle_id, domain],
-        |row| Ok((row.get(0)?, row.get(1)?)),
-    ).ok();
+    let result: Option<(f64, f64)> = conn
+        .query_row(
+            "SELECT alpha, beta FROM contextual_arms WHERE principle_id = ?1 AND domain = ?2",
+            params![principle_id, domain],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        )
+        .ok();
 
     Ok(result.map(|(alpha, beta)| alpha / (alpha + beta)))
 }
 
 /// Sample from contextual Thompson Sampling distribution
 /// Returns a sampled confidence value for exploration/exploitation
-pub fn sample_contextual_arm(
-    conn: &Connection,
-    principle_id: &str,
-    domain: &str,
-) -> Result<f64> {
-    let (alpha, beta): (f64, f64) = conn.query_row(
-        "SELECT alpha, beta FROM contextual_arms WHERE principle_id = ?1 AND domain = ?2",
-        params![principle_id, domain],
-        |row| Ok((row.get(0)?, row.get(1)?)),
-    ).unwrap_or((1.0, 1.0));  // Default prior: Beta(1,1) = uniform
+pub fn sample_contextual_arm(conn: &Connection, principle_id: &str, domain: &str) -> Result<f64> {
+    let (alpha, beta): (f64, f64) = conn
+        .query_row(
+            "SELECT alpha, beta FROM contextual_arms WHERE principle_id = ?1 AND domain = ?2",
+            params![principle_id, domain],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        )
+        .unwrap_or((1.0, 1.0)); // Default prior: Beta(1,1) = uniform
 
     // Simple approximation of Beta sampling using the mean + variance
     // For production, use a proper Beta distribution sampler
@@ -438,8 +451,11 @@ pub fn sample_contextual_arm(
     // Use mean + random noise for exploration (simplified Thompson Sampling)
     // In production, sample from actual Beta distribution
     use std::time::{SystemTime, UNIX_EPOCH};
-    let seed = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().subsec_nanos();
-    let random_factor = ((seed % 1000) as f64 / 1000.0 - 0.5) * 2.0;  // [-1, 1]
+    let seed = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .subsec_nanos();
+    let random_factor = ((seed % 1000) as f64 / 1000.0 - 0.5) * 2.0; // [-1, 1]
 
     Ok((mean + random_factor * std_dev).max(0.0).min(1.0))
 }
@@ -475,7 +491,7 @@ pub fn is_hard_negative(
         |row| row.get(0),
     ).unwrap_or(0);
 
-    Ok(count >= 3)  // Consider it a hard negative if failed 3+ times
+    Ok(count >= 3) // Consider it a hard negative if failed 3+ times
 }
 
 /// Get domain-specific confidence boost using contextual arms
@@ -525,10 +541,18 @@ mod tests {
         conn.execute(
             "INSERT INTO thinkers (id, name, domain) VALUES (?1, ?2, ?3)",
             params![id, name, domain],
-        ).unwrap();
+        )
+        .unwrap();
     }
 
-    fn insert_test_principle(conn: &Connection, id: &str, thinker_id: &str, name: &str, desc: &str, domains: &str) {
+    fn insert_test_principle(
+        conn: &Connection,
+        id: &str,
+        thinker_id: &str,
+        name: &str,
+        desc: &str,
+        domains: &str,
+    ) {
         conn.execute(
             "INSERT INTO principles (id, thinker_id, name, description, domain_tags, learned_confidence)
              VALUES (?1, ?2, ?3, ?4, ?5, 0.5)",
@@ -563,7 +587,14 @@ mod tests {
 
         // Insert test data
         insert_test_thinker(&conn, "beck", "Kent Beck", "software");
-        insert_test_principle(&conn, "tdd", "beck", "TDD", "Test-driven development helps design", "[\"testing\"]");
+        insert_test_principle(
+            &conn,
+            "tdd",
+            "beck",
+            "TDD",
+            "Test-driven development helps design",
+            "[\"testing\"]",
+        );
 
         // Search should find it
         let results = search_principles(&conn, "test driven", 10).unwrap();
@@ -576,8 +607,14 @@ mod tests {
         let (conn, _dir) = setup_test_db();
 
         insert_test_thinker(&conn, "knuth", "Donald Knuth", "cs");
-        insert_test_principle(&conn, "premature", "knuth", "Premature Optimization",
-            "Root of all evil", "[\"performance\", \"optimization\"]");
+        insert_test_principle(
+            &conn,
+            "premature",
+            "knuth",
+            "Premature Optimization",
+            "Root of all evil",
+            "[\"performance\", \"optimization\"]",
+        );
 
         let results = get_principles_by_domain(&conn, "performance").unwrap();
         assert_eq!(results.len(), 1);
@@ -598,14 +635,17 @@ mod tests {
             "hash123",
             "sig456",
             "pubkey789",
-        ).unwrap();
+        )
+        .unwrap();
 
         // Verify it was inserted
-        let question: String = conn.query_row(
-            "SELECT question FROM decisions WHERE id = ?1",
-            ["dec-001"],
-            |row| row.get(0),
-        ).unwrap();
+        let question: String = conn
+            .query_row(
+                "SELECT question FROM decisions WHERE id = ?1",
+                ["dec-001"],
+                |row| row.get(0),
+            )
+            .unwrap();
 
         assert_eq!(question, "Should we use microservices?");
     }
@@ -616,18 +656,29 @@ mod tests {
 
         // First insert a decision
         insert_decision(
-            &conn, "dec-002", "Test question", None, "{}", None, "h", "s", "p",
-        ).unwrap();
+            &conn,
+            "dec-002",
+            "Test question",
+            None,
+            "{}",
+            None,
+            "h",
+            "s",
+            "p",
+        )
+        .unwrap();
 
         // Record outcome
         record_outcome(&conn, "dec-002", true, Some("It worked!")).unwrap();
 
         // Verify outcome
-        let (success, notes): (i32, String) = conn.query_row(
-            "SELECT outcome_success, outcome_notes FROM decisions WHERE id = ?1",
-            ["dec-002"],
-            |row| Ok((row.get(0)?, row.get(1)?)),
-        ).unwrap();
+        let (success, notes): (i32, String) = conn
+            .query_row(
+                "SELECT outcome_success, outcome_notes FROM decisions WHERE id = ?1",
+                ["dec-002"],
+                |row| Ok((row.get(0)?, row.get(1)?)),
+            )
+            .unwrap();
 
         assert_eq!(success, 1);
         assert_eq!(notes, "It worked!");
@@ -642,24 +693,37 @@ mod tests {
 
         // Insert a decision first (required for FK constraint)
         insert_decision(
-            &conn, "dec-test", "Test question", None, "{}", None, "h", "s", "p",
-        ).unwrap();
+            &conn,
+            "dec-test",
+            "Test question",
+            None,
+            "{}",
+            None,
+            "h",
+            "s",
+            "p",
+        )
+        .unwrap();
 
         // Get initial confidence
-        let initial: f64 = conn.query_row(
-            "SELECT learned_confidence FROM principles WHERE id = ?1",
-            ["p1"],
-            |row| row.get(0),
-        ).unwrap();
+        let initial: f64 = conn
+            .query_row(
+                "SELECT learned_confidence FROM principles WHERE id = ?1",
+                ["p1"],
+                |row| row.get(0),
+            )
+            .unwrap();
 
         // Apply positive adjustment
         apply_adjustment(&conn, "p1", None, 0.1, "dec-test").unwrap();
 
-        let after: f64 = conn.query_row(
-            "SELECT learned_confidence FROM principles WHERE id = ?1",
-            ["p1"],
-            |row| row.get(0),
-        ).unwrap();
+        let after: f64 = conn
+            .query_row(
+                "SELECT learned_confidence FROM principles WHERE id = ?1",
+                ["p1"],
+                |row| row.get(0),
+            )
+            .unwrap();
 
         assert!((after - initial - 0.1).abs() < 0.001);
     }
@@ -675,21 +739,33 @@ mod tests {
             "INSERT INTO principles (id, thinker_id, name, description, learned_confidence)
              VALUES ('p2', 't2', 'P', 'D', 0.9)",
             [],
-        ).unwrap();
+        )
+        .unwrap();
 
         // Insert a decision first (required for FK constraint)
         insert_decision(
-            &conn, "dec-test-bounds", "Test question", None, "{}", None, "h", "s", "p",
-        ).unwrap();
+            &conn,
+            "dec-test-bounds",
+            "Test question",
+            None,
+            "{}",
+            None,
+            "h",
+            "s",
+            "p",
+        )
+        .unwrap();
 
         // Apply large positive adjustment - should be bounded at 1.0
         apply_adjustment(&conn, "p2", None, 0.5, "dec-test-bounds").unwrap();
 
-        let after: f64 = conn.query_row(
-            "SELECT learned_confidence FROM principles WHERE id = ?1",
-            ["p2"],
-            |row| row.get(0),
-        ).unwrap();
+        let after: f64 = conn
+            .query_row(
+                "SELECT learned_confidence FROM principles WHERE id = ?1",
+                ["p2"],
+                |row| row.get(0),
+            )
+            .unwrap();
 
         assert_eq!(after, 1.0, "Confidence should be bounded at 1.0");
     }
@@ -704,11 +780,13 @@ mod tests {
         // Record a success
         update_contextual_arm(&conn, "p3", "testing", true).unwrap();
 
-        let (alpha, beta): (f64, f64) = conn.query_row(
-            "SELECT alpha, beta FROM contextual_arms WHERE principle_id = ?1 AND domain = ?2",
-            params!["p3", "testing"],
-            |row| Ok((row.get(0)?, row.get(1)?)),
-        ).unwrap();
+        let (alpha, beta): (f64, f64) = conn
+            .query_row(
+                "SELECT alpha, beta FROM contextual_arms WHERE principle_id = ?1 AND domain = ?2",
+                params!["p3", "testing"],
+                |row| Ok((row.get(0)?, row.get(1)?)),
+            )
+            .unwrap();
 
         // Success: alpha should be higher than beta
         assert!(alpha > beta, "Alpha should be > beta after success");
@@ -724,11 +802,13 @@ mod tests {
         // Record a failure
         update_contextual_arm(&conn, "p4", "architecture", false).unwrap();
 
-        let (alpha, beta): (f64, f64) = conn.query_row(
-            "SELECT alpha, beta FROM contextual_arms WHERE principle_id = ?1 AND domain = ?2",
-            params!["p4", "architecture"],
-            |row| Ok((row.get(0)?, row.get(1)?)),
-        ).unwrap();
+        let (alpha, beta): (f64, f64) = conn
+            .query_row(
+                "SELECT alpha, beta FROM contextual_arms WHERE principle_id = ?1 AND domain = ?2",
+                params!["p4", "architecture"],
+                |row| Ok((row.get(0)?, row.get(1)?)),
+            )
+            .unwrap();
 
         // Failure: beta should be higher than alpha
         assert!(beta > alpha, "Beta should be > alpha after failure");
@@ -819,7 +899,10 @@ mod tests {
 
         let conf_boosted = get_domain_boosted_confidence(&conn, "p8", &["testing"]).unwrap();
         // Domain conf ~= 10/11 ~= 0.91, weighted: 0.5*0.6 + 0.91*0.4 ~= 0.66
-        assert!(conf_boosted > 0.5, "Domain boost should increase confidence");
+        assert!(
+            conf_boosted > 0.5,
+            "Domain boost should increase confidence"
+        );
     }
 
     #[test]
@@ -837,7 +920,18 @@ mod tests {
         assert_eq!(hash, Some("hash1".to_string()));
 
         // Insert another
-        insert_decision(&conn, "d2", "Q2", None, "{}", Some("hash1"), "hash2", "s", "p").unwrap();
+        insert_decision(
+            &conn,
+            "d2",
+            "Q2",
+            None,
+            "{}",
+            Some("hash1"),
+            "hash2",
+            "s",
+            "p",
+        )
+        .unwrap();
 
         let hash = get_latest_decision_hash(&conn).unwrap();
         assert_eq!(hash, Some("hash2".to_string()));

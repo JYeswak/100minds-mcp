@@ -25,7 +25,7 @@ pub struct BetaPosterior {
 impl Default for BetaPosterior {
     fn default() -> Self {
         Self {
-            alpha: 1.0,  // Uniform prior
+            alpha: 1.0, // Uniform prior
             beta: 1.0,
             sample_count: 0,
             last_updated: None,
@@ -118,7 +118,7 @@ fn beta_sample_approx(alpha: f64, beta: f64, u1: f64, u2: f64) -> f64 {
         x / sum
     } else {
         // Retry logic replaced with fallback
-        alpha / (alpha + beta)  // Fallback to mean
+        alpha / (alpha + beta) // Fallback to mean
     }
 }
 
@@ -156,12 +156,14 @@ impl FeelGoodThompsonSampler {
                 .map(|arm| arm.sample(seed))
                 .unwrap_or_else(|| {
                     // Fall back to global arm
-                    self.arms.get(principle_id)
+                    self.arms
+                        .get(principle_id)
                         .map(|arm| arm.sample(seed))
                         .unwrap_or(0.5)
                 })
         } else {
-            self.arms.get(principle_id)
+            self.arms
+                .get(principle_id)
                 .map(|arm| arm.sample(seed))
                 .unwrap_or(0.5)
         };
@@ -176,12 +178,12 @@ impl FeelGoodThompsonSampler {
     /// Feel-Good exploration bonus
     fn feel_good_bonus(&self, sample_count: u64) -> f64 {
         if sample_count == 0 || self.total_samples == 0 {
-            return self.exploration_c * 0.5;  // High bonus for unseen arms
+            return self.exploration_c * 0.5; // High bonus for unseen arms
         }
 
         // UCB-style exploration bonus
-        let bonus = self.exploration_c *
-            ((self.total_samples as f64).ln() / (sample_count as f64)).sqrt();
+        let bonus =
+            self.exploration_c * ((self.total_samples as f64).ln() / (sample_count as f64)).sqrt();
 
         // Cap the bonus
         bonus.min(0.3)
@@ -195,7 +197,8 @@ impl FeelGoodThompsonSampler {
                 .map(|arm| arm.sample_count)
                 .unwrap_or(0)
         } else {
-            self.arms.get(principle_id)
+            self.arms
+                .get(principle_id)
                 .map(|arm| arm.sample_count)
                 .unwrap_or(0)
         }
@@ -222,8 +225,15 @@ impl FeelGoodThompsonSampler {
 
     /// Get top-k arms by Thompson sample
     pub fn top_k(&self, k: usize, domain: Option<&str>, seed: u64) -> Vec<(String, f64)> {
-        let mut samples: Vec<(String, f64)> = self.arms.keys()
-            .map(|id| (id.clone(), self.sample(id, domain, seed.wrapping_add(hash_str(id)))))
+        let mut samples: Vec<(String, f64)> = self
+            .arms
+            .keys()
+            .map(|id| {
+                (
+                    id.clone(),
+                    self.sample(id, domain, seed.wrapping_add(hash_str(id))),
+                )
+            })
             .collect();
 
         samples.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
@@ -233,7 +243,8 @@ impl FeelGoodThompsonSampler {
 
     /// Identify arms that need more exploration
     pub fn underexplored_arms(&self, threshold: u64) -> Vec<String> {
-        self.arms.iter()
+        self.arms
+            .iter()
             .filter(|(_, arm)| arm.sample_count < threshold)
             .map(|(id, _)| id.clone())
             .collect()
@@ -241,7 +252,8 @@ impl FeelGoodThompsonSampler {
 
     /// Identify consistently poor-performing arms
     pub fn poor_performers(&self, threshold: f64) -> Vec<String> {
-        self.arms.iter()
+        self.arms
+            .iter()
             .filter(|(_, arm)| arm.sample_count >= 20 && arm.mean() < threshold)
             .map(|(id, _)| id.clone())
             .collect()
@@ -249,7 +261,9 @@ impl FeelGoodThompsonSampler {
 
     /// Get confidence-ranked arms
     pub fn confidence_ranking(&self) -> Vec<(String, f64, f64)> {
-        let mut ranked: Vec<(String, f64, f64)> = self.arms.iter()
+        let mut ranked: Vec<(String, f64, f64)> = self
+            .arms
+            .iter()
             .map(|(id, arm)| (id.clone(), arm.mean(), arm.credible_interval_width()))
             .collect();
 
@@ -257,7 +271,9 @@ impl FeelGoodThompsonSampler {
         ranked.sort_by(|a, b| {
             let a_pessimistic = a.1 - a.2 / 2.0;
             let b_pessimistic = b.1 - b.2 / 2.0;
-            b_pessimistic.partial_cmp(&a_pessimistic).unwrap_or(std::cmp::Ordering::Equal)
+            b_pessimistic
+                .partial_cmp(&a_pessimistic)
+                .unwrap_or(std::cmp::Ordering::Equal)
         });
 
         ranked
@@ -350,20 +366,60 @@ impl HyperparameterSpace {
         let mut params = ScoringHyperparameters::default();
 
         params.fts_weight = uniform_sample(self.fts_weight.0, self.fts_weight.1, seed);
-        params.semantic_weight = uniform_sample(self.semantic_weight.0, self.semantic_weight.1, seed.wrapping_add(1));
+        params.semantic_weight = uniform_sample(
+            self.semantic_weight.0,
+            self.semantic_weight.1,
+            seed.wrapping_add(1),
+        );
         params.rrf_k = uniform_sample(self.rrf_k.0, self.rrf_k.1, seed.wrapping_add(2));
 
-        params.domain_boost_architecture = uniform_sample(self.domain_boost_range.0, self.domain_boost_range.1, seed.wrapping_add(3));
-        params.domain_boost_testing = uniform_sample(self.domain_boost_range.0, self.domain_boost_range.1, seed.wrapping_add(4));
-        params.domain_boost_scaling = uniform_sample(self.domain_boost_range.0, self.domain_boost_range.1, seed.wrapping_add(5));
-        params.domain_boost_management = uniform_sample(self.domain_boost_range.0, self.domain_boost_range.1, seed.wrapping_add(6));
-        params.domain_boost_performance = uniform_sample(self.domain_boost_range.0, self.domain_boost_range.1, seed.wrapping_add(7));
+        params.domain_boost_architecture = uniform_sample(
+            self.domain_boost_range.0,
+            self.domain_boost_range.1,
+            seed.wrapping_add(3),
+        );
+        params.domain_boost_testing = uniform_sample(
+            self.domain_boost_range.0,
+            self.domain_boost_range.1,
+            seed.wrapping_add(4),
+        );
+        params.domain_boost_scaling = uniform_sample(
+            self.domain_boost_range.0,
+            self.domain_boost_range.1,
+            seed.wrapping_add(5),
+        );
+        params.domain_boost_management = uniform_sample(
+            self.domain_boost_range.0,
+            self.domain_boost_range.1,
+            seed.wrapping_add(6),
+        );
+        params.domain_boost_performance = uniform_sample(
+            self.domain_boost_range.0,
+            self.domain_boost_range.1,
+            seed.wrapping_add(7),
+        );
 
-        params.ts_prior_alpha = uniform_sample(self.ts_prior_range.0, self.ts_prior_range.1, seed.wrapping_add(8));
-        params.ts_prior_beta = uniform_sample(self.ts_prior_range.0, self.ts_prior_range.1, seed.wrapping_add(9));
-        params.exploration_c = uniform_sample(self.exploration_c_range.0, self.exploration_c_range.1, seed.wrapping_add(10));
+        params.ts_prior_alpha = uniform_sample(
+            self.ts_prior_range.0,
+            self.ts_prior_range.1,
+            seed.wrapping_add(8),
+        );
+        params.ts_prior_beta = uniform_sample(
+            self.ts_prior_range.0,
+            self.ts_prior_range.1,
+            seed.wrapping_add(9),
+        );
+        params.exploration_c = uniform_sample(
+            self.exploration_c_range.0,
+            self.exploration_c_range.1,
+            seed.wrapping_add(10),
+        );
 
-        params.decay_lambda = uniform_sample(self.decay_lambda_range.0, self.decay_lambda_range.1, seed.wrapping_add(11));
+        params.decay_lambda = uniform_sample(
+            self.decay_lambda_range.0,
+            self.decay_lambda_range.1,
+            seed.wrapping_add(11),
+        );
 
         params
     }
@@ -442,17 +498,14 @@ impl BayesianOptimizer {
         let mean_score = scores.iter().sum::<f64>() / scores.len().max(1) as f64;
 
         // Improvement over iterations
-        let improvements: Vec<f64> = scores.windows(2)
-            .map(|w| w[1] - w[0])
-            .collect();
+        let improvements: Vec<f64> = scores.windows(2).map(|w| w[1] - w[0]).collect();
 
         OptimizationReport {
             iterations: self.observations.len(),
             best_score: self.best_score,
             mean_score,
-            score_variance: scores.iter()
-                .map(|s| (s - mean_score).powi(2))
-                .sum::<f64>() / scores.len().max(1) as f64,
+            score_variance: scores.iter().map(|s| (s - mean_score).powi(2)).sum::<f64>()
+                / scores.len().max(1) as f64,
             improvement_trend: improvements.iter().sum::<f64>() / improvements.len().max(1) as f64,
             best_params: self.best_params.clone(),
         }
@@ -485,7 +538,7 @@ mod tests {
         arm.update(true);
         arm.update(false);
 
-        assert!((arm.mean() - 0.6).abs() < 0.1);  // ~3/5
+        assert!((arm.mean() - 0.6).abs() < 0.1); // ~3/5
     }
 
     #[test]
@@ -525,7 +578,7 @@ mod tests {
         // Run a few iterations
         for i in 0..10 {
             let params = optimizer.suggest_next(i as u64);
-            let score = 0.5 + (i as f64 * 0.01);  // Fake improving score
+            let score = 0.5 + (i as f64 * 0.01); // Fake improving score
             optimizer.observe(params, score);
         }
 

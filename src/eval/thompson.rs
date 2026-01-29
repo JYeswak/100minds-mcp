@@ -11,7 +11,7 @@
 use anyhow::Result;
 use rand::prelude::*;
 use rand::seq::SliceRandom;
-use rusqlite::{Connection, params};
+use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
 use statrs::distribution::{Beta, ContinuousCDF};
 use std::collections::HashMap;
@@ -32,10 +32,10 @@ pub struct FGTSConfig {
 impl Default for FGTSConfig {
     fn default() -> Self {
         Self {
-            optimism_constant: 2.0,  // Per NeurIPS 2025 paper
-            bonus_decay: 0.95,       // Decay to prevent perpetual optimism
-            epsilon: 0.1,            // 10% random exploration for cold-start
-            epsilon_threshold: 10,   // After 10 pulls, disable epsilon
+            optimism_constant: 2.0, // Per NeurIPS 2025 paper
+            bonus_decay: 0.95,      // Decay to prevent perpetual optimism
+            epsilon: 0.1,           // 10% random exploration for cold-start
+            epsilon_threshold: 10,  // After 10 pulls, disable epsilon
         }
     }
 }
@@ -80,7 +80,13 @@ impl PrincipleArm {
         let alpha = (confidence * sample_size).max(1.0);
         let beta = ((1.0 - confidence) * sample_size).max(1.0);
 
-        Self { id, name, alpha, beta, pulls: sample_size as u32 }
+        Self {
+            id,
+            name,
+            alpha,
+            beta,
+            pulls: sample_size as u32,
+        }
     }
 
     /// Standard Thompson Sampling: Sample from the Beta distribution
@@ -252,12 +258,10 @@ impl ContextualArm {
 
         // Update domain-specific if provided
         if let Some(d) = domain {
-            let domain_arm = self.domain_arms
+            let domain_arm = self
+                .domain_arms
                 .entry(d.to_string())
-                .or_insert_with(|| PrincipleArm::new(
-                    self.principle_id.clone(),
-                    self.name.clone(),
-                ));
+                .or_insert_with(|| PrincipleArm::new(self.principle_id.clone(), self.name.clone()));
             domain_arm.update(success);
         }
     }
@@ -281,9 +285,7 @@ impl ThompsonSelector {
         let mut arms = HashMap::new();
 
         // Load principles
-        let mut stmt = conn.prepare(
-            "SELECT id, name, learned_confidence FROM principles"
-        )?;
+        let mut stmt = conn.prepare("SELECT id, name, learned_confidence FROM principles")?;
 
         let principles = stmt.query_map([], |row| {
             Ok((
@@ -298,12 +300,7 @@ impl ThompsonSelector {
 
             // Convert existing confidence to Beta parameters
             // Assume 10 implicit observations for initial conversion
-            let global = PrincipleArm::from_confidence(
-                id.clone(),
-                name.clone(),
-                confidence,
-                10.0,
-            );
+            let global = PrincipleArm::from_confidence(id.clone(), name.clone(), confidence, 10.0);
 
             let arm = ContextualArm {
                 principle_id: id.clone(),
@@ -317,7 +314,7 @@ impl ThompsonSelector {
 
         // Load historical adjustments to refine estimates
         let mut adj_stmt = conn.prepare(
-            "SELECT principle_id, adjustment, context_pattern FROM framework_adjustments"
+            "SELECT principle_id, adjustment, context_pattern FROM framework_adjustments",
         )?;
 
         let adjustments = adj_stmt.query_map([], |row| {
@@ -352,9 +349,10 @@ impl ThompsonSelector {
         let mut rng = rand::thread_rng();
 
         // Separate cold and warm arms
-        let (cold_candidates, _warm_candidates): (Vec<_>, Vec<_>) = candidates.iter()
-            .partition(|id| {
-                self.arms.get(*id)
+        let (cold_candidates, _warm_candidates): (Vec<_>, Vec<_>) =
+            candidates.iter().partition(|id| {
+                self.arms
+                    .get(*id)
                     .map(|arm| arm.is_cold(self.config.epsilon_threshold))
                     .unwrap_or(true)
             });
@@ -384,16 +382,16 @@ impl ThompsonSelector {
         // Fill remaining slots with FG-TS on all candidates
         let remaining_k = k.saturating_sub(selected.len());
         if remaining_k > 0 {
-            let already_selected: std::collections::HashSet<_> = selected.iter()
-                .map(|(id, _)| id.clone())
-                .collect();
+            let already_selected: std::collections::HashSet<_> =
+                selected.iter().map(|(id, _)| id.clone()).collect();
 
-            let mut samples: Vec<(String, f64)> = candidates.iter()
+            let mut samples: Vec<(String, f64)> = candidates
+                .iter()
                 .filter(|id| !already_selected.contains(*id))
                 .filter_map(|id| {
-                    self.arms.get(id).map(|arm| {
-                        (id.clone(), arm.fg_sample(domain, &mut rng, &self.config))
-                    })
+                    self.arms
+                        .get(id)
+                        .map(|arm| (id.clone(), arm.fg_sample(domain, &mut rng, &self.config)))
                 })
                 .collect();
 
@@ -418,11 +416,12 @@ impl ThompsonSelector {
     ) -> Vec<(String, f64)> {
         let mut rng = rand::thread_rng();
 
-        let mut samples: Vec<(String, f64)> = candidates.iter()
+        let mut samples: Vec<(String, f64)> = candidates
+            .iter()
             .filter_map(|id| {
-                self.arms.get(id).map(|arm| {
-                    (id.clone(), arm.sample(domain, &mut rng))
-                })
+                self.arms
+                    .get(id)
+                    .map(|arm| (id.clone(), arm.sample(domain, &mut rng)))
             })
             .collect();
 
@@ -432,7 +431,8 @@ impl ThompsonSelector {
 
     /// Get count of cold (orphan) principles
     pub fn count_cold_arms(&self) -> usize {
-        self.arms.values()
+        self.arms
+            .values()
             .filter(|arm| arm.is_cold(self.config.epsilon_threshold))
             .count()
     }
@@ -440,7 +440,9 @@ impl ThompsonSelector {
     /// Get diversity metric (Gini coefficient) for principle selection
     /// Lower is better: 0 = perfect equality, 1 = one arm dominates
     pub fn gini_coefficient(&self) -> f64 {
-        let pulls: Vec<f64> = self.arms.values()
+        let pulls: Vec<f64> = self
+            .arms
+            .values()
             .map(|arm| arm.total_pulls() as f64)
             .collect();
 
@@ -457,7 +459,8 @@ impl ThompsonSelector {
         let mut sorted_pulls = pulls.clone();
         sorted_pulls.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
-        let sum_weighted: f64 = sorted_pulls.iter()
+        let sum_weighted: f64 = sorted_pulls
+            .iter()
             .enumerate()
             .map(|(i, &p)| (i + 1) as f64 * p)
             .sum();
@@ -466,12 +469,7 @@ impl ThompsonSelector {
     }
 
     /// Update principle based on outcome
-    pub fn record_outcome(
-        &mut self,
-        principle_id: &str,
-        success: bool,
-        domain: Option<&str>,
-    ) {
+    pub fn record_outcome(&mut self, principle_id: &str, success: bool, domain: Option<&str>) {
         if let Some(arm) = self.arms.get_mut(principle_id) {
             arm.update(domain, success);
         }
@@ -489,7 +487,9 @@ impl ThompsonSelector {
                 ci_lower: ci.0,
                 ci_upper: ci.1,
                 total_observations: arm.global.total_observations(),
-                domain_stats: arm.domain_arms.iter()
+                domain_stats: arm
+                    .domain_arms
+                    .iter()
                     .map(|(d, a)| (d.clone(), a.mean()))
                     .collect(),
             }
@@ -498,7 +498,9 @@ impl ThompsonSelector {
 
     /// Get all principles sorted by mean (for analysis)
     pub fn get_all_stats(&self) -> Vec<PrincipleStats> {
-        let mut stats: Vec<_> = self.arms.values()
+        let mut stats: Vec<_> = self
+            .arms
+            .values()
             .map(|arm| {
                 let ci = arm.global.credible_interval_95();
                 PrincipleStats {
@@ -509,7 +511,9 @@ impl ThompsonSelector {
                     ci_lower: ci.0,
                     ci_upper: ci.1,
                     total_observations: arm.global.total_observations(),
-                    domain_stats: arm.domain_arms.iter()
+                    domain_stats: arm
+                        .domain_arms
+                        .iter()
                         .map(|(d, a)| (d.clone(), a.mean()))
                         .collect(),
                 }
@@ -522,9 +526,8 @@ impl ThompsonSelector {
 
     /// Persist updated parameters back to database
     pub fn persist_to_db(&self, conn: &Connection) -> Result<()> {
-        let mut stmt = conn.prepare(
-            "UPDATE principles SET learned_confidence = ?2 WHERE id = ?1"
-        )?;
+        let mut stmt =
+            conn.prepare("UPDATE principles SET learned_confidence = ?2 WHERE id = ?1")?;
 
         for (id, arm) in &self.arms {
             stmt.execute(params![id, arm.global.mean()])?;
@@ -551,12 +554,16 @@ pub struct PrincipleStats {
 fn extract_domain(context_json: &str) -> Option<String> {
     serde_json::from_str::<serde_json::Value>(context_json)
         .ok()
-        .and_then(|v| v.get("domain").and_then(|d| d.as_str().map(|s| s.to_string())))
+        .and_then(|v| {
+            v.get("domain")
+                .and_then(|d| d.as_str().map(|s| s.to_string()))
+        })
 }
 
 /// Initialize Thompson Sampling schema in database
 pub fn init_thompson_schema(conn: &Connection) -> Result<()> {
-    conn.execute_batch(r#"
+    conn.execute_batch(
+        r#"
         -- Thompson Sampling parameters for principles
         CREATE TABLE IF NOT EXISTS thompson_arms (
             principle_id TEXT PRIMARY KEY REFERENCES principles(id),
@@ -575,7 +582,8 @@ pub fn init_thompson_schema(conn: &Connection) -> Result<()> {
             updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (principle_id, domain)
         );
-    "#)?;
+    "#,
+    )?;
 
     Ok(())
 }
@@ -612,24 +620,15 @@ mod tests {
         assert!(upper > 0.9);
 
         // With more data, CI should narrow
-        let informed = PrincipleArm::from_confidence(
-            "test2".to_string(),
-            "Test2".to_string(),
-            0.7,
-            100.0,
-        );
+        let informed =
+            PrincipleArm::from_confidence("test2".to_string(), "Test2".to_string(), 0.7, 100.0);
         let (lower2, upper2) = informed.credible_interval_95();
         assert!(upper2 - lower2 < upper - lower);
     }
 
     #[test]
     fn test_thompson_sampling() {
-        let arm = PrincipleArm::from_confidence(
-            "test".to_string(),
-            "Test".to_string(),
-            0.8,
-            20.0,
-        );
+        let arm = PrincipleArm::from_confidence("test".to_string(), "Test".to_string(), 0.8, 20.0);
 
         let mut rng = rand::thread_rng();
         let samples: Vec<f64> = (0..1000).map(|_| arm.sample(&mut rng)).collect();
@@ -652,14 +651,23 @@ mod tests {
         let mut rng = rand::thread_rng();
 
         // Sample both many times
-        let cold_samples: Vec<f64> = (0..1000).map(|_| cold_arm.fg_sample(&mut rng, &config)).collect();
-        let warm_samples: Vec<f64> = (0..1000).map(|_| warm_arm.fg_sample(&mut rng, &config)).collect();
+        let cold_samples: Vec<f64> = (0..1000)
+            .map(|_| cold_arm.fg_sample(&mut rng, &config))
+            .collect();
+        let warm_samples: Vec<f64> = (0..1000)
+            .map(|_| warm_arm.fg_sample(&mut rng, &config))
+            .collect();
 
         let cold_avg: f64 = cold_samples.iter().sum::<f64>() / cold_samples.len() as f64;
         let warm_avg: f64 = warm_samples.iter().sum::<f64>() / warm_samples.len() as f64;
 
         // Cold arm should have higher average due to optimism bonus
-        assert!(cold_avg > warm_avg, "Cold arm ({:.3}) should have higher avg than warm ({:.3})", cold_avg, warm_avg);
+        assert!(
+            cold_avg > warm_avg,
+            "Cold arm ({:.3}) should have higher avg than warm ({:.3})",
+            cold_avg,
+            warm_avg
+        );
     }
 
     #[test]
@@ -668,22 +676,34 @@ mod tests {
         let mut rng = rand::thread_rng();
 
         // Create arms with increasing pulls
-        let arms: Vec<PrincipleArm> = (0..5).map(|i| {
-            let mut arm = PrincipleArm::new(format!("arm-{}", i), format!("Arm {}", i));
-            arm.pulls = i * 10;
-            arm
-        }).collect();
+        let arms: Vec<PrincipleArm> = (0..5)
+            .map(|i| {
+                let mut arm = PrincipleArm::new(format!("arm-{}", i), format!("Arm {}", i));
+                arm.pulls = i * 10;
+                arm
+            })
+            .collect();
 
-        let avgs: Vec<f64> = arms.iter().map(|arm| {
-            let samples: Vec<f64> = (0..1000).map(|_| arm.fg_sample(&mut rng, &config)).collect();
-            samples.iter().sum::<f64>() / samples.len() as f64
-        }).collect();
+        let avgs: Vec<f64> = arms
+            .iter()
+            .map(|arm| {
+                let samples: Vec<f64> = (0..1000)
+                    .map(|_| arm.fg_sample(&mut rng, &config))
+                    .collect();
+                samples.iter().sum::<f64>() / samples.len() as f64
+            })
+            .collect();
 
         // Each subsequent arm should have lower average (decaying bonus)
         for i in 1..avgs.len() {
-            assert!(avgs[i] <= avgs[i-1] + 0.05, // Allow small tolerance
+            assert!(
+                avgs[i] <= avgs[i - 1] + 0.05, // Allow small tolerance
                 "Arm {} (avg {:.3}) should be <= arm {} (avg {:.3})",
-                i, avgs[i], i-1, avgs[i-1]);
+                i,
+                avgs[i],
+                i - 1,
+                avgs[i - 1]
+            );
         }
     }
 
@@ -713,11 +733,18 @@ mod tests {
             arms.insert(format!("arm-{}", i), arm);
         }
 
-        let selector = ThompsonSelector { arms, config: FGTSConfig::default() };
+        let selector = ThompsonSelector {
+            arms,
+            config: FGTSConfig::default(),
+        };
         let gini = selector.gini_coefficient();
 
         // Perfect equality should have Gini close to 0
-        assert!(gini < 0.2, "Equal distribution should have low Gini: {:.3}", gini);
+        assert!(
+            gini < 0.2,
+            "Equal distribution should have low Gini: {:.3}",
+            gini
+        );
 
         // Now create unequal distribution
         let mut arms2 = HashMap::new();
@@ -728,10 +755,18 @@ mod tests {
             arms2.insert(format!("arm-{}", i), arm);
         }
 
-        let selector2 = ThompsonSelector { arms: arms2, config: FGTSConfig::default() };
+        let selector2 = ThompsonSelector {
+            arms: arms2,
+            config: FGTSConfig::default(),
+        };
         let gini2 = selector2.gini_coefficient();
 
         // Unequal distribution should have higher Gini
-        assert!(gini2 > gini, "Unequal distribution ({:.3}) should have higher Gini than equal ({:.3})", gini2, gini);
+        assert!(
+            gini2 > gini,
+            "Unequal distribution ({:.3}) should have higher Gini than equal ({:.3})",
+            gini2,
+            gini
+        );
     }
 }

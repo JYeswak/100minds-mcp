@@ -3,10 +3,10 @@
 //! Uses heuristics to evaluate quality rather than matching against hardcoded expectations.
 //! Records results for continuous learning and Thompson Sampling optimization.
 
+use super::synthetic::{generate_sample, GeneratorConfig, SyntheticQuestion};
 use crate::counsel::CounselEngine;
 use crate::provenance::Provenance;
-use crate::types::{CounselRequest, CounselContext, CounselDepth};
-use super::synthetic::{SyntheticQuestion, GeneratorConfig, generate_sample};
+use crate::types::{CounselContext, CounselDepth, CounselRequest};
 
 #[allow(unused_imports)] // Used by full evaluation mode
 use crate::types::CounselResponse;
@@ -96,7 +96,8 @@ pub fn run_fast_evaluation(
         let result = evaluate_single_question(conn, &engine, q)?;
 
         // Track domain scores
-        domain_scores.entry(q.domain.clone())
+        domain_scores
+            .entry(q.domain.clone())
             .or_default()
             .push(result.quality_score);
 
@@ -122,37 +123,49 @@ pub fn run_fast_evaluation(
     let avg_quality_score = total_score / results.len().max(1) as f64;
 
     // Domain stats
-    let scores_by_domain: HashMap<String, DomainStats> = domain_scores.into_iter()
+    let scores_by_domain: HashMap<String, DomainStats> = domain_scores
+        .into_iter()
         .map(|(domain, scores)| {
             let avg = scores.iter().sum::<f64>() / scores.len() as f64;
-            (domain, DomainStats {
-                count: scores.len(),
-                avg_score: avg,
-                avg_relevance: avg,  // Simplified for fast mode
-                avg_actionability: avg,
-            })
+            (
+                domain,
+                DomainStats {
+                    count: scores.len(),
+                    avg_score: avg,
+                    avg_relevance: avg, // Simplified for fast mode
+                    avg_actionability: avg,
+                },
+            )
         })
         .collect();
 
     // Principle effectiveness
-    let principle_effectiveness: HashMap<String, PrincipleStats> = principle_stats.into_iter()
+    let principle_effectiveness: HashMap<String, PrincipleStats> = principle_stats
+        .into_iter()
         .map(|(name, (count, total))| {
-            (name, PrincipleStats {
-                times_cited: count,
-                avg_score_when_cited: total / count as f64,
-                domains_cited_in: vec![],  // TODO: track
-            })
+            (
+                name,
+                PrincipleStats {
+                    times_cited: count,
+                    avg_score_when_cited: total / count as f64,
+                    domains_cited_in: vec![], // TODO: track
+                },
+            )
         })
         .collect();
 
     // Thinker effectiveness
-    let thinker_effectiveness: HashMap<String, ThinkerStats> = thinker_stats.into_iter()
+    let thinker_effectiveness: HashMap<String, ThinkerStats> = thinker_stats
+        .into_iter()
         .map(|(name, (count, total))| {
-            (name, ThinkerStats {
-                times_cited: count,
-                avg_score_when_cited: total / count as f64,
-                top_principles: vec![],  // TODO: track
-            })
+            (
+                name,
+                ThinkerStats {
+                    times_cited: count,
+                    avg_score_when_cited: total / count as f64,
+                    top_principles: vec![], // TODO: track
+                },
+            )
         })
         .collect();
 
@@ -166,7 +179,7 @@ pub fn run_fast_evaluation(
     Ok(DataDrivenResults {
         total_questions: results.len(),
         avg_quality_score,
-        scores_by_criterion: HashMap::new(),  // Simplified for fast mode
+        scores_by_criterion: HashMap::new(), // Simplified for fast mode
         scores_by_domain,
         best_performers,
         worst_performers,
@@ -206,7 +219,7 @@ fn evaluate_single_question(
     }
 
     // Heuristic quality scoring (0-5 scale)
-    let mut score: f64 = 2.5;  // Base score
+    let mut score: f64 = 2.5; // Base score
 
     // Boost for having positions
     if !response.positions.is_empty() {
@@ -214,8 +227,14 @@ fn evaluate_single_question(
     }
 
     // Boost for having multiple perspectives (FOR and AGAINST)
-    let has_for = response.positions.iter().any(|p| p.stance == crate::types::Stance::For);
-    let has_against = response.positions.iter().any(|p| p.stance == crate::types::Stance::Against);
+    let has_for = response
+        .positions
+        .iter()
+        .any(|p| p.stance == crate::types::Stance::For);
+    let has_against = response
+        .positions
+        .iter()
+        .any(|p| p.stance == crate::types::Stance::Against);
     if has_for && has_against {
         score += 0.5;
     }
@@ -240,12 +259,15 @@ fn evaluate_single_question(
         _ => vec![],
     };
 
-    let argument_lower: String = response.positions.iter()
+    let argument_lower: String = response
+        .positions
+        .iter()
         .map(|p| p.argument.to_lowercase())
         .collect::<Vec<_>>()
         .join(" ");
 
-    let domain_matches = domain_keywords.iter()
+    let domain_matches = domain_keywords
+        .iter()
         .filter(|kw| argument_lower.contains(*kw))
         .count();
 
@@ -256,15 +278,19 @@ fn evaluate_single_question(
     // Cap at 5.0
     score = score.min(5.0);
 
-    let judge_reasoning = format!("Heuristic score: {} positions, {} unique thinkers, {} domain matches",
-        response.positions.len(), unique_thinker_count, domain_matches);
+    let judge_reasoning = format!(
+        "Heuristic score: {} positions, {} unique thinkers, {} domain matches",
+        response.positions.len(),
+        unique_thinker_count,
+        domain_matches
+    );
 
     Ok(QuestionResult {
         question: question.question.clone(),
         domain: question.domain.clone(),
         quality_score: score,
-        relevance: score,  // Simplified
-        actionability: score,  // Simplified
+        relevance: score,     // Simplified
+        actionability: score, // Simplified
         principles_cited: principles,
         thinkers_cited: thinkers,
         latency_ms: latency,
@@ -278,41 +304,64 @@ pub fn print_data_driven_results(results: &DataDrivenResults) {
     println!("│ 📊 DATA-DRIVEN EVALUATION RESULTS                           │");
     println!("└─────────────────────────────────────────────────────────────┘\n");
 
-    println!("OVERALL: {} questions, avg quality: {:.2}/5.0",
-        results.total_questions, results.avg_quality_score);
+    println!(
+        "OVERALL: {} questions, avg quality: {:.2}/5.0",
+        results.total_questions, results.avg_quality_score
+    );
 
     println!("\nBY DOMAIN:");
     let mut domains: Vec<_> = results.scores_by_domain.iter().collect();
     domains.sort_by(|a, b| b.1.avg_score.partial_cmp(&a.1.avg_score).unwrap());
     for (domain, stats) in domains {
         let bar = "█".repeat((stats.avg_score * 4.0) as usize);
-        println!("   {:20} {:.2}/5.0 {} (n={})", domain, stats.avg_score, bar, stats.count);
+        println!(
+            "   {:20} {:.2}/5.0 {} (n={})",
+            domain, stats.avg_score, bar, stats.count
+        );
     }
 
     println!("\nTOP PERFORMING THINKERS:");
     let mut thinkers: Vec<_> = results.thinker_effectiveness.iter().collect();
-    thinkers.sort_by(|a, b| b.1.avg_score_when_cited.partial_cmp(&a.1.avg_score_when_cited).unwrap());
+    thinkers.sort_by(|a, b| {
+        b.1.avg_score_when_cited
+            .partial_cmp(&a.1.avg_score_when_cited)
+            .unwrap()
+    });
     for (name, stats) in thinkers.iter().take(10) {
-        println!("   {:25} {:.2}/5.0 (cited {} times)",
-            name, stats.avg_score_when_cited, stats.times_cited);
+        println!(
+            "   {:25} {:.2}/5.0 (cited {} times)",
+            name, stats.avg_score_when_cited, stats.times_cited
+        );
     }
 
     println!("\nTOP PERFORMING PRINCIPLES:");
-    let mut principles: Vec<_> = results.principle_effectiveness.iter()
-        .filter(|(_, s)| s.times_cited >= 5)  // Only principles cited enough times
+    let mut principles: Vec<_> = results
+        .principle_effectiveness
+        .iter()
+        .filter(|(_, s)| s.times_cited >= 5) // Only principles cited enough times
         .collect();
-    principles.sort_by(|a, b| b.1.avg_score_when_cited.partial_cmp(&a.1.avg_score_when_cited).unwrap());
+    principles.sort_by(|a, b| {
+        b.1.avg_score_when_cited
+            .partial_cmp(&a.1.avg_score_when_cited)
+            .unwrap()
+    });
     for (name, stats) in principles.iter().take(10) {
-        println!("   {:40} {:.2}/5.0 (cited {} times)",
-            truncate(name, 40), stats.avg_score_when_cited, stats.times_cited);
+        println!(
+            "   {:40} {:.2}/5.0 (cited {} times)",
+            truncate(name, 40),
+            stats.avg_score_when_cited,
+            stats.times_cited
+        );
     }
 
     println!("\nWORST PERFORMERS (questions to investigate):");
     for result in results.worst_performers.iter().take(5) {
-        println!("   [{:.1}] {} - {}",
+        println!(
+            "   [{:.1}] {} - {}",
             result.quality_score,
             result.domain,
-            truncate(&result.question, 50));
+            truncate(&result.question, 50)
+        );
     }
 }
 
@@ -320,7 +369,7 @@ fn truncate(s: &str, max: usize) -> String {
     if s.len() <= max {
         s.to_string()
     } else {
-        format!("{}...", &s[..max-3])
+        format!("{}...", &s[..max - 3])
     }
 }
 
@@ -331,7 +380,7 @@ mod tests {
     #[test]
     fn test_heuristic_scoring() {
         // Basic test that scoring works
-        let score = 2.5 + 0.5 + 0.5;  // base + positions + diversity
+        let score = 2.5 + 0.5 + 0.5; // base + positions + diversity
         assert!(score >= 2.0 && score <= 5.0);
     }
 }

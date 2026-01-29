@@ -57,34 +57,60 @@ impl<'a> CounselEngine<'a> {
 
     /// Detect urgency based on question content and position analysis
     /// Returns "escalate" | "defer" | None
-    fn detect_urgency(&self, request: &CounselRequest, positions: &[CounselPosition]) -> Option<String> {
+    fn detect_urgency(
+        &self,
+        request: &CounselRequest,
+        positions: &[CounselPosition],
+    ) -> Option<String> {
         let q = request.question.to_lowercase();
 
         // ESCALATE signals - indicates decision needs human review or senior attention
         let escalate_keywords = [
-            "security", "vulnerable", "breach", "hack",
-            "data loss", "corruption", "production down",
-            "breaking change", "backwards compat",
-            "legal", "compliance", "gdpr", "pii",
-            "money", "billing", "payment",
-            "deadline", "blocker", "critical",
+            "security",
+            "vulnerable",
+            "breach",
+            "hack",
+            "data loss",
+            "corruption",
+            "production down",
+            "breaking change",
+            "backwards compat",
+            "legal",
+            "compliance",
+            "gdpr",
+            "pii",
+            "money",
+            "billing",
+            "payment",
+            "deadline",
+            "blocker",
+            "critical",
         ];
 
-        let escalate_score: usize = escalate_keywords.iter()
+        let escalate_score: usize = escalate_keywords
+            .iter()
             .filter(|kw| q.contains(*kw))
             .count();
 
         // DEFER signals - indicates decision can wait for more information
         let defer_keywords = [
-            "future", "eventually", "someday", "maybe",
-            "nice to have", "phase 2", "later",
-            "considering", "thinking about", "exploring",
-            "research", "spike", "poc", "prototype",
+            "future",
+            "eventually",
+            "someday",
+            "maybe",
+            "nice to have",
+            "phase 2",
+            "later",
+            "considering",
+            "thinking about",
+            "exploring",
+            "research",
+            "spike",
+            "poc",
+            "prototype",
         ];
 
-        let defer_score: usize = defer_keywords.iter()
-            .filter(|kw| q.contains(*kw))
-            .count();
+        let defer_score: usize = defer_keywords.iter().filter(|kw| q.contains(*kw)).count();
 
         // Analyze position confidence spread
         let confidences: Vec<f64> = positions.iter().map(|p| p.confidence).collect();
@@ -114,11 +140,13 @@ impl<'a> CounselEngine<'a> {
         let has_against = positions.iter().any(|p| p.stance == Stance::Against);
 
         if has_for && has_against {
-            let for_confidence: f64 = positions.iter()
+            let for_confidence: f64 = positions
+                .iter()
                 .filter(|p| p.stance == Stance::For)
                 .map(|p| p.confidence)
                 .sum::<f64>();
-            let against_confidence: f64 = positions.iter()
+            let against_confidence: f64 = positions
+                .iter()
                 .filter(|p| p.stance == Stance::Against)
                 .map(|p| p.confidence)
                 .sum::<f64>();
@@ -153,7 +181,8 @@ impl<'a> CounselEngine<'a> {
             .collect();
 
         // 3. Generate positions from remaining principles
-        let alternative_positions = self.build_positions_from_principles(request, &filtered_principles)?;
+        let alternative_positions =
+            self.build_positions_from_principles(request, &filtered_principles)?;
 
         // 4. Calculate diversity delta
         let new_principle_ids: std::collections::HashSet<String> = alternative_positions
@@ -162,7 +191,9 @@ impl<'a> CounselEngine<'a> {
             .collect();
 
         // Jaccard distance: 1 - (intersection / union)
-        let intersection = original_principle_ids.intersection(&new_principle_ids).count();
+        let intersection = original_principle_ids
+            .intersection(&new_principle_ids)
+            .count();
         let union = original_principle_ids.union(&new_principle_ids).count();
         let diversity_delta = if union > 0 {
             1.0 - (intersection as f64 / union as f64)
@@ -195,15 +226,25 @@ impl<'a> CounselEngine<'a> {
         };
 
         // Alternate stances for balance
-        let stances = [Stance::For, Stance::Against, Stance::Synthesize, Stance::Against, Stance::For, Stance::Synthesize];
+        let stances = [
+            Stance::For,
+            Stance::Against,
+            Stance::Synthesize,
+            Stance::Against,
+            Stance::For,
+            Stance::Synthesize,
+        ];
 
         for (i, principle) in principles.iter().take(num_positions).enumerate() {
             let stance = stances[i % stances.len()];
-            let thinker_name = self.conn.query_row(
-                "SELECT name FROM thinkers WHERE id = ?1",
-                [&principle.thinker_id],
-                |row| row.get::<_, String>(0),
-            ).unwrap_or_else(|_| principle.thinker_id.clone());
+            let thinker_name = self
+                .conn
+                .query_row(
+                    "SELECT name FROM thinkers WHERE id = ?1",
+                    [&principle.thinker_id],
+                    |row| row.get::<_, String>(0),
+                )
+                .unwrap_or_else(|_| principle.thinker_id.clone());
 
             let position = CounselPosition {
                 thinker: thinker_name,
@@ -217,8 +258,16 @@ impl<'a> CounselEngine<'a> {
                 confidence: principle.confidence,
                 falsifiable_if: Some(format!(
                     "This {} is {} if the {} principle doesn't apply to this context",
-                    if stance == Stance::For { "recommendation" } else { "caution" },
-                    if stance == Stance::For { "wrong" } else { "unnecessary" },
+                    if stance == Stance::For {
+                        "recommendation"
+                    } else {
+                        "caution"
+                    },
+                    if stance == Stance::For {
+                        "wrong"
+                    } else {
+                        "unnecessary"
+                    },
                     principle.name
                 )),
             };
@@ -262,13 +311,12 @@ impl<'a> CounselEngine<'a> {
 
         // Score each principle by relevance to the question
         for principle in &mut all_matches {
-            principle.relevance_score = self.score_principle_relevance(&request.question, principle);
+            principle.relevance_score =
+                self.score_principle_relevance(&request.question, principle);
         }
 
         // Sort by relevance score (highest first)
-        all_matches.sort_by(|a, b| {
-            b.relevance_score.partial_cmp(&a.relevance_score).unwrap()
-        });
+        all_matches.sort_by(|a, b| b.relevance_score.partial_cmp(&a.relevance_score).unwrap());
 
         Ok(all_matches)
     }
@@ -279,8 +327,19 @@ impl<'a> CounselEngine<'a> {
         let mut expanded = question.to_string();
 
         // Performance/caching questions → optimization principles
-        let perf_triggers = ["cache", "caching", "redis", "memcache", "cdn", "fast", "slow",
-                           "latency", "performance", "optimize", "speed"];
+        let perf_triggers = [
+            "cache",
+            "caching",
+            "redis",
+            "memcache",
+            "cdn",
+            "fast",
+            "slow",
+            "latency",
+            "performance",
+            "optimize",
+            "speed",
+        ];
         if perf_triggers.iter().any(|t| q.contains(t)) {
             expanded.push_str(" premature optimization simplest YAGNI");
         }
@@ -292,14 +351,31 @@ impl<'a> CounselEngine<'a> {
         }
 
         // Scale/growth questions → Brooks, premature scaling
-        let scale_triggers = ["scale", "scaling", "grow", "growth", "more users", "traffic"];
+        let scale_triggers = [
+            "scale",
+            "scaling",
+            "grow",
+            "growth",
+            "more users",
+            "traffic",
+        ];
         if scale_triggers.iter().any(|t| q.contains(t)) {
             expanded.push_str(" premature decomposition monolith incremental");
         }
 
         // Rewrite/refactor questions
-        let rewrite_triggers = ["rewrite", "refactor", "rebuild", "from scratch", "legacy",
-                               "messy", "tangled", "spaghetti", "cleanup", "clean up"];
+        let rewrite_triggers = [
+            "rewrite",
+            "refactor",
+            "rebuild",
+            "from scratch",
+            "legacy",
+            "messy",
+            "tangled",
+            "spaghetti",
+            "cleanup",
+            "clean up",
+        ];
         if rewrite_triggers.iter().any(|t| q.contains(t)) {
             expanded.push_str(" strangler incremental migration second system incremental design technical debt Kent Beck Ward Cunningham");
         }
@@ -311,23 +387,59 @@ impl<'a> CounselEngine<'a> {
         }
 
         // Testing questions → TDD, test-first, test pyramid
-        let test_triggers = ["test", "tests", "testing", "tdd", "mock", "stub", "coverage",
-                            "unit test", "integration test", "before code", "after code"];
+        let test_triggers = [
+            "test",
+            "tests",
+            "testing",
+            "tdd",
+            "mock",
+            "stub",
+            "coverage",
+            "unit test",
+            "integration test",
+            "before code",
+            "after code",
+        ];
         if test_triggers.iter().any(|t| q.contains(t)) {
-            expanded.push_str(" TDD test-first red-green-refactor test pyramid Kent Beck Michael Feathers");
+            expanded.push_str(
+                " TDD test-first red-green-refactor test pyramid Kent Beck Michael Feathers",
+            );
         }
 
         // Architecture questions → YAGNI, simplest, monolith first, incremental
-        let arch_triggers = ["microservice", "monolith", "api", "architecture", "service",
-                            "distributed", "event sourcing", "cqrs", "graphql", "rest",
-                            "websocket", "serverless", "container", "kubernetes"];
+        let arch_triggers = [
+            "microservice",
+            "monolith",
+            "api",
+            "architecture",
+            "service",
+            "distributed",
+            "event sourcing",
+            "cqrs",
+            "graphql",
+            "rest",
+            "websocket",
+            "serverless",
+            "container",
+            "kubernetes",
+        ];
         if arch_triggers.iter().any(|t| q.contains(t)) {
             expanded.push_str(" YAGNI simplest monolith first incremental design strangler Sam Newman Martin Fowler");
         }
 
         // Database questions → profile, simplest, right tool
-        let db_triggers = ["database", "sql", "nosql", "postgres", "mysql", "mongo",
-                          "query", "index", "schema", "migration"];
+        let db_triggers = [
+            "database",
+            "sql",
+            "nosql",
+            "postgres",
+            "mysql",
+            "mongo",
+            "query",
+            "index",
+            "schema",
+            "migration",
+        ];
         if db_triggers.iter().any(|t| q.contains(t)) {
             expanded.push_str(" simplest right tool profile before YAGNI data gravity");
         }
@@ -341,37 +453,94 @@ impl<'a> CounselEngine<'a> {
         let mut domains = Vec::new();
 
         // Product/startup keywords -> entrepreneurship
-        let startup_keywords = ["useful", "product", "customer", "focus", "build",
-                               "launch", "market", "startup", "business", "revenue",
-                               "user", "feature", "mvp", "lean", "growth"];
+        let startup_keywords = [
+            "useful", "product", "customer", "focus", "build", "launch", "market", "startup",
+            "business", "revenue", "user", "feature", "mvp", "lean", "growth",
+        ];
         if startup_keywords.iter().any(|k| q.contains(k)) {
             domains.push("entrepreneurship".to_string());
         }
 
         // Technical/architecture keywords -> software-architecture, systems
-        let arch_keywords = ["microservices", "monolith", "architecture", "database",
-                            "api", "distributed", "migration", "service", "refactor",
-                            "legacy", "cqrs", "event sourcing", "bounded context",
-                            "caching", "cache", "redis", "memcached", "cdn", "optimize",
-                            "rewrite", "rebuild", "greenfield", "brownfield", "deploy",
-                            "kubernetes", "docker", "container", "serverless", "lambda",
-                            "rest", "graphql", "grpc", "websocket", "queue", "kafka",
-                            "rabbitmq", "postgres", "mysql", "mongodb", "elasticsearch"];
+        let arch_keywords = [
+            "microservices",
+            "monolith",
+            "architecture",
+            "database",
+            "api",
+            "distributed",
+            "migration",
+            "service",
+            "refactor",
+            "legacy",
+            "cqrs",
+            "event sourcing",
+            "bounded context",
+            "caching",
+            "cache",
+            "redis",
+            "memcached",
+            "cdn",
+            "optimize",
+            "rewrite",
+            "rebuild",
+            "greenfield",
+            "brownfield",
+            "deploy",
+            "kubernetes",
+            "docker",
+            "container",
+            "serverless",
+            "lambda",
+            "rest",
+            "graphql",
+            "grpc",
+            "websocket",
+            "queue",
+            "kafka",
+            "rabbitmq",
+            "postgres",
+            "mysql",
+            "mongodb",
+            "elasticsearch",
+        ];
         if arch_keywords.iter().any(|k| q.contains(k)) {
             domains.push("software-architecture".to_string());
         }
 
-        let systems_keywords = ["scale", "performance", "system", "design", "complexity",
-                               "latency", "throughput", "bottleneck", "optimize", "fast",
-                               "slow", "load", "traffic", "concurrent"];
+        let systems_keywords = [
+            "scale",
+            "performance",
+            "system",
+            "design",
+            "complexity",
+            "latency",
+            "throughput",
+            "bottleneck",
+            "optimize",
+            "fast",
+            "slow",
+            "load",
+            "traffic",
+            "concurrent",
+        ];
         if systems_keywords.iter().any(|k| q.contains(k)) {
             domains.push("systems-thinking".to_string());
             domains.push("management-theory".to_string());
         }
 
         // AI/ML keywords
-        let ai_keywords = ["ai", "machine learning", "model", "neural", "training",
-                          "inference", "llm", "gpt", "claude"];
+        let ai_keywords = [
+            "ai",
+            "machine learning",
+            "model",
+            "neural",
+            "training",
+            "inference",
+            "llm",
+            "gpt",
+            "claude",
+        ];
         if ai_keywords.iter().any(|k| q.contains(k)) {
             domains.push("ai-ml".to_string());
         }
@@ -389,8 +558,20 @@ impl<'a> CounselEngine<'a> {
         }
 
         // Testing/TDD keywords -> software-practices
-        let test_keywords = ["test", "tests", "testing", "tdd", "mock", "stub", "coverage",
-                            "unit", "integration", "flaky", "before code", "after code"];
+        let test_keywords = [
+            "test",
+            "tests",
+            "testing",
+            "tdd",
+            "mock",
+            "stub",
+            "coverage",
+            "unit",
+            "integration",
+            "flaky",
+            "before code",
+            "after code",
+        ];
         if test_keywords.iter().any(|k| q.contains(k)) {
             domains.push("software-practices".to_string());
         }
@@ -410,7 +591,7 @@ impl<'a> CounselEngine<'a> {
         // Important keywords from question (longer words more meaningful)
         let q_words: Vec<&str> = q_lower
             .split(|c: char| !c.is_alphanumeric())
-            .filter(|w| w.len() > 3)  // Only meaningful words
+            .filter(|w| w.len() > 3) // Only meaningful words
             .collect();
 
         let p_lower = principle.description.to_lowercase();
@@ -420,7 +601,11 @@ impl<'a> CounselEngine<'a> {
 
         // Check each question word - use stem matching (first 4+ chars)
         for word in &q_words {
-            let stem = if word.len() > 5 { &word[..word.len()-2] } else { word };
+            let stem = if word.len() > 5 {
+                &word[..word.len() - 2]
+            } else {
+                word
+            };
 
             // Stem match in description (handles focus/focused, build/building)
             if p_lower.contains(stem) {
@@ -433,24 +618,61 @@ impl<'a> CounselEngine<'a> {
         }
 
         // Boost high-value principle types (these are gold)
-        let high_value_keywords = ["80/20", "focus", "lean", "fear", "compound", "eliminate", "pareto",
-                                  "yagni", "simplest", "overengineer", "speculative"];
+        let high_value_keywords = [
+            "80/20",
+            "focus",
+            "lean",
+            "fear",
+            "compound",
+            "eliminate",
+            "pareto",
+            "yagni",
+            "simplest",
+            "overengineer",
+            "speculative",
+        ];
         for kw in high_value_keywords {
             if name_lower.contains(kw) || p_lower.contains(kw) {
-                score += 4.0;  // Strong boost for known-good frameworks
+                score += 4.0; // Strong boost for known-good frameworks
             }
         }
 
         // Boost architecture-specific terms (Sam Newman, Fowler, etc.)
-        let arch_keywords = ["microservices", "monolith", "database", "service", "distributed",
-                            "migration", "bounded", "aggregate", "cqrs", "event sourcing",
-                            "strangler", "circuit breaker", "failure", "legacy", "rewrite",
-                            "incremental", "deploy", "resilience", "cache", "caching",
-                            "premature", "optimization", "latency", "throughput", "scale",
-                            "simple", "simplicity", "complexity", "yagni", "needless"];
+        let arch_keywords = [
+            "microservices",
+            "monolith",
+            "database",
+            "service",
+            "distributed",
+            "migration",
+            "bounded",
+            "aggregate",
+            "cqrs",
+            "event sourcing",
+            "strangler",
+            "circuit breaker",
+            "failure",
+            "legacy",
+            "rewrite",
+            "incremental",
+            "deploy",
+            "resilience",
+            "cache",
+            "caching",
+            "premature",
+            "optimization",
+            "latency",
+            "throughput",
+            "scale",
+            "simple",
+            "simplicity",
+            "complexity",
+            "yagni",
+            "needless",
+        ];
         for kw in arch_keywords {
             if name_lower.contains(kw) {
-                score += 6.0;  // Very strong boost for architecture principles
+                score += 6.0; // Very strong boost for architecture principles
             }
             if p_lower.contains(kw) {
                 score += 3.0;
@@ -458,11 +680,25 @@ impl<'a> CounselEngine<'a> {
         }
 
         // Performance/optimization specific boosts (Knuth, Gregg, etc.)
-        let perf_keywords = ["premature", "optimization", "fast", "slow", "performance",
-                            "measure", "profile", "bottleneck", "efficient", "speed",
-                            "flame", "latency", "throughput"];
-        let question_is_perf = q_lower.contains("slow") || q_lower.contains("fast")
-            || q_lower.contains("performance") || q_lower.contains("optimize");
+        let perf_keywords = [
+            "premature",
+            "optimization",
+            "fast",
+            "slow",
+            "performance",
+            "measure",
+            "profile",
+            "bottleneck",
+            "efficient",
+            "speed",
+            "flame",
+            "latency",
+            "throughput",
+        ];
+        let question_is_perf = q_lower.contains("slow")
+            || q_lower.contains("fast")
+            || q_lower.contains("performance")
+            || q_lower.contains("optimize");
         for kw in perf_keywords {
             if name_lower.contains(kw) {
                 score += if question_is_perf { 12.0 } else { 3.0 };
@@ -472,17 +708,29 @@ impl<'a> CounselEngine<'a> {
             }
         }
         // Extra boost for "Profile Before Optimizing" on performance questions
-        if question_is_perf && (name_lower.contains("profile") || name_lower.contains("premature")) {
+        if question_is_perf && (name_lower.contains("profile") || name_lower.contains("premature"))
+        {
             score += 15.0;
         }
 
         // Testing/TDD specific boosts (Kent Beck, Feathers, etc.)
-        let test_keywords = ["test", "tdd", "red-green", "test-first", "mock", "stub",
-                            "coverage", "unit", "integration", "pyramid", "isolation"];
+        let test_keywords = [
+            "test",
+            "tdd",
+            "red-green",
+            "test-first",
+            "mock",
+            "stub",
+            "coverage",
+            "unit",
+            "integration",
+            "pyramid",
+            "isolation",
+        ];
         let question_mentions_test = q_lower.contains("test");
         // Detect TDD-specific questions (not just any test mention)
-        let question_is_tdd = q_lower.contains("before") && q_lower.contains("after")
-            && q_lower.contains("test");
+        let question_is_tdd =
+            q_lower.contains("before") && q_lower.contains("after") && q_lower.contains("test");
         for kw in test_keywords {
             if name_lower.contains(kw) {
                 score += if question_mentions_test { 10.0 } else { 2.0 };
@@ -492,16 +740,32 @@ impl<'a> CounselEngine<'a> {
             }
         }
         // HUGE boost for TDD/Test-First principles on TDD questions
-        if question_is_tdd && (name_lower.contains("tdd") || name_lower.contains("test-first")
-            || name_lower.contains("test first") || name_lower.contains("red-green")) {
-            score += 30.0;  // Override other signals for explicit TDD questions
+        if question_is_tdd
+            && (name_lower.contains("tdd")
+                || name_lower.contains("test-first")
+                || name_lower.contains("test first")
+                || name_lower.contains("red-green"))
+        {
+            score += 30.0; // Override other signals for explicit TDD questions
         }
 
         // Legacy code / tangled code specific boosts (Feathers, seams, etc.)
-        let legacy_keywords = ["legacy", "seam", "tangled", "breaks", "brittle", "fragile",
-                              "coupling", "dependency", "working effectively", "characterization"];
-        let question_is_legacy = q_lower.contains("tangled") || q_lower.contains("breaks")
-            || q_lower.contains("legacy") || q_lower.contains("old code")
+        let legacy_keywords = [
+            "legacy",
+            "seam",
+            "tangled",
+            "breaks",
+            "brittle",
+            "fragile",
+            "coupling",
+            "dependency",
+            "working effectively",
+            "characterization",
+        ];
+        let question_is_legacy = q_lower.contains("tangled")
+            || q_lower.contains("breaks")
+            || q_lower.contains("legacy")
+            || q_lower.contains("old code")
             || q_lower.contains("every change");
         for kw in legacy_keywords {
             if name_lower.contains(kw) {
@@ -512,16 +776,30 @@ impl<'a> CounselEngine<'a> {
             }
         }
         // Michael Feathers' principles are gold for legacy code
-        if question_is_legacy && (name_lower.contains("feathers") || p_lower.contains("seam")
-            || name_lower.contains("legacy") || p_lower.contains("working effectively")) {
+        if question_is_legacy
+            && (name_lower.contains("feathers")
+                || p_lower.contains("seam")
+                || name_lower.contains("legacy")
+                || p_lower.contains("working effectively"))
+        {
             score += 20.0;
         }
 
         // Refactoring/code cleanup specific boosts
-        let refactor_keywords = ["refactor", "messy", "cleanup", "clean", "spaghetti", "improve",
-                                "incremental design", "technical debt"];
-        let question_is_refactor = q_lower.contains("refactor") || q_lower.contains("messy")
-            || q_lower.contains("cleanup") || q_lower.contains("clean up")
+        let refactor_keywords = [
+            "refactor",
+            "messy",
+            "cleanup",
+            "clean",
+            "spaghetti",
+            "improve",
+            "incremental design",
+            "technical debt",
+        ];
+        let question_is_refactor = q_lower.contains("refactor")
+            || q_lower.contains("messy")
+            || q_lower.contains("cleanup")
+            || q_lower.contains("clean up")
             || q_lower.contains("before adding");
         for kw in refactor_keywords {
             if name_lower.contains(kw) {
@@ -532,22 +810,37 @@ impl<'a> CounselEngine<'a> {
             }
         }
         // Kent Beck and Ward Cunningham are authorities for refactoring
-        if question_is_refactor && (name_lower.contains("incremental") || name_lower.contains("debt")
-            || p_lower.contains("incremental") || p_lower.contains("tech debt")
-            || p_lower.contains("technical debt")) {
-            score += 25.0;  // Strong boost for refactoring-related principles
+        if question_is_refactor
+            && (name_lower.contains("incremental")
+                || name_lower.contains("debt")
+                || p_lower.contains("incremental")
+                || p_lower.contains("tech debt")
+                || p_lower.contains("technical debt"))
+        {
+            score += 25.0; // Strong boost for refactoring-related principles
         }
 
         // Match question keywords to principle name/description (exact terms)
         for word in &q_words {
             if name_lower.contains(word) || p_lower.contains(word) {
-                score += 4.0;  // Strong match on exact question terms
+                score += 4.0; // Strong match on exact question terms
             }
         }
 
         // Project management / team scaling specific boosts
-        let pm_keywords = ["late", "deadline", "team", "people", "adding", "hire", "staff",
-                          "communication", "overhead", "brooks", "mythical"];
+        let pm_keywords = [
+            "late",
+            "deadline",
+            "team",
+            "people",
+            "adding",
+            "hire",
+            "staff",
+            "communication",
+            "overhead",
+            "brooks",
+            "mythical",
+        ];
         for kw in pm_keywords {
             if name_lower.contains(kw) || p_lower.contains(kw) {
                 score += 5.0;
@@ -557,15 +850,28 @@ impl<'a> CounselEngine<'a> {
         // Extra boost for matching question keywords in principle name (most relevant)
         for word in &q_words {
             if name_lower.contains(word) {
-                score += 3.0;  // Additional name match boost
+                score += 3.0; // Additional name match boost
             }
         }
 
         // Database/migration specific boosts
-        let db_keywords = ["database", "migrate", "migration", "oracle", "postgres", "mysql",
-                          "nosql", "sql", "schema", "query", "data model"];
-        let question_mentions_db = q_lower.contains("database") || q_lower.contains("oracle")
-            || q_lower.contains("postgres") || q_lower.contains("migrate");
+        let db_keywords = [
+            "database",
+            "migrate",
+            "migration",
+            "oracle",
+            "postgres",
+            "mysql",
+            "nosql",
+            "sql",
+            "schema",
+            "query",
+            "data model",
+        ];
+        let question_mentions_db = q_lower.contains("database")
+            || q_lower.contains("oracle")
+            || q_lower.contains("postgres")
+            || q_lower.contains("migrate");
         for kw in db_keywords {
             if name_lower.contains(kw) || p_lower.contains(kw) {
                 score += if question_mentions_db { 8.0 } else { 2.0 };
@@ -573,18 +879,33 @@ impl<'a> CounselEngine<'a> {
         }
 
         // Build vs buy specific boosts
-        let build_buy_keywords = ["build", "buy", "vendor", "custom", "off-the-shelf", "integrate",
-                                 "tco", "total cost", "maintenance", "saas", "third-party",
-                                 "hosted", "managed"];
+        let build_buy_keywords = [
+            "build",
+            "buy",
+            "vendor",
+            "custom",
+            "off-the-shelf",
+            "integrate",
+            "tco",
+            "total cost",
+            "maintenance",
+            "saas",
+            "third-party",
+            "hosted",
+            "managed",
+        ];
         // "build...or use X" is the same as "build vs buy"
-        let question_is_build_buy = (q_lower.contains("build") && (q_lower.contains("buy") || q_lower.contains("use ")))
-            || q_lower.contains("vendor") || q_lower.contains("custom")
-            || q_lower.contains("hosted") || q_lower.contains("managed")
+        let question_is_build_buy = (q_lower.contains("build")
+            && (q_lower.contains("buy") || q_lower.contains("use ")))
+            || q_lower.contains("vendor")
+            || q_lower.contains("custom")
+            || q_lower.contains("hosted")
+            || q_lower.contains("managed")
             || (q_lower.contains("our own") && q_lower.contains("or "));
 
         // HUGE boost for principle literally named "Build vs Buy"
         if question_is_build_buy && (name_lower.contains("build") && name_lower.contains("buy")) {
-            score += 50.0;  // This is THE principle for this question
+            score += 50.0; // This is THE principle for this question
         }
 
         for kw in build_buy_keywords {
@@ -594,10 +915,21 @@ impl<'a> CounselEngine<'a> {
         }
 
         // Technical debt / rewrite specific boosts
-        let debt_keywords = ["technical debt", "debt", "rewrite", "refactor", "legacy",
-                            "strangler", "incremental", "migration", "modernize"];
-        let question_is_debt = q_lower.contains("debt") || q_lower.contains("rewrite")
-            || q_lower.contains("refactor") || q_lower.contains("legacy");
+        let debt_keywords = [
+            "technical debt",
+            "debt",
+            "rewrite",
+            "refactor",
+            "legacy",
+            "strangler",
+            "incremental",
+            "migration",
+            "modernize",
+        ];
+        let question_is_debt = q_lower.contains("debt")
+            || q_lower.contains("rewrite")
+            || q_lower.contains("refactor")
+            || q_lower.contains("legacy");
         for kw in debt_keywords {
             if name_lower.contains(kw) || p_lower.contains(kw) {
                 score += if question_is_debt { 8.0 } else { 2.0 };
@@ -606,11 +938,17 @@ impl<'a> CounselEngine<'a> {
 
         // CONTEXTUAL THOMPSON SAMPLING BOOST
         // Query domain-specific confidence from contextual_arms table
-        let detected_domain = if question_mentions_test { "testing" }
-            else if question_is_build_buy { "architecture" }
-            else if question_is_debt { "practices" }
-            else if question_mentions_db { "architecture" }
-            else { "entrepreneurship" };
+        let detected_domain = if question_mentions_test {
+            "testing"
+        } else if question_is_build_buy {
+            "architecture"
+        } else if question_is_debt {
+            "practices"
+        } else if question_mentions_db {
+            "architecture"
+        } else {
+            "entrepreneurship"
+        };
 
         // Get contextual confidence for this principle in the detected domain
         if let Ok((alpha, beta, sample_count)) = self.conn.query_row::<(f64, f64, i64), _, _>(
@@ -629,18 +967,18 @@ impl<'a> CounselEngine<'a> {
             // This solves the orphan/cold-start problem by giving undersampled principles a chance
             let n = alpha + beta;
             let pulls = sample_count as u32;
-            let optimism_constant = 3.0;  // Increased from 2.0 for stronger exploration
-            let bonus_decay: f64 = 0.98;  // Slower decay (was 0.95) to maintain exploration longer
+            let optimism_constant = 3.0; // Increased from 2.0 for stronger exploration
+            let bonus_decay: f64 = 0.98; // Slower decay (was 0.95) to maintain exploration longer
             let raw_bonus = optimism_constant / n.sqrt();
             let decayed_bonus = raw_bonus * bonus_decay.powi(pulls as i32);
-            let fg_ts_bonus = decayed_bonus.min(1.0);  // Cap at 1.0 (was 0.5)
+            let fg_ts_bonus = decayed_bonus.min(1.0); // Cap at 1.0 (was 0.5)
 
             // Apply FG-TS bonus scaled to score range - STRONGER exploration
-            score += fg_ts_bonus * 15.0;  // Scale 0-1.0 to 0-15 points (was 0-5)
+            score += fg_ts_bonus * 15.0; // Scale 0-1.0 to 0-15 points (was 0-5)
         } else {
             // COLD ARM: No data for this principle in this domain
             // Give maximum exploration bonus to discover effectiveness
-            let cold_arm_bonus = 15.0;  // Increased from 5.0 for aggressive orphan exploration
+            let cold_arm_bonus = 15.0; // Increased from 5.0 for aggressive orphan exploration
             score += cold_arm_bonus;
         }
 
@@ -703,11 +1041,17 @@ impl<'a> CounselEngine<'a> {
         let has_strong_match = top_score >= 5.0;
 
         // We need at least one FOR, one AGAINST, one SYNTHESIZE
-        let stances = [Stance::For, Stance::Against, Stance::Synthesize, Stance::Against];
+        let stances = [
+            Stance::For,
+            Stance::Against,
+            Stance::Synthesize,
+            Stance::Against,
+        ];
 
         // Track which thinkers we've used to ensure diversity
         let mut used_thinkers: std::collections::HashSet<String> = std::collections::HashSet::new();
-        let mut used_principles: std::collections::HashSet<String> = std::collections::HashSet::new();
+        let mut used_principles: std::collections::HashSet<String> =
+            std::collections::HashSet::new();
 
         // EPSILON-GREEDY EXPLORATION: 20% chance to explore lower-ranked principles
         let epsilon = 0.20;
@@ -724,12 +1068,14 @@ impl<'a> CounselEngine<'a> {
                 let explore_range = explore_start..explore_end;
 
                 if explore_range.len() > 0 {
-                    for _ in 0..10 {  // Try up to 10 times to find unused thinker
+                    for _ in 0..10 {
+                        // Try up to 10 times to find unused thinker
                         let idx = rng.gen_range(explore_range.clone());
                         let (principle, score) = &scored[idx];
 
-                        if used_thinkers.contains(&principle.thinker_id) ||
-                           used_principles.contains(&principle.id) {
+                        if used_thinkers.contains(&principle.thinker_id)
+                            || used_principles.contains(&principle.id)
+                        {
                             continue;
                         }
 
@@ -745,7 +1091,7 @@ impl<'a> CounselEngine<'a> {
                         break;
                     }
                     if positions.len() > positions.len().saturating_sub(1) {
-                        continue;  // Successfully added via exploration
+                        continue; // Successfully added via exploration
                     }
                 }
             }
@@ -756,14 +1102,15 @@ impl<'a> CounselEngine<'a> {
                 principle_idx += 1;
 
                 // Skip if we already used this thinker or principle
-                if used_thinkers.contains(&principle.thinker_id) ||
-                   used_principles.contains(&principle.id) {
+                if used_thinkers.contains(&principle.thinker_id)
+                    || used_principles.contains(&principle.id)
+                {
                     continue;
                 }
 
                 // If no strong matches, be stricter about what we include
                 if !has_strong_match && *score < 3.0 {
-                    continue;  // Skip weak matches when nothing is strongly relevant
+                    continue; // Skip weak matches when nothing is strongly relevant
                 }
 
                 // Skip very low relevance principles
@@ -789,7 +1136,8 @@ impl<'a> CounselEngine<'a> {
                     "No highly relevant frameworks found for this specific question. \
                     Consider: (1) Break the question into smaller parts, \
                     (2) Identify the core trade-off, (3) Look for analogies in other domains. \
-                    Top score was {:.1} - try more specific terms.", top_score
+                    Top score was {:.1} - try more specific terms.",
+                    top_score
                 ),
                 principles_cited: vec!["Meta-reasoning".to_string()],
                 confidence: 0.3,
@@ -821,7 +1169,7 @@ impl<'a> CounselEngine<'a> {
             thinker_id: principle.thinker_id.clone(),
             stance,
             argument,
-            principles_cited: vec![principle.id.clone()],  // Use ID for outcome recording
+            principles_cited: vec![principle.id.clone()], // Use ID for outcome recording
             confidence: principle.confidence,
             falsifiable_if: Some(falsifiable_if),
         })
@@ -861,41 +1209,65 @@ impl<'a> CounselEngine<'a> {
         let desc_lower = description.to_lowercase();
 
         // ACTION prompts - specific, immediate, doable in 60 seconds
-        if name_lower.contains("80/20") || desc_lower.contains("80/20") || desc_lower.contains("high-impact") {
+        if name_lower.contains("80/20")
+            || desc_lower.contains("80/20")
+            || desc_lower.contains("high-impact")
+        {
             return "ACTION: List 5 things you're working on. Circle the ONE that matters most. Do only that.".to_string();
         }
         if name_lower.contains("fear") || desc_lower.contains("fear") {
             return "ACTION: Write the worst case in one sentence. Then write how you'd recover. Now decide.".to_string();
         }
-        if name_lower.contains("focus") || desc_lower.contains("focus") || desc_lower.contains("distraction") {
-            return "ACTION: Name ONE thing to stop doing today. Block it. Protect your focus.".to_string();
+        if name_lower.contains("focus")
+            || desc_lower.contains("focus")
+            || desc_lower.contains("distraction")
+        {
+            return "ACTION: Name ONE thing to stop doing today. Block it. Protect your focus."
+                .to_string();
         }
         if name_lower.contains("compound") || desc_lower.contains("compound") {
-            return "ACTION: What takes 5 minutes today that pays off in 6 months? Do it now.".to_string();
+            return "ACTION: What takes 5 minutes today that pays off in 6 months? Do it now."
+                .to_string();
         }
-        if desc_lower.contains("eliminate") || desc_lower.contains("remove") || desc_lower.contains("cut") {
-            return "ACTION: Delete one feature/task/commitment right now. What won't you miss?".to_string();
+        if desc_lower.contains("eliminate")
+            || desc_lower.contains("remove")
+            || desc_lower.contains("cut")
+        {
+            return "ACTION: Delete one feature/task/commitment right now. What won't you miss?"
+                .to_string();
         }
         if desc_lower.contains("customer") || desc_lower.contains("user") {
-            return "ACTION: Message ONE user right now. Ask: 'What's frustrating you?'".to_string();
+            return "ACTION: Message ONE user right now. Ask: 'What's frustrating you?'"
+                .to_string();
         }
         if desc_lower.contains("track") || desc_lower.contains("measure") {
-            return "ACTION: Pick ONE number that proves success. Write it down. Check it daily.".to_string();
+            return "ACTION: Pick ONE number that proves success. Write it down. Check it daily."
+                .to_string();
         }
         if desc_lower.contains("automat") {
-            return "ACTION: What did you do manually 3+ times this week? Automate it today.".to_string();
+            return "ACTION: What did you do manually 3+ times this week? Automate it today."
+                .to_string();
         }
         if desc_lower.contains("quality") || desc_lower.contains("defect") {
-            return "ACTION: Find your last 3 bugs. What's the common cause? Fix that root.".to_string();
+            return "ACTION: Find your last 3 bugs. What's the common cause? Fix that root."
+                .to_string();
         }
         if desc_lower.contains("simple") || desc_lower.contains("complex") {
-            return "ACTION: Describe your solution in one sentence. If you can't, simplify.".to_string();
+            return "ACTION: Describe your solution in one sentence. If you can't, simplify."
+                .to_string();
         }
-        if desc_lower.contains("start") || desc_lower.contains("begin") || desc_lower.contains("now") {
+        if desc_lower.contains("start")
+            || desc_lower.contains("begin")
+            || desc_lower.contains("now")
+        {
             return "ACTION: What's the smallest thing you can ship TODAY? Do that.".to_string();
         }
-        if desc_lower.contains("jit") || desc_lower.contains("just-in-time") || desc_lower.contains("needed") {
-            return "ACTION: What are you building that nobody asked for yet? Stop. Wait for pull.".to_string();
+        if desc_lower.contains("jit")
+            || desc_lower.contains("just-in-time")
+            || desc_lower.contains("needed")
+        {
+            return "ACTION: What are you building that nobody asked for yet? Stop. Wait for pull."
+                .to_string();
         }
 
         // Default: still actionable
@@ -1049,11 +1421,7 @@ impl<'a> CounselEngine<'a> {
     }
 
     /// Store the decision in database
-    fn store_decision(
-        &self,
-        response: &CounselResponse,
-        request: &CounselRequest,
-    ) -> Result<()> {
+    fn store_decision(&self, response: &CounselResponse, request: &CounselRequest) -> Result<()> {
         let context_json = serde_json::to_string(&request.context)?;
         let counsel_json = serde_json::to_string(&response)?;
 
@@ -1216,7 +1584,10 @@ mod tests {
 
         let expanded = engine.expand_query_keywords("Should we add caching?");
         assert!(expanded.contains("YAGNI"), "Should expand with YAGNI");
-        assert!(expanded.contains("premature"), "Should expand with premature optimization");
+        assert!(
+            expanded.contains("premature"),
+            "Should expand with premature optimization"
+        );
     }
 
     #[test]
@@ -1226,8 +1597,14 @@ mod tests {
         let engine = CounselEngine::new(&conn, &provenance);
 
         let expanded = engine.expand_query_keywords("Should we rewrite the legacy system?");
-        assert!(expanded.contains("strangler"), "Should expand with strangler");
-        assert!(expanded.contains("incremental"), "Should expand with incremental");
+        assert!(
+            expanded.contains("strangler"),
+            "Should expand with strangler"
+        );
+        assert!(
+            expanded.contains("incremental"),
+            "Should expand with incremental"
+        );
     }
 
     #[test]
@@ -1248,7 +1625,10 @@ mod tests {
 
         let expanded = engine.expand_query_keywords("Should we add more tests?");
         assert!(expanded.contains("TDD"), "Should expand with TDD");
-        assert!(expanded.contains("Kent Beck"), "Should expand with Kent Beck");
+        assert!(
+            expanded.contains("Kent Beck"),
+            "Should expand with Kent Beck"
+        );
     }
 
     #[test]
@@ -1306,7 +1686,10 @@ mod tests {
 
         let question = engine.generate_socratic_question("Unknown", "Some description");
         assert!(question.contains("ACTION"), "Default should be actionable");
-        assert!(question.contains("60 seconds"), "Should prompt immediate action");
+        assert!(
+            question.contains("60 seconds"),
+            "Should prompt immediate action"
+        );
     }
 
     // =========================================================================
@@ -1326,7 +1709,10 @@ mod tests {
         let positions: Vec<CounselPosition> = vec![];
 
         let missing = engine.find_missing_considerations(&request, &positions);
-        assert!(missing.iter().any(|m| m.contains("team")), "Should flag missing team consideration");
+        assert!(
+            missing.iter().any(|m| m.contains("team")),
+            "Should flag missing team consideration"
+        );
     }
 
     #[test]
@@ -1342,7 +1728,10 @@ mod tests {
         let positions: Vec<CounselPosition> = vec![];
 
         let missing = engine.find_missing_considerations(&request, &positions);
-        assert!(missing.iter().any(|m| m.contains("timeline")), "Should flag missing timeline");
+        assert!(
+            missing.iter().any(|m| m.contains("timeline")),
+            "Should flag missing timeline"
+        );
     }
 
     #[test]
@@ -1352,7 +1741,8 @@ mod tests {
         let engine = CounselEngine::new(&conn, &provenance);
 
         let request = CounselRequest {
-            question: "Should we hire more people to meet the deadline with cost constraints?".to_string(),
+            question: "Should we hire more people to meet the deadline with cost constraints?"
+                .to_string(),
             context: CounselContext {
                 constraints: vec!["Budget: $100k".to_string()],
                 ..Default::default()
@@ -1495,8 +1885,14 @@ mod tests {
         };
 
         let falsification = engine.build_falsification(&request, &principle, Stance::For);
-        assert!(falsification.contains("wrong"), "FOR stance should mention being wrong");
-        assert!(falsification.contains("YAGNI"), "Should reference principle name");
+        assert!(
+            falsification.contains("wrong"),
+            "FOR stance should mention being wrong"
+        );
+        assert!(
+            falsification.contains("YAGNI"),
+            "Should reference principle name"
+        );
     }
 
     #[test]
@@ -1519,6 +1915,9 @@ mod tests {
         };
 
         let falsification = engine.build_falsification(&request, &principle, Stance::Against);
-        assert!(falsification.contains("unnecessary"), "AGAINST stance should mention being unnecessary");
+        assert!(
+            falsification.contains("unnecessary"),
+            "AGAINST stance should mention being unnecessary"
+        );
     }
 }

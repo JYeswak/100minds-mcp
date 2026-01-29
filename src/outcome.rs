@@ -10,9 +10,9 @@
 
 use crate::eval::thompson::init_thompson_schema;
 use anyhow::Result;
-use rusqlite::{Connection, params};
-use serde::{Deserialize, Serialize};
 use chrono::Utc;
+use rusqlite::{params, Connection};
+use serde::{Deserialize, Serialize};
 
 /// Outcome recording result
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -53,12 +53,7 @@ pub fn record_outcome(
              outcome_notes = ?3,
              outcome_recorded_at = ?4
          WHERE id = ?1",
-        params![
-            decision_id,
-            success as i32,
-            notes,
-            Utc::now().to_rfc3339(),
-        ],
+        params![decision_id, success as i32, notes, Utc::now().to_rfc3339(),],
     )?;
 
     if rows_updated == 0 {
@@ -85,11 +80,13 @@ pub fn record_outcome(
 
     for principle_id in applied_principles {
         // Get current confidence
-        let current: f64 = conn.query_row(
-            "SELECT learned_confidence FROM principles WHERE id = ?1",
-            [principle_id],
-            |row| row.get(0),
-        ).unwrap_or(0.5);
+        let current: f64 = conn
+            .query_row(
+                "SELECT learned_confidence FROM principles WHERE id = ?1",
+                [principle_id],
+                |row| row.get(0),
+            )
+            .unwrap_or(0.5);
 
         // Calculate new confidence (clamped to 0.1-0.95)
         let new_confidence = (current + delta).max(0.1).min(0.95);
@@ -119,11 +116,13 @@ pub fn record_outcome(
         update_thompson_params(conn, principle_id, success, context_pattern)?;
 
         // Get principle name for reporting
-        let name: String = conn.query_row(
-            "SELECT name FROM principles WHERE id = ?1",
-            [principle_id],
-            |row| row.get(0),
-        ).unwrap_or_else(|_| principle_id.to_string());
+        let name: String = conn
+            .query_row(
+                "SELECT name FROM principles WHERE id = ?1",
+                [principle_id],
+                |row| row.get(0),
+            )
+            .unwrap_or_else(|_| principle_id.to_string());
 
         adjustments.push(PrincipleAdjustment {
             principle_id: principle_id.clone(),
@@ -204,7 +203,8 @@ pub fn record_bead_outcome(
             "bead_id": bead_id,
             "category": cat,
             "domain": category_to_domain(cat),
-        }).to_string()
+        })
+        .to_string()
     });
 
     record_outcome(
@@ -246,11 +246,10 @@ pub fn get_learning_stats(conn: &Connection) -> Result<LearningStats> {
         |row| row.get(0),
     )?;
 
-    let total_adjustments: i64 = conn.query_row(
-        "SELECT COUNT(*) FROM framework_adjustments",
-        [],
-        |row| row.get(0),
-    )?;
+    let total_adjustments: i64 =
+        conn.query_row("SELECT COUNT(*) FROM framework_adjustments", [], |row| {
+            row.get(0)
+        })?;
 
     let principles_with_learning: i64 = conn.query_row(
         "SELECT COUNT(DISTINCT principle_id) FROM framework_adjustments",
@@ -268,7 +267,7 @@ pub fn get_learning_stats(conn: &Connection) -> Result<LearningStats> {
          GROUP BY p.id
          HAVING adjustment_count > 0
          ORDER BY delta DESC
-         LIMIT 5"
+         LIMIT 5",
     )?;
 
     let top_improved: Vec<(String, f64, i64)> = stmt
@@ -285,7 +284,7 @@ pub fn get_learning_stats(conn: &Connection) -> Result<LearningStats> {
          GROUP BY p.id
          HAVING adjustment_count > 0
          ORDER BY delta ASC
-         LIMIT 5"
+         LIMIT 5",
     )?;
 
     let top_declined: Vec<(String, f64, i64)> = stmt
@@ -334,9 +333,11 @@ pub fn print_learning_stats(stats: &LearningStats) {
 
     println!("OUTCOMES:");
     println!("   Total: {}", stats.total_outcomes);
-    println!("   Successful: {} ({:.1}%)",
-             stats.successful_outcomes,
-             stats.success_rate * 100.0);
+    println!(
+        "   Successful: {} ({:.1}%)",
+        stats.successful_outcomes,
+        stats.success_rate * 100.0
+    );
     println!();
 
     println!("LEARNING:");
@@ -366,7 +367,7 @@ pub fn print_learning_stats(stats: &LearningStats) {
 // SWARM INTEGRATION - Distributed learning synchronization
 // ============================================================================
 
-use crate::types::{SyncPosteriorsResponse, PrinciplePosterior, RecordOutcomeRequest};
+use crate::types::{PrinciplePosterior, RecordOutcomeRequest, SyncPosteriorsResponse};
 use std::collections::HashMap;
 
 /// Sync Thompson posteriors for distributed swarm learning
@@ -428,19 +429,24 @@ pub fn sync_posteriors(
         let beta: f64 = row.get(3)?;
 
         let domain_map = domains.entry(domain_name).or_default();
-        domain_map.insert(principle_id, PrinciplePosterior {
-            alpha,
-            beta,
-            pulls: 0, // Domain arms don't track pulls separately
-        });
+        domain_map.insert(
+            principle_id,
+            PrinciplePosterior {
+                alpha,
+                beta,
+                pulls: 0, // Domain arms don't track pulls separately
+            },
+        );
     }
 
     // Get last updated timestamp
-    let last_updated: i64 = conn.query_row(
-        "SELECT COALESCE(MAX(strftime('%s', updated_at)), 0) FROM thompson_arms",
-        [],
-        |row| row.get(0),
-    ).unwrap_or(0);
+    let last_updated: i64 = conn
+        .query_row(
+            "SELECT COALESCE(MAX(strftime('%s', updated_at)), 0) FROM thompson_arms",
+            [],
+            |row| row.get(0),
+        )
+        .unwrap_or(0);
 
     Ok(SyncPosteriorsResponse {
         posteriors,
@@ -462,7 +468,8 @@ pub fn record_outcomes_batch(
                 "domain": d,
                 "confidence_score": outcome.confidence_score,
                 "failure_stage": outcome.failure_stage,
-            }).to_string()
+            })
+            .to_string()
         });
 
         let result = record_outcome(
@@ -521,7 +528,8 @@ mod tests {
         conn.execute(
             "INSERT OR IGNORE INTO thinkers (id, name, domain) VALUES (?1, ?2, ?3)",
             [id, name, domain],
-        ).unwrap();
+        )
+        .unwrap();
     }
 
     fn insert_test_principle(conn: &Connection, id: &str, thinker_id: &str, name: &str) {
@@ -573,7 +581,8 @@ mod tests {
             &["p1".to_string()],
             "Success!",
             None,
-        ).unwrap();
+        )
+        .unwrap();
 
         assert_eq!(result.decision_id, "test-decision-1");
         assert_eq!(result.principles_adjusted.len(), 1);
@@ -597,7 +606,8 @@ mod tests {
             &["p2".to_string()],
             "Failed!",
             None,
-        ).unwrap();
+        )
+        .unwrap();
 
         assert_eq!(result.principles_adjusted.len(), 1);
         // Failure subtracts 0.10 (asymmetric - failures hurt more)
@@ -619,14 +629,17 @@ mod tests {
             &["p3".to_string()],
             "Success!",
             None,
-        ).unwrap();
+        )
+        .unwrap();
 
         // Check Thompson params updated
-        let (alpha, beta): (f64, f64) = conn.query_row(
-            "SELECT alpha, beta FROM thompson_arms WHERE principle_id = ?1",
-            ["p3"],
-            |row| Ok((row.get(0)?, row.get(1)?)),
-        ).unwrap();
+        let (alpha, beta): (f64, f64) = conn
+            .query_row(
+                "SELECT alpha, beta FROM thompson_arms WHERE principle_id = ?1",
+                ["p3"],
+                |row| Ok((row.get(0)?, row.get(1)?)),
+            )
+            .unwrap();
 
         // Fresh insert uses delta values directly: alpha=1.0, beta=0.0 for success
         assert!((alpha - 1.0).abs() < 0.001);
@@ -647,7 +660,8 @@ mod tests {
             &["p4".to_string()],
             "Worked!",
             Some("[SWARM-FIX]"),
-        ).unwrap();
+        )
+        .unwrap();
 
         assert_eq!(result.decision_id, "bead-bd-12345");
         assert_eq!(result.principles_adjusted.len(), 1);
@@ -691,8 +705,14 @@ mod tests {
         record_outcome(&conn, "d4", true, &["p6".to_string()], "ok", None).unwrap();
 
         let result = sync_posteriors(&conn, None, None).unwrap();
-        assert!(!result.posteriors.is_empty(), "Should have posteriors after recording outcome");
-        assert!(result.posteriors.contains_key("p6"), "Should contain principle p6");
+        assert!(
+            !result.posteriors.is_empty(),
+            "Should have posteriors after recording outcome"
+        );
+        assert!(
+            result.posteriors.contains_key("p6"),
+            "Should contain principle p6"
+        );
         // last_updated may be 0 if timestamp parsing fails - just check posteriors work
     }
 
@@ -739,7 +759,8 @@ mod tests {
             "INSERT INTO principles (id, thinker_id, name, description, learned_confidence)
              VALUES ('p8', 't8', 'P', 'D', 0.15)",
             [],
-        ).unwrap();
+        )
+        .unwrap();
 
         // Record failure - should be bounded at 0.1
         let result = record_outcome(
@@ -749,7 +770,8 @@ mod tests {
             &["p8".to_string()],
             "Failed!",
             None,
-        ).unwrap();
+        )
+        .unwrap();
 
         // New confidence should be bounded at 0.1 (not go below)
         assert!(result.principles_adjusted[0].new_confidence >= 0.1);
@@ -763,7 +785,8 @@ mod tests {
 
         let context = serde_json::json!({
             "domain": "software-design"
-        }).to_string();
+        })
+        .to_string();
 
         record_outcome(
             &conn,
@@ -772,14 +795,17 @@ mod tests {
             &["p9".to_string()],
             "Success!",
             Some(&context),
-        ).unwrap();
+        )
+        .unwrap();
 
         // Check domain-specific Thompson params were created
-        let count: i64 = conn.query_row(
-            "SELECT COUNT(*) FROM thompson_domain_arms WHERE principle_id = ?1 AND domain = ?2",
-            params!["p9", "software-design"],
-            |row| row.get(0),
-        ).unwrap();
+        let count: i64 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM thompson_domain_arms WHERE principle_id = ?1 AND domain = ?2",
+                params!["p9", "software-design"],
+                |row| row.get(0),
+            )
+            .unwrap();
 
         assert_eq!(count, 1, "Domain-specific Thompson arm should exist");
     }

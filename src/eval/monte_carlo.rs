@@ -5,8 +5,8 @@
 //! - Selection variance and stability
 //! - Tail risk (poor recommendations)
 
-use crate::db::PrincipleMatch;
 use crate::counsel::CounselEngine;
+use crate::db::PrincipleMatch;
 use crate::provenance::Provenance;
 use crate::types::*;
 use anyhow::Result;
@@ -201,14 +201,19 @@ pub fn run_simulation(
 
     // Relevance statistics
     let mean_relevance = relevance_scores.iter().sum::<f64>() / relevance_scores.len() as f64;
-    let variance = relevance_scores.iter()
+    let variance = relevance_scores
+        .iter()
         .map(|r| (r - mean_relevance).powi(2))
-        .sum::<f64>() / relevance_scores.len() as f64;
+        .sum::<f64>()
+        / relevance_scores.len() as f64;
     let std_dev = variance.sqrt();
 
     // 95% CI: mean ± 1.96 * std_error
     let std_error = std_dev / (relevance_scores.len() as f64).sqrt();
-    let ci_95 = (mean_relevance - 1.96 * std_error, mean_relevance + 1.96 * std_error);
+    let ci_95 = (
+        mean_relevance - 1.96 * std_error,
+        mean_relevance + 1.96 * std_error,
+    );
 
     // Tail risk
     let below_50 = relevance_scores.iter().filter(|&&r| r < 0.5).count();
@@ -255,7 +260,14 @@ fn generate_random_question(templates: &[QuestionTemplate], rng: &mut StdRng) ->
 
 /// Apply random variations to a template
 fn apply_template_variations(template: &str, rng: &mut StdRng) -> String {
-    let techs = ["Redis", "Kafka", "PostgreSQL", "MongoDB", "Elasticsearch", "GraphQL"];
+    let techs = [
+        "Redis",
+        "Kafka",
+        "PostgreSQL",
+        "MongoDB",
+        "Elasticsearch",
+        "GraphQL",
+    ];
     let team_sizes = ["3", "5", "10", "20", "50"];
     let deadlines = ["2 weeks", "1 month", "3 months", "6 months"];
 
@@ -281,30 +293,29 @@ fn compute_selection_variance(rates: &HashMap<String, f64>) -> f64 {
     }
 
     let mean: f64 = rates.values().sum::<f64>() / rates.len() as f64;
-    let variance: f64 = rates.values()
-        .map(|r| (r - mean).powi(2))
-        .sum::<f64>() / rates.len() as f64;
+    let variance: f64 =
+        rates.values().map(|r| (r - mean).powi(2)).sum::<f64>() / rates.len() as f64;
 
     variance.sqrt() // Return std dev for interpretability
 }
 
 /// Get all principles from database
 fn get_all_principles(conn: &Connection) -> Result<Vec<PrincipleMatch>> {
-    let mut stmt = conn.prepare(
-        "SELECT id, thinker_id, name, description, learned_confidence FROM principles"
-    )?;
+    let mut stmt = conn
+        .prepare("SELECT id, thinker_id, name, description, learned_confidence FROM principles")?;
 
-    let principles = stmt.query_map([], |row| {
-        Ok(PrincipleMatch {
-            id: row.get(0)?,
-            thinker_id: row.get(1)?,
-            name: row.get(2)?,
-            description: row.get(3)?,
-            confidence: row.get(4)?,
-            relevance_score: 0.0,
-        })
-    })?
-    .collect::<Result<Vec<_>, _>>()?;
+    let principles = stmt
+        .query_map([], |row| {
+            Ok(PrincipleMatch {
+                id: row.get(0)?,
+                thinker_id: row.get(1)?,
+                name: row.get(2)?,
+                description: row.get(3)?,
+                confidence: row.get(4)?,
+                relevance_score: 0.0,
+            })
+        })?
+        .collect::<Result<Vec<_>, _>>()?;
 
     Ok(principles)
 }
@@ -328,11 +339,11 @@ fn default_question_templates() -> Vec<QuestionTemplate> {
             template: "Should we build a custom {tech} solution?".to_string(),
             weight: 1.5,
         },
-
         // Scaling decisions
         QuestionTemplate {
             category: "scaling".to_string(),
-            template: "We need to handle 10x more traffic. How should we approach this?".to_string(),
+            template: "We need to handle 10x more traffic. How should we approach this?"
+                .to_string(),
             weight: 1.5,
         },
         QuestionTemplate {
@@ -340,7 +351,6 @@ fn default_question_templates() -> Vec<QuestionTemplate> {
             template: "Should we add more engineers to meet the {deadline} deadline?".to_string(),
             weight: 2.0,
         },
-
         // Rewrite decisions
         QuestionTemplate {
             category: "rewrite".to_string(),
@@ -352,7 +362,6 @@ fn default_question_templates() -> Vec<QuestionTemplate> {
             template: "The codebase is getting hard to maintain. Should we refactor?".to_string(),
             weight: 1.5,
         },
-
         // Performance decisions
         QuestionTemplate {
             category: "performance".to_string(),
@@ -364,7 +373,6 @@ fn default_question_templates() -> Vec<QuestionTemplate> {
             template: "Our API is slow. Should we optimize now or later?".to_string(),
             weight: 1.5,
         },
-
         // Team decisions
         QuestionTemplate {
             category: "team".to_string(),
@@ -376,7 +384,6 @@ fn default_question_templates() -> Vec<QuestionTemplate> {
             template: "The project is behind schedule. Should we add contractors?".to_string(),
             weight: 1.5,
         },
-
         // Feature decisions
         QuestionTemplate {
             category: "feature".to_string(),
@@ -388,7 +395,6 @@ fn default_question_templates() -> Vec<QuestionTemplate> {
             template: "Should we build authentication in-house or use Auth0?".to_string(),
             weight: 1.5,
         },
-
         // Process decisions
         QuestionTemplate {
             category: "process".to_string(),

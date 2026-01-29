@@ -3,10 +3,10 @@
 //! Test 100minds against scenarios with known ground truth.
 //! Measures precision, recall, NDCG, and anti-principle detection.
 
+use super::EvalMetrics;
 use crate::counsel::CounselEngine;
 use crate::provenance::Provenance;
 use crate::types::*;
-use super::EvalMetrics;
 use anyhow::Result;
 use rusqlite::Connection;
 use serde::{Deserialize, Serialize};
@@ -45,7 +45,9 @@ pub struct ScenarioCase {
     pub difficulty: u8,
 }
 
-fn default_difficulty() -> u8 { 3 }
+fn default_difficulty() -> u8 {
+    3
+}
 
 /// Results from running all scenarios
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -182,7 +184,9 @@ fn run_single_scenario(
         question: scenario.question.clone(),
         context: CounselContext {
             domain: scenario.context.get("domain").cloned(),
-            constraints: scenario.context.get("constraints")
+            constraints: scenario
+                .context
+                .get("constraints")
                 .map(|c| c.split(',').map(|s| s.trim().to_string()).collect())
                 .unwrap_or_default(),
             prefer_thinkers: vec![],
@@ -221,24 +225,23 @@ fn run_single_scenario(
         thinkers_cited.insert(position.thinker.to_lowercase());
     }
 
-    let principles_vec = principles_ordered;  // Already ordered by position relevance
+    let principles_vec = principles_ordered; // Already ordered by position relevance
     let thinkers_vec: Vec<String> = thinkers_cited.iter().cloned().collect();
 
     // Check for anti-principles
-    let expected_lower: HashSet<String> = scenario.expected_principles
+    let expected_lower: HashSet<String> = scenario
+        .expected_principles
         .iter()
         .map(|p| p.to_lowercase())
         .collect();
 
-    let anti_lower: HashSet<String> = scenario.anti_principles
+    let anti_lower: HashSet<String> = scenario
+        .anti_principles
         .iter()
         .map(|p| p.to_lowercase())
         .collect();
 
-    let anti_cited: Vec<String> = principles_seen
-        .intersection(&anti_lower)
-        .cloned()
-        .collect();
+    let anti_cited: Vec<String> = principles_seen.intersection(&anti_lower).cloned().collect();
 
     let missing: Vec<String> = expected_lower
         .difference(&principles_seen)
@@ -283,7 +286,9 @@ fn compute_metrics(
     for k in [1, 3, 5] {
         let top_k: HashSet<_> = cited.iter().take(k).map(|s| s.to_lowercase()).collect();
         let relevant = top_k.intersection(&expected_lower).count();
-        let precision = if top_k.is_empty() { 0.0 } else {
+        let precision = if top_k.is_empty() {
+            0.0
+        } else {
             relevant as f64 / top_k.len() as f64
         };
         precision_at_k.insert(k, precision);
@@ -291,7 +296,9 @@ fn compute_metrics(
 
     // Recall
     let retrieved_relevant = cited_lower.intersection(&expected_lower).count();
-    let recall = if expected_lower.is_empty() { 1.0 } else {
+    let recall = if expected_lower.is_empty() {
+        1.0
+    } else {
         retrieved_relevant as f64 / expected_lower.len() as f64
     };
 
@@ -300,13 +307,17 @@ fn compute_metrics(
 
     // Anti-principle rate
     let anti_cited = cited_lower.intersection(&anti_lower).count();
-    let anti_rate = if cited.is_empty() { 0.0 } else {
+    let anti_rate = if cited.is_empty() {
+        0.0
+    } else {
         anti_cited as f64 / cited.len() as f64
     };
 
     // Thinker diversity
     let unique_thinkers: HashSet<_> = thinkers.iter().collect();
-    let diversity = if thinkers.is_empty() { 0.0 } else {
+    let diversity = if thinkers.is_empty() {
+        0.0
+    } else {
         unique_thinkers.len() as f64 / thinkers.len() as f64
     };
 
@@ -340,7 +351,11 @@ fn compute_ndcg(retrieved: &HashSet<String>, relevant: &HashSet<String>) -> f64 
         idcg += 1.0 / (i as f64 + 2.0).log2();
     }
 
-    if idcg == 0.0 { 0.0 } else { dcg / idcg }
+    if idcg == 0.0 {
+        0.0
+    } else {
+        dcg / idcg
+    }
 }
 
 /// Aggregate metrics across multiple results
@@ -354,7 +369,8 @@ fn aggregate_metrics(metrics: &[&EvalMetrics]) -> EvalMetrics {
     // Average precision at K
     let mut precision_at_k = HashMap::new();
     for k in [1, 3, 5] {
-        let sum: f64 = metrics.iter()
+        let sum: f64 = metrics
+            .iter()
             .filter_map(|m| m.precision_at_k.get(&k))
             .sum();
         precision_at_k.insert(k, sum / n);
@@ -392,7 +408,11 @@ mod tests {
 
     #[test]
     fn test_precision_at_k() {
-        let cited = vec!["YAGNI".to_string(), "Brooks Law".to_string(), "KISS".to_string()];
+        let cited = vec![
+            "YAGNI".to_string(),
+            "Brooks Law".to_string(),
+            "KISS".to_string(),
+        ];
         let expected = vec!["YAGNI".to_string(), "KISS".to_string()];
 
         let metrics = compute_metrics(&cited, &expected, &[], &["Brooks".to_string()], 100);

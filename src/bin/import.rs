@@ -34,9 +34,7 @@ enum PrincipleVariant {
 impl PrincipleVariant {
     fn to_name_desc(&self) -> (String, String) {
         match self {
-            PrincipleVariant::Object { name, description } => {
-                (name.clone(), description.clone())
-            }
+            PrincipleVariant::Object { name, description } => (name.clone(), description.clone()),
             PrincipleVariant::String(s) => {
                 // Try to split on colon for "Name: Description" format
                 if let Some((name, desc)) = s.split_once(':') {
@@ -57,7 +55,10 @@ fn main() -> Result<()> {
 
     if args.len() < 2 {
         eprintln!("Usage: {} <research-output-dirs...>", args[0]);
-        eprintln!("Example: {} ~/Desktop/Projects/100minds-ai-ml/output", args[0]);
+        eprintln!(
+            "Example: {} ~/Desktop/Projects/100minds-ai-ml/output",
+            args[0]
+        );
         std::process::exit(1);
     }
 
@@ -109,7 +110,8 @@ fn import_directory(conn: &Connection, dir: &Path) -> Result<(usize, usize)> {
         .into_iter()
         .filter_map(|e| e.ok())
         .filter(|e| {
-            e.file_name().to_str()
+            e.file_name()
+                .to_str()
                 .map(|n| n.ends_with(".json") && n.contains("--") && n != "CLAUDE.md")
                 .unwrap_or(false)
         })
@@ -142,7 +144,8 @@ fn import_directory(conn: &Connection, dir: &Path) -> Result<(usize, usize)> {
         // Determine domain from path structure
         // Expected: output/<domain>/<thinker>/profile.json
         let parts: Vec<_> = path.components().collect();
-        let domain = parts.iter()
+        let domain = parts
+            .iter()
             .rev()
             .nth(2)
             .and_then(|c| c.as_os_str().to_str())
@@ -176,20 +179,21 @@ fn import_operator(conn: &Connection, path: &Path) -> Result<(usize, usize)> {
     let op: serde_json::Value = serde_json::from_str(&content)?;
 
     // Extract fields from operator format
-    let thinker_slug = op.get("thinker_slug")
+    let thinker_slug = op
+        .get("thinker_slug")
         .and_then(|v| v.as_str())
         .ok_or_else(|| anyhow::anyhow!("Missing thinker_slug"))?;
 
-    let name = op.get("name")
+    let name = op
+        .get("name")
         .and_then(|v| v.as_str())
         .ok_or_else(|| anyhow::anyhow!("Missing name"))?;
 
-    let description = op.get("description")
-        .and_then(|v| v.as_str())
-        .unwrap_or("");
+    let description = op.get("description").and_then(|v| v.as_str()).unwrap_or("");
 
     // Get extended description if available
-    let extended = op.get("extended_description")
+    let extended = op
+        .get("extended_description")
         .and_then(|v| v.as_str())
         .unwrap_or("");
 
@@ -219,15 +223,13 @@ fn import_operator(conn: &Connection, path: &Path) -> Result<(usize, usize)> {
         params![
             thinker_slug,
             thinker_name,
-            "entrepreneurship",  // Default domain for operators
+            "entrepreneurship", // Default domain for operators
             "",
         ],
     )?;
 
     // Create principle ID from operator ID
-    let principle_id = op.get("id")
-        .and_then(|v| v.as_str())
-        .unwrap_or(name);
+    let principle_id = op.get("id").and_then(|v| v.as_str()).unwrap_or(name);
 
     // Extract domain tags from when_to_use.contexts if available
     let domain_tags = if let Some(when_to_use) = op.get("when_to_use") {
@@ -259,7 +261,7 @@ fn import_operator(conn: &Connection, path: &Path) -> Result<(usize, usize)> {
         ],
     )?;
 
-    Ok((0, 1))  // 0 new thinkers (may already exist), 1 principle
+    Ok((0, 1)) // 0 new thinkers (may already exist), 1 principle
 }
 
 fn import_profile(
@@ -268,13 +270,11 @@ fn import_profile(
     domain: &str,
     thinker_id: &str,
 ) -> Result<(usize, usize)> {
-    let content = fs::read_to_string(path)
-        .with_context(|| format!("Failed to read {:?}", path))?;
+    let content = fs::read_to_string(path).with_context(|| format!("Failed to read {:?}", path))?;
 
     // Try to parse - handle both object format and raw JSON
     let profile: ThinkerProfile = if content.trim().starts_with('{') {
-        serde_json::from_str(&content)
-            .with_context(|| format!("Failed to parse {:?}", path))?
+        serde_json::from_str(&content).with_context(|| format!("Failed to parse {:?}", path))?
     } else {
         // Might be partial/malformed, try to extract name at minimum
         ThinkerProfile {
@@ -310,13 +310,7 @@ fn import_profile(
             "INSERT OR REPLACE INTO principles
              (id, thinker_id, name, description, domain_tags, base_confidence, learned_confidence)
              VALUES (?1, ?2, ?3, ?4, ?5, 0.5, 0.5)",
-            params![
-                principle_id,
-                thinker_id,
-                name,
-                description,
-                domain_tags,
-            ],
+            params![principle_id, thinker_id, name, description, domain_tags,],
         )?;
 
         principle_count += 1;

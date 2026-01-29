@@ -102,10 +102,10 @@ pub struct BlindSpot {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum BlindSpotSeverity {
-    Critical,  // Will definitely cause failure if missed
-    High,      // Likely to cause problems
-    Medium,    // Should consider
-    Low,       // Nice to check
+    Critical, // Will definitely cause failure if missed
+    High,     // Likely to cause problems
+    Medium,   // Should consider
+    Low,      // Nice to check
 }
 
 /// Pattern to avoid
@@ -1410,7 +1410,8 @@ fn testing_strategy() -> DecisionTemplate {
                         "UNIT TESTS for logic. Kent Beck: 'Test the things that might break.' \
                         Pure functions with business logic deserve heavy unit testing. \
                         Fast, isolated, deterministic. Aim for: (1) All edge cases, \
-                        (2) Boundary conditions, (3) Error paths.".to_string()
+                        (2) Boundary conditions, (3) Error paths."
+                            .to_string(),
                     ),
                 },
                 DecisionOption {
@@ -1422,7 +1423,8 @@ fn testing_strategy() -> DecisionTemplate {
                         "INTEGRATION TESTS for boundaries. Sam Newman: 'Design for failure.' \
                         Test that: (1) API contracts hold, (2) Database queries work, \
                         (3) External services handle failures gracefully. Use: contract tests, \
-                        test containers, recorded responses.".to_string()
+                        test containers, recorded responses."
+                            .to_string(),
                     ),
                 },
                 DecisionOption {
@@ -1434,7 +1436,8 @@ fn testing_strategy() -> DecisionTemplate {
                         "E2E TESTS for critical paths ONLY. Tim Ferriss 80/20: test the 20% of \
                         paths that matter most. E2E tests are slow and flaky - use sparingly. \
                         Test: (1) Login/signup, (2) Core transaction (purchase, submit), \
-                        (3) Critical integrations. Not every page needs E2E.".to_string()
+                        (3) Critical integrations. Not every page needs E2E."
+                            .to_string(),
                     ),
                 },
                 DecisionOption {
@@ -1446,35 +1449,33 @@ fn testing_strategy() -> DecisionTemplate {
                         "MINIMAL TESTS + OBSERVABILITY. Taleb: 'Antifragile systems benefit from \
                         volatility.' For rapidly changing code, heavy tests become maintenance \
                         burden. Instead: (1) Test critical paths only, (2) Invest in monitoring, \
-                        (3) Fast rollback capability. Detect and recover > prevent all failures.".to_string()
+                        (3) Fast rollback capability. Detect and recover > prevent all failures."
+                            .to_string(),
                     ),
                 },
             ],
         },
 
-        synergies: vec![
-            PrincipleSynergy {
-                principles: vec!["Make it Work".to_string(), "Make it Right".to_string()],
-                thinkers: vec!["Kent Beck".to_string()],
-                why: "Tests enable fearless refactoring".to_string(),
-                combined_power: "Write just enough tests to refactor confidently".to_string(),
-            },
-        ],
-        tensions: vec![
-            PrincipleTension {
-                principle_a: "High Coverage".to_string(),
-                principle_b: "Fast Iteration".to_string(),
-                thinker_a: "Traditional TDD".to_string(),
-                thinker_b: "Startup Velocity".to_string(),
-                when_to_pick_a: "Stable, critical system where bugs are expensive".to_string(),
-                when_to_pick_b: "Rapid exploration where test maintenance slows learning".to_string(),
-            },
-        ],
+        synergies: vec![PrincipleSynergy {
+            principles: vec!["Make it Work".to_string(), "Make it Right".to_string()],
+            thinkers: vec!["Kent Beck".to_string()],
+            why: "Tests enable fearless refactoring".to_string(),
+            combined_power: "Write just enough tests to refactor confidently".to_string(),
+        }],
+        tensions: vec![PrincipleTension {
+            principle_a: "High Coverage".to_string(),
+            principle_b: "Fast Iteration".to_string(),
+            thinker_a: "Traditional TDD".to_string(),
+            thinker_b: "Startup Velocity".to_string(),
+            when_to_pick_a: "Stable, critical system where bugs are expensive".to_string(),
+            when_to_pick_b: "Rapid exploration where test maintenance slows learning".to_string(),
+        }],
         blind_spots: vec![
             BlindSpot {
                 name: "Testing the Wrong Level".to_string(),
                 description: "Too many E2E tests, not enough unit tests".to_string(),
-                check_question: "Is your test pyramid inverted (slow tests > fast tests)?".to_string(),
+                check_question: "Is your test pyramid inverted (slow tests > fast tests)?"
+                    .to_string(),
                 severity: BlindSpotSeverity::High,
             },
             BlindSpot {
@@ -1484,19 +1485,17 @@ fn testing_strategy() -> DecisionTemplate {
                 severity: BlindSpotSeverity::Medium,
             },
         ],
-        anti_patterns: vec![
-            AntiPattern {
-                name: "100% Coverage Obsession".to_string(),
-                description: "Testing everything equally regardless of risk".to_string(),
-                symptoms: vec![
-                    "Tests for getters/setters".to_string(),
-                    "Mocking everything".to_string(),
-                    "Tests more complex than code they test".to_string(),
-                ],
-                cure: "Test behavior at boundaries, not implementation details.".to_string(),
-                source_thinker: "Kent Beck".to_string(),
-            },
-        ],
+        anti_patterns: vec![AntiPattern {
+            name: "100% Coverage Obsession".to_string(),
+            description: "Testing everything equally regardless of risk".to_string(),
+            symptoms: vec![
+                "Tests for getters/setters".to_string(),
+                "Mocking everything".to_string(),
+                "Tests more complex than code they test".to_string(),
+            ],
+            cure: "Test behavior at boundaries, not implementation details.".to_string(),
+            source_thinker: "Kent Beck".to_string(),
+        }],
         success_rate: 0.0,
         times_used: 0,
     }
@@ -1658,11 +1657,26 @@ mod tests {
     fn test_get_templates_have_required_fields() {
         for template in get_templates() {
             assert!(!template.id.is_empty(), "Template ID should not be empty");
-            assert!(!template.name.is_empty(), "Template name should not be empty");
-            assert!(!template.domain.is_empty(), "Template domain should not be empty");
-            assert!(!template.triggers.is_empty(), "Template should have triggers");
-            assert!(!template.tree.question.is_empty(), "Template tree should have a question");
-            assert!(!template.tree.options.is_empty(), "Template tree should have options");
+            assert!(
+                !template.name.is_empty(),
+                "Template name should not be empty"
+            );
+            assert!(
+                !template.domain.is_empty(),
+                "Template domain should not be empty"
+            );
+            assert!(
+                !template.triggers.is_empty(),
+                "Template should have triggers"
+            );
+            assert!(
+                !template.tree.question.is_empty(),
+                "Template tree should have a question"
+            );
+            assert!(
+                !template.tree.options.is_empty(),
+                "Template tree should have options"
+            );
         }
     }
 
@@ -1689,7 +1703,8 @@ mod tests {
 
     #[test]
     fn test_match_templates_late_project() {
-        let matches = match_templates("We're behind schedule, should we add more people to the team?");
+        let matches =
+            match_templates("We're behind schedule, should we add more people to the team?");
         assert!(!matches.is_empty(), "Should match scale team template");
         assert_eq!(matches[0].0.id, "scale-team");
     }
@@ -1718,7 +1733,10 @@ mod tests {
     #[test]
     fn test_match_templates_no_match() {
         let matches = match_templates("What should I have for lunch?");
-        assert!(matches.is_empty(), "Random question should not match any template");
+        assert!(
+            matches.is_empty(),
+            "Random question should not match any template"
+        );
     }
 
     #[test]
@@ -1737,7 +1755,10 @@ mod tests {
         assert!(!matches.is_empty());
         // First match should have highest score
         if matches.len() > 1 {
-            assert!(matches[0].1 >= matches[1].1, "Results should be sorted by score descending");
+            assert!(
+                matches[0].1 >= matches[1].1,
+                "Results should be sorted by score descending"
+            );
         }
     }
 
@@ -1767,7 +1788,10 @@ mod tests {
         // Verify nested decision trees work
         let template = monolith_vs_microservices();
         let first_option = &template.tree.options[0];
-        assert!(first_option.next.is_some(), "First option should have nested tree");
+        assert!(
+            first_option.next.is_some(),
+            "First option should have nested tree"
+        );
 
         let nested = first_option.next.as_ref().unwrap();
         assert!(!nested.question.is_empty());

@@ -10,7 +10,7 @@ use crate::counsel::CounselEngine;
 use crate::db;
 use crate::outcome::{self, OutcomeResult};
 use crate::provenance::Provenance;
-use crate::types::{CounselRequest, CounselContext, CounselResponse};
+use crate::types::{CounselContext, CounselRequest, CounselResponse};
 use anyhow::Result;
 use rusqlite::Connection;
 use serde::{Deserialize, Serialize};
@@ -84,7 +84,15 @@ impl ZestyEngine {
         notes: &str,
         category: Option<&str>,
     ) -> Result<OutcomeResult> {
-        outcome::record_bead_outcome(&self.conn, bead_id, bead_title, success, principle_ids, notes, category)
+        outcome::record_bead_outcome(
+            &self.conn,
+            bead_id,
+            bead_title,
+            success,
+            principle_ids,
+            notes,
+            category,
+        )
     }
 
     /// Get learning summary
@@ -104,7 +112,8 @@ impl ZestyEngine {
 
     /// Extract all principle IDs from a counsel response (for outcome recording)
     pub fn extract_principle_ids(response: &CounselResponse) -> Vec<String> {
-        let mut ids: Vec<String> = response.positions
+        let mut ids: Vec<String> = response
+            .positions
             .iter()
             .flat_map(|p| p.principles_cited.clone())
             .collect();
@@ -172,14 +181,19 @@ pub fn get_counsel(
     principles.retain(|p| seen.insert(p.id.clone()));
 
     // Sort by confidence and take top N
-    principles.sort_by(|a, b| b.confidence.partial_cmp(&a.confidence).unwrap_or(std::cmp::Ordering::Equal));
+    principles.sort_by(|a, b| {
+        b.confidence
+            .partial_cmp(&a.confidence)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
     principles.truncate(limit);
 
     // Convert to simple format with thinker name lookup
     let counsel_principles: Vec<CounselPrinciple> = principles
         .into_iter()
         .map(|p| {
-            let thinker_name = get_thinker_name(conn, &p.thinker_id).unwrap_or_else(|_| p.thinker_id.clone());
+            let thinker_name =
+                get_thinker_name(conn, &p.thinker_id).unwrap_or_else(|_| p.thinker_id.clone());
             CounselPrinciple {
                 id: p.id,
                 name: p.name.clone(),
@@ -215,7 +229,15 @@ pub fn record_bead_completion(
     notes: &str,
     category: Option<&str>,
 ) -> Result<OutcomeResult> {
-    outcome::record_bead_outcome(conn, bead_id, bead_title, success, principle_ids, notes, category)
+    outcome::record_bead_outcome(
+        conn,
+        bead_id,
+        bead_title,
+        success,
+        principle_ids,
+        notes,
+        category,
+    )
 }
 
 /// Get learning summary with optional time window
@@ -236,12 +258,26 @@ pub fn get_learning_summary(conn: &Connection, days: Option<i64>) -> Result<Lear
         recent_success_rate,
         total_adjustments: stats.total_adjustments,
         principles_learning: stats.principles_with_learning,
-        top_improved: stats.top_improved.into_iter().take(5).map(|(name, delta, count)| {
-            PrincipleProgress { name, delta, adjustment_count: count }
-        }).collect(),
-        top_declined: stats.top_declined.into_iter().take(5).map(|(name, delta, count)| {
-            PrincipleProgress { name, delta, adjustment_count: count }
-        }).collect(),
+        top_improved: stats
+            .top_improved
+            .into_iter()
+            .take(5)
+            .map(|(name, delta, count)| PrincipleProgress {
+                name,
+                delta,
+                adjustment_count: count,
+            })
+            .collect(),
+        top_declined: stats
+            .top_declined
+            .into_iter()
+            .take(5)
+            .map(|(name, delta, count)| PrincipleProgress {
+                name,
+                delta,
+                adjustment_count: count,
+            })
+            .collect(),
         flywheel_active: stats.total_outcomes > 0,
     })
 }
@@ -274,7 +310,8 @@ fn get_thinker_name(conn: &Connection, thinker_id: &str) -> Result<String> {
         "SELECT name FROM thinkers WHERE id = ?1",
         [thinker_id],
         |row| row.get(0),
-    ).map_err(|e| anyhow::anyhow!("Thinker lookup failed: {}", e))
+    )
+    .map_err(|e| anyhow::anyhow!("Thinker lookup failed: {}", e))
 }
 
 fn category_to_domain(category: &str) -> &'static str {
@@ -339,11 +376,13 @@ fn get_recent_stats(conn: &Connection, days: i64) -> Result<(i64, f64)> {
     let cutoff = chrono::Utc::now() - chrono::Duration::days(days);
     let cutoff_str = cutoff.to_rfc3339();
 
-    let recent_total: i64 = conn.query_row(
-        "SELECT COUNT(*) FROM decisions WHERE outcome_recorded_at >= ?1",
-        [&cutoff_str],
-        |row| row.get(0),
-    ).unwrap_or(0);
+    let recent_total: i64 = conn
+        .query_row(
+            "SELECT COUNT(*) FROM decisions WHERE outcome_recorded_at >= ?1",
+            [&cutoff_str],
+            |row| row.get(0),
+        )
+        .unwrap_or(0);
 
     let recent_success: i64 = conn.query_row(
         "SELECT COUNT(*) FROM decisions WHERE outcome_success = 1 AND outcome_recorded_at >= ?1",

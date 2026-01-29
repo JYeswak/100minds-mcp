@@ -71,19 +71,26 @@ pub use provenance::Provenance;
 pub use types::*;
 
 // PRD validation
+pub use mcp::{check_blind_spots, get_matching_templates, get_pre_work_context};
 pub use mcp::{validate_prd, PrdValidation};
-pub use mcp::{check_blind_spots, get_pre_work_context, get_matching_templates};
 
 // Outcome recording (THE FLYWHEEL)
-pub use outcome::{record_outcome, record_bead_outcome, get_learning_stats, LearningStats, OutcomeResult, PrincipleAdjustment};
+pub use outcome::{
+    get_learning_stats, record_bead_outcome, record_outcome, LearningStats, OutcomeResult,
+    PrincipleAdjustment,
+};
 
 // Semantic search
-pub use embeddings::{SemanticEngine, HybridMatch, SemanticMatch, get_model_dir, init_embedding_schema, EMBEDDING_DIM};
+pub use embeddings::{
+    get_model_dir, init_embedding_schema, HybridMatch, SemanticEngine, SemanticMatch, EMBEDDING_DIM,
+};
 
 // Decision templates
-pub use templates::{get_templates, DecisionTemplate, DecisionTree, BlindSpot, AntiPattern, PrincipleSynergy};
+pub use templates::{
+    get_templates, AntiPattern, BlindSpot, DecisionTemplate, DecisionTree, PrincipleSynergy,
+};
 
 // Convenience API for Zesty
-pub use convenience::{ZestyEngine};  // Full mode with provenance
-pub use convenience::{get_counsel, record_bead_completion, get_learning_summary};  // Simple mode
-pub use convenience::{SimpleCounsel, CounselPrinciple, LearningSummary, PrincipleProgress};
+pub use convenience::ZestyEngine; // Full mode with provenance
+pub use convenience::{get_counsel, get_learning_summary, record_bead_completion}; // Simple mode
+pub use convenience::{CounselPrinciple, LearningSummary, PrincipleProgress, SimpleCounsel};

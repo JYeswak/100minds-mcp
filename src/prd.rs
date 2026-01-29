@@ -37,7 +37,10 @@ pub struct Story {
     pub description: String,
     #[serde(rename = "type", default = "default_story_type")]
     pub story_type: String,
-    #[serde(default = "default_priority", deserialize_with = "deserialize_priority")]
+    #[serde(
+        default = "default_priority",
+        deserialize_with = "deserialize_priority"
+    )]
     pub priority: String,
     #[serde(rename = "dependsOn", alias = "dependencies", default)]
     pub depends_on: Vec<String>,
@@ -172,7 +175,16 @@ pub fn analyze_prd(prd: &mut Prd) -> MindsMetadata {
     }
 
     // === YAGNI: Speculative language ===
-    let speculative = ["future", "might", "could", "maybe", "eventually", "someday", "phase 2", "later"];
+    let speculative = [
+        "future",
+        "might",
+        "could",
+        "maybe",
+        "eventually",
+        "someday",
+        "phase 2",
+        "later",
+    ];
     for story in &prd.stories {
         let combined = format!("{} {}", story.title, story.description).to_lowercase();
         for kw in &speculative {
@@ -203,7 +215,8 @@ pub fn analyze_prd(prd: &mut Prd) -> MindsMetadata {
         score -= 15.0;
         warnings.push(format!(
             "Conceptual Integrity: PRD spans {} domains: {:?}. Split by domain.",
-            domains.len(), domains
+            domains.len(),
+            domains
         ));
         principles.push("Conceptual Integrity".to_string());
     }
@@ -256,22 +269,41 @@ fn detect_domains(stories: &[Story]) -> HashSet<String> {
     for story in stories {
         let combined = format!("{} {}", story.title, story.description).to_lowercase();
 
-        if combined.contains("ui") || combined.contains("frontend") || combined.contains("component") || combined.contains("react") {
+        if combined.contains("ui")
+            || combined.contains("frontend")
+            || combined.contains("component")
+            || combined.contains("react")
+        {
             domains.insert("frontend".to_string());
         }
-        if combined.contains("api") || combined.contains("endpoint") || combined.contains("backend") || combined.contains("server") {
+        if combined.contains("api")
+            || combined.contains("endpoint")
+            || combined.contains("backend")
+            || combined.contains("server")
+        {
             domains.insert("backend".to_string());
         }
-        if combined.contains("database") || combined.contains("schema") || combined.contains("migration") || combined.contains("sql") {
+        if combined.contains("database")
+            || combined.contains("schema")
+            || combined.contains("migration")
+            || combined.contains("sql")
+        {
             domains.insert("database".to_string());
         }
         if combined.contains("test") || combined.contains("spec") || combined.contains("e2e") {
             domains.insert("testing".to_string());
         }
-        if combined.contains("deploy") || combined.contains("ci") || combined.contains("docker") || combined.contains("k8s") {
+        if combined.contains("deploy")
+            || combined.contains("ci")
+            || combined.contains("docker")
+            || combined.contains("k8s")
+        {
             domains.insert("devops".to_string());
         }
-        if combined.contains("auth") || combined.contains("login") || combined.contains("permission") {
+        if combined.contains("auth")
+            || combined.contains("login")
+            || combined.contains("permission")
+        {
             domains.insert("auth".to_string());
         }
     }
@@ -290,15 +322,33 @@ fn generate_split_recommendation(prd: &Prd, domains: &HashSet<String>) -> SplitR
         // Split by domain if multiple domains
         if domains.len() > 1 {
             for domain in domains {
-                let domain_stories: Vec<String> = prd.stories.iter()
+                let domain_stories: Vec<String> = prd
+                    .stories
+                    .iter()
                     .filter(|s| {
                         let combined = format!("{} {}", s.title, s.description).to_lowercase();
                         match domain.as_str() {
-                            "frontend" => combined.contains("ui") || combined.contains("frontend") || combined.contains("component"),
-                            "backend" => combined.contains("api") || combined.contains("endpoint") || combined.contains("backend"),
-                            "database" => combined.contains("database") || combined.contains("schema") || combined.contains("migration"),
+                            "frontend" => {
+                                combined.contains("ui")
+                                    || combined.contains("frontend")
+                                    || combined.contains("component")
+                            }
+                            "backend" => {
+                                combined.contains("api")
+                                    || combined.contains("endpoint")
+                                    || combined.contains("backend")
+                            }
+                            "database" => {
+                                combined.contains("database")
+                                    || combined.contains("schema")
+                                    || combined.contains("migration")
+                            }
                             "testing" => combined.contains("test") || combined.contains("spec"),
-                            "devops" => combined.contains("deploy") || combined.contains("ci") || combined.contains("docker"),
+                            "devops" => {
+                                combined.contains("deploy")
+                                    || combined.contains("ci")
+                                    || combined.contains("docker")
+                            }
                             "auth" => combined.contains("auth") || combined.contains("login"),
                             _ => false,
                         }
@@ -343,7 +393,8 @@ fn generate_split_recommendation(prd: &Prd, domains: &HashSet<String>) -> SplitR
             should_split: true,
             reason: format!(
                 "PRD spans {} domains ({:?}). Consider one PRD per layer.",
-                domains.len(), domains
+                domains.len(),
+                domains
             ),
             suggested_prds: vec![],
         };
@@ -391,7 +442,11 @@ pub fn generate_prd(
             id: story_id,
             title: raw.title,
             description: full_description,
-            story_type: if is_cleanup { "task".to_string() } else { "feature".to_string() },
+            story_type: if is_cleanup {
+                "task".to_string()
+            } else {
+                "feature".to_string()
+            },
             priority: raw.priority.unwrap_or_else(|| "P2".to_string()),
             depends_on: raw.depends_on.unwrap_or_default(),
             acceptance_criteria: raw.acceptance_criteria,
@@ -419,7 +474,10 @@ pub fn generate_prd(
     for i in 1..stories.len() {
         let should_chain = stories[i].depends_on.is_empty()
             && stories[i].id.starts_with("US-")
-            && stories.get(i - 1).map(|p| p.id.starts_with("US-")).unwrap_or(false);
+            && stories
+                .get(i - 1)
+                .map(|p| p.id.starts_with("US-"))
+                .unwrap_or(false);
 
         if should_chain {
             let prev_id = stories[i - 1].id.clone();
@@ -510,16 +568,18 @@ mod tests {
 
     #[test]
     fn test_analyze_prd_too_many_stories() {
-        let stories: Vec<Story> = (1..=12).map(|i| Story {
-            id: format!("US-{:03}", i),
-            title: format!("Story {}", i),
-            description: "Description".to_string(),
-            story_type: "feature".to_string(),
-            priority: "P2".to_string(),
-            depends_on: vec![],
-            acceptance_criteria: None,
-            status: None,
-        }).collect();
+        let stories: Vec<Story> = (1..=12)
+            .map(|i| Story {
+                id: format!("US-{:03}", i),
+                title: format!("Story {}", i),
+                description: "Description".to_string(),
+                story_type: "feature".to_string(),
+                priority: "P2".to_string(),
+                depends_on: vec![],
+                acceptance_criteria: None,
+                status: None,
+            })
+            .collect();
 
         let mut prd = Prd {
             id: "test".to_string(),
@@ -533,21 +593,21 @@ mod tests {
         let meta = analyze_prd(&mut prd);
 
         assert!(meta.validation_score < 80.0);
-        assert!(meta.principles_applied.contains(&"Brooks's Law".to_string()));
+        assert!(meta
+            .principles_applied
+            .contains(&"Brooks's Law".to_string()));
         assert!(meta.split_recommendation.as_ref().unwrap().should_split);
     }
 
     #[test]
     fn test_to_json_and_from_json_roundtrip() {
-        let stories = vec![
-            RawStory {
-                title: "Add feature".to_string(),
-                description: "Create new feature".to_string(),
-                priority: Some("P1".to_string()),
-                depends_on: None,
-                acceptance_criteria: Some(vec!["Works correctly".to_string()]),
-            },
-        ];
+        let stories = vec![RawStory {
+            title: "Add feature".to_string(),
+            description: "Create new feature".to_string(),
+            priority: Some("P1".to_string()),
+            depends_on: None,
+            acceptance_criteria: Some(vec!["Works correctly".to_string()]),
+        }];
 
         let prd = generate_prd(
             "prd-test-001",
@@ -576,16 +636,22 @@ mod tests {
     #[test]
     fn test_analyze_prd_good_size() {
         // PRD with 3 stories should pass validation
-        let stories: Vec<Story> = (1..=3).map(|i| Story {
-            id: format!("US-{:03}", i),
-            title: format!("Story {}", i),
-            description: "Good description of the work".to_string(),
-            story_type: "feature".to_string(),
-            priority: "P2".to_string(),
-            depends_on: if i == 1 { vec![] } else { vec![format!("US-{:03}", i - 1)] },
-            acceptance_criteria: Some(vec!["Criteria 1".to_string()]),
-            status: None,
-        }).collect();
+        let stories: Vec<Story> = (1..=3)
+            .map(|i| Story {
+                id: format!("US-{:03}", i),
+                title: format!("Story {}", i),
+                description: "Good description of the work".to_string(),
+                story_type: "feature".to_string(),
+                priority: "P2".to_string(),
+                depends_on: if i == 1 {
+                    vec![]
+                } else {
+                    vec![format!("US-{:03}", i - 1)]
+                },
+                acceptance_criteria: Some(vec!["Criteria 1".to_string()]),
+                status: None,
+            })
+            .collect();
 
         let mut prd = Prd {
             id: "good-prd".to_string(),

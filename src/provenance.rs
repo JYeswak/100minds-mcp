@@ -11,9 +11,9 @@
 //! - Accountability trails
 
 use anyhow::{Context, Result};
-use ed25519_dalek::{Signer, SigningKey, VerifyingKey, Signature, Verifier};
+use ed25519_dalek::{Signature, Signer, SigningKey, Verifier, VerifyingKey};
 use rand::rngs::OsRng;
-use sha2::{Sha256, Digest};
+use sha2::{Digest, Sha256};
 use std::fs;
 use std::path::Path;
 
@@ -43,8 +43,8 @@ impl Provenance {
 
     /// Load key from file
     fn load_key(path: &Path) -> Result<SigningKey> {
-        let bytes = fs::read(path)
-            .with_context(|| format!("Failed to read key from {:?}", path))?;
+        let bytes =
+            fs::read(path).with_context(|| format!("Failed to read key from {:?}", path))?;
 
         if bytes.len() != 32 {
             anyhow::bail!("Invalid key length: expected 32 bytes, got {}", bytes.len());
@@ -98,11 +98,9 @@ impl Provenance {
 
     /// Verify a signature
     pub fn verify(&self, content: &[u8], signature_hex: &str, pubkey_hex: &str) -> Result<bool> {
-        let sig_bytes = hex::decode(signature_hex)
-            .context("Invalid signature hex")?;
+        let sig_bytes = hex::decode(signature_hex).context("Invalid signature hex")?;
 
-        let pubkey_bytes = hex::decode(pubkey_hex)
-            .context("Invalid public key hex")?;
+        let pubkey_bytes = hex::decode(pubkey_hex).context("Invalid public key hex")?;
 
         if sig_bytes.len() != 64 {
             anyhow::bail!("Invalid signature length");
@@ -118,8 +116,7 @@ impl Provenance {
 
         let mut pubkey_arr = [0u8; 32];
         pubkey_arr.copy_from_slice(&pubkey_bytes);
-        let verifying_key = VerifyingKey::from_bytes(&pubkey_arr)
-            .context("Invalid public key")?;
+        let verifying_key = VerifyingKey::from_bytes(&pubkey_arr).context("Invalid public key")?;
 
         Ok(verifying_key.verify(content, &signature).is_ok())
     }
@@ -156,7 +153,10 @@ impl Provenance {
                     errors.push(format!("Invalid signature at position {}", i));
                 }
                 Err(e) => {
-                    errors.push(format!("Signature verification error at position {}: {}", i, e));
+                    errors.push(format!(
+                        "Signature verification error at position {}: {}",
+                        i, e
+                    ));
                 }
             }
 
@@ -397,15 +397,13 @@ mod tests {
         let hash1 = prov.hash(&content1);
         let sig1 = prov.sign(&content1).unwrap();
 
-        let chain = vec![
-            ChainLink {
-                content: b"tampered content".to_vec(), // Different from hash!
-                content_hash: hash1,
-                previous_hash: None,
-                signature: sig1,
-                agent_pubkey: pubkey,
-            },
-        ];
+        let chain = vec![ChainLink {
+            content: b"tampered content".to_vec(), // Different from hash!
+            content_hash: hash1,
+            previous_hash: None,
+            signature: sig1,
+            agent_pubkey: pubkey,
+        }];
 
         let result = prov.verify_chain(&chain);
         assert!(!result.valid, "Tampered content should be detected");

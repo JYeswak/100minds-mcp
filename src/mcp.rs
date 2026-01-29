@@ -48,7 +48,6 @@ pub fn get_tools() -> Vec<Value> {
                 "required": ["question"]
             }
         }),
-
         // NEW: Decision Template matching
         json!({
             "name": "get_decision_template",
@@ -67,7 +66,6 @@ pub fn get_tools() -> Vec<Value> {
                 }
             }
         }),
-
         // NEW: Blind spot analysis
         json!({
             "name": "check_blind_spots",
@@ -87,7 +85,6 @@ pub fn get_tools() -> Vec<Value> {
                 "required": ["decision_context"]
             }
         }),
-
         // NEW: Anti-pattern detection
         json!({
             "name": "detect_anti_patterns",
@@ -107,7 +104,6 @@ pub fn get_tools() -> Vec<Value> {
                 "required": ["description"]
             }
         }),
-
         // PRD validation with principle violations
         json!({
             "name": "validate_prd",
@@ -126,7 +122,6 @@ pub fn get_tools() -> Vec<Value> {
                 }
             }
         }),
-
         // NEW: Pre-work context injection
         json!({
             "name": "pre_work_context",
@@ -151,7 +146,6 @@ pub fn get_tools() -> Vec<Value> {
                 "required": ["task_title", "task_description"]
             }
         }),
-
         // Outcome recording for learning
         json!({
             "name": "record_outcome",
@@ -175,7 +169,6 @@ pub fn get_tools() -> Vec<Value> {
                 "required": ["decision_id", "success"]
             }
         }),
-
         // Principle search
         json!({
             "name": "search_principles",
@@ -199,7 +192,6 @@ pub fn get_tools() -> Vec<Value> {
                 "required": ["query"]
             }
         }),
-
         // NEW: Get synergies
         json!({
             "name": "get_synergies",
@@ -218,7 +210,6 @@ pub fn get_tools() -> Vec<Value> {
                 }
             }
         }),
-
         // NEW: Get tensions
         json!({
             "name": "get_tensions",
@@ -241,7 +232,6 @@ pub fn get_tools() -> Vec<Value> {
                 }
             }
         }),
-
         // NEW: Wisdom stats
         json!({
             "name": "wisdom_stats",
@@ -260,7 +250,6 @@ pub fn get_tools() -> Vec<Value> {
                 }
             }
         }),
-
         // Audit trail
         json!({
             "name": "audit_decision",
@@ -280,7 +269,6 @@ pub fn get_tools() -> Vec<Value> {
                 "required": ["decision_id"]
             }
         }),
-
         // ============================================================================
         // SWARM INTEGRATION TOOLS (v2) - For Zesty/swarmd coordination
         // ============================================================================
@@ -303,7 +291,6 @@ pub fn get_tools() -> Vec<Value> {
                 }
             }
         }),
-
         // Batch outcome recording for catch-up sync
         json!({
             "name": "record_outcomes_batch",
@@ -334,7 +321,6 @@ pub fn get_tools() -> Vec<Value> {
                 "required": ["outcomes"]
             }
         }),
-
         // Counterfactual simulation (Phase 2)
         json!({
             "name": "counterfactual_sim",
@@ -403,7 +389,8 @@ pub fn validate_prd(_conn: &Connection, prd_json: &str) -> Result<PrdValidation>
     let mut score: f64 = 100.0;
 
     // Extract stories
-    let stories = prd.get("stories")
+    let stories = prd
+        .get("stories")
         .and_then(|s| s.as_array())
         .map(|a| a.to_vec())
         .unwrap_or_default();
@@ -441,10 +428,22 @@ pub fn validate_prd(_conn: &Connection, prd_json: &str) -> Result<PrdValidation>
     }
 
     // === KENT BECK: YAGNI - Check for speculative features ===
-    let speculative_keywords = ["future", "might", "could", "maybe", "eventually", "someday", "later", "phase 2"];
+    let speculative_keywords = [
+        "future",
+        "might",
+        "could",
+        "maybe",
+        "eventually",
+        "someday",
+        "later",
+        "phase 2",
+    ];
     for story in &stories {
         let title = story.get("title").and_then(|t| t.as_str()).unwrap_or("");
-        let desc = story.get("description").and_then(|d| d.as_str()).unwrap_or("");
+        let desc = story
+            .get("description")
+            .and_then(|d| d.as_str())
+            .unwrap_or("");
         let combined = format!("{} {}", title, desc).to_lowercase();
 
         for kw in speculative_keywords {
@@ -471,9 +470,19 @@ pub fn validate_prd(_conn: &Connection, prd_json: &str) -> Result<PrdValidation>
     }
 
     // === MARTIN FOWLER: Monolith First - Check for premature decomposition ===
-    let decomposition_keywords = ["microservice", "separate service", "extract", "split into", "new service"];
+    let decomposition_keywords = [
+        "microservice",
+        "separate service",
+        "extract",
+        "split into",
+        "new service",
+    ];
     for story in &stories {
-        let desc = story.get("description").and_then(|d| d.as_str()).unwrap_or("").to_lowercase();
+        let desc = story
+            .get("description")
+            .and_then(|d| d.as_str())
+            .unwrap_or("")
+            .to_lowercase();
 
         for kw in decomposition_keywords {
             if desc.contains(kw) {
@@ -499,24 +508,38 @@ pub fn validate_prd(_conn: &Connection, prd_json: &str) -> Result<PrdValidation>
     }
 
     // === FRED BROOKS: Conceptual Integrity - Check for mixed concerns ===
-    let domains_mentioned: std::collections::HashSet<String> = stories.iter()
+    let domains_mentioned: std::collections::HashSet<String> = stories
+        .iter()
         .filter_map(|s| s.get("title").and_then(|t| t.as_str()))
         .flat_map(|title| {
             let t = title.to_lowercase();
             let mut domains = vec![];
-            if t.contains("ui") || t.contains("frontend") || t.contains("component") || t.contains("react") {
+            if t.contains("ui")
+                || t.contains("frontend")
+                || t.contains("component")
+                || t.contains("react")
+            {
                 domains.push("frontend".to_string());
             }
-            if t.contains("api") || t.contains("endpoint") || t.contains("backend") || t.contains("server") {
+            if t.contains("api")
+                || t.contains("endpoint")
+                || t.contains("backend")
+                || t.contains("server")
+            {
                 domains.push("backend".to_string());
             }
-            if t.contains("database") || t.contains("schema") || t.contains("migration") || t.contains("sql") {
+            if t.contains("database")
+                || t.contains("schema")
+                || t.contains("migration")
+                || t.contains("sql")
+            {
                 domains.push("database".to_string());
             }
             if t.contains("test") || t.contains("spec") || t.contains("e2e") {
                 domains.push("testing".to_string());
             }
-            if t.contains("deploy") || t.contains("ci") || t.contains("docker") || t.contains("k8s") {
+            if t.contains("deploy") || t.contains("ci") || t.contains("docker") || t.contains("k8s")
+            {
                 domains.push("devops".to_string());
             }
             domains
@@ -556,9 +579,19 @@ pub fn validate_prd(_conn: &Connection, prd_json: &str) -> Result<PrdValidation>
     }
 
     // === SAM NEWMAN: Incremental Migration ===
-    let big_bang_keywords = ["rewrite", "replace all", "complete overhaul", "full migration", "rebuild from scratch"];
+    let big_bang_keywords = [
+        "rewrite",
+        "replace all",
+        "complete overhaul",
+        "full migration",
+        "rebuild from scratch",
+    ];
     for story in &stories {
-        let desc = story.get("description").and_then(|d| d.as_str()).unwrap_or("").to_lowercase();
+        let desc = story
+            .get("description")
+            .and_then(|d| d.as_str())
+            .unwrap_or("")
+            .to_lowercase();
 
         for kw in big_bang_keywords {
             if desc.contains(kw) {
@@ -585,7 +618,8 @@ pub fn validate_prd(_conn: &Connection, prd_json: &str) -> Result<PrdValidation>
     }
 
     // === Check for missing dependencies ===
-    let story_ids: std::collections::HashSet<String> = stories.iter()
+    let story_ids: std::collections::HashSet<String> = stories
+        .iter()
         .filter_map(|s| s.get("id").and_then(|i| i.as_str()).map(String::from))
         .collect();
 
@@ -615,7 +649,11 @@ pub fn validate_prd(_conn: &Connection, prd_json: &str) -> Result<PrdValidation>
     // === ERIC EVANS: Bounded Context - Check for unclear boundaries ===
     let boundary_keywords = ["shared", "common", "global", "universal", "generic"];
     for story in &stories {
-        let title = story.get("title").and_then(|t| t.as_str()).unwrap_or("").to_lowercase();
+        let title = story
+            .get("title")
+            .and_then(|t| t.as_str())
+            .unwrap_or("")
+            .to_lowercase();
 
         for kw in boundary_keywords {
             if title.contains(kw) {
@@ -641,11 +679,14 @@ pub fn validate_prd(_conn: &Connection, prd_json: &str) -> Result<PrdValidation>
     // === ROBERT MARTIN: Single Responsibility - Check for overloaded stories ===
     for story in &stories {
         let title = story.get("title").and_then(|t| t.as_str()).unwrap_or("");
-        let desc = story.get("description").and_then(|d| d.as_str()).unwrap_or("");
+        let desc = story
+            .get("description")
+            .and_then(|d| d.as_str())
+            .unwrap_or("");
 
         // Check for "and" patterns that suggest multiple responsibilities
-        let and_count = title.to_lowercase().matches(" and ").count() +
-                       desc.to_lowercase().matches(" and ").count();
+        let and_count = title.to_lowercase().matches(" and ").count()
+            + desc.to_lowercase().matches(" and ").count();
 
         if and_count >= 2 {
             let story_id = story.get("id").and_then(|i| i.as_str()).unwrap_or("?");
@@ -705,27 +746,37 @@ pub struct RelevantPrinciple {
 }
 
 /// Get context for a task before starting work
-pub fn get_pre_work_context(conn: &Connection, title: &str, description: &str, task_type: Option<&str>) -> Result<PreWorkContext> {
+pub fn get_pre_work_context(
+    conn: &Connection,
+    title: &str,
+    description: &str,
+    task_type: Option<&str>,
+) -> Result<PreWorkContext> {
     let task_type = task_type.unwrap_or("feature");
     let query = format!("{} {}", title, description);
 
     // Find relevant principles
     let principles = db::search_principles(conn, &query, 5)?;
 
-    let relevant_principles: Vec<RelevantPrinciple> = principles.iter().map(|p| {
-        let thinker_name = conn.query_row(
-            "SELECT name FROM thinkers WHERE id = ?1",
-            [&p.thinker_id],
-            |row| row.get::<_, String>(0),
-        ).unwrap_or_else(|_| p.thinker_id.clone());
+    let relevant_principles: Vec<RelevantPrinciple> = principles
+        .iter()
+        .map(|p| {
+            let thinker_name = conn
+                .query_row(
+                    "SELECT name FROM thinkers WHERE id = ?1",
+                    [&p.thinker_id],
+                    |row| row.get::<_, String>(0),
+                )
+                .unwrap_or_else(|_| p.thinker_id.clone());
 
-        RelevantPrinciple {
-            name: p.name.clone(),
-            thinker: thinker_name,
-            description: p.description.clone(),
-            action: generate_action(&p.name, &p.description),
-        }
-    }).collect();
+            RelevantPrinciple {
+                name: p.name.clone(),
+                thinker: thinker_name,
+                description: p.description.clone(),
+                action: generate_action(&p.name, &p.description),
+            }
+        })
+        .collect();
 
     // Generate blind spots based on task type
     let blind_spots = match task_type {
@@ -804,7 +855,9 @@ fn generate_anti_patterns_for_context(query: &str) -> Vec<String> {
     let mut patterns = Vec::new();
 
     if q_lower.contains("rewrite") || q_lower.contains("rebuild") {
-        patterns.push("Second System Effect: Don't add features the old system didn't have".to_string());
+        patterns.push(
+            "Second System Effect: Don't add features the old system didn't have".to_string(),
+        );
     }
     if q_lower.contains("service") || q_lower.contains("microservice") {
         patterns.push("Distributed Monolith: If services can't deploy independently, they're not microservices".to_string());
@@ -813,10 +866,14 @@ fn generate_anti_patterns_for_context(query: &str) -> Vec<String> {
         patterns.push("Brooks's Law: Adding people to a late project makes it later".to_string());
     }
     if q_lower.contains("database") || q_lower.contains("schema") {
-        patterns.push("Premature Optimization: Get it working first, optimize when you have metrics".to_string());
+        patterns.push(
+            "Premature Optimization: Get it working first, optimize when you have metrics"
+                .to_string(),
+        );
     }
     if q_lower.contains("feature") || q_lower.contains("new") {
-        patterns.push("Feature Creep: Is this in scope? Would users pay for just this?".to_string());
+        patterns
+            .push("Feature Creep: Is this in scope? Would users pay for just this?".to_string());
     }
 
     if patterns.is_empty() {
@@ -915,7 +972,10 @@ pub fn check_blind_spots(context: &str, template_id: Option<&str>) -> BlindSpotA
         severity_order(&a.severity).cmp(&severity_order(&b.severity))
     });
 
-    let critical_count = all_blind_spots.iter().filter(|b| b.severity == "Critical").count() as u32;
+    let critical_count = all_blind_spots
+        .iter()
+        .filter(|b| b.severity == "Critical")
+        .count() as u32;
 
     BlindSpotAnalysis {
         context: context.to_string(),
@@ -966,9 +1026,14 @@ mod tests {
 
     #[test]
     fn test_validate_oversized_prd() {
-        let stories: Vec<_> = (1..=15).map(|i| {
-            format!(r#"{{"id": "US-{:03}", "title": "Story {}", "description": ""}}"#, i, i)
-        }).collect();
+        let stories: Vec<_> = (1..=15)
+            .map(|i| {
+                format!(
+                    r#"{{"id": "US-{:03}", "title": "Story {}", "description": ""}}"#,
+                    i, i
+                )
+            })
+            .collect();
 
         let prd = format!(r#"{{"stories": [{}]}}"#, stories.join(","));
 
@@ -976,7 +1041,10 @@ mod tests {
         let result = validate_prd(&conn, &prd).unwrap();
 
         assert!(!result.valid);
-        assert!(result.warnings.iter().any(|w| w.principle == "Brooks's Law"));
+        assert!(result
+            .warnings
+            .iter()
+            .any(|w| w.principle == "Brooks's Law"));
     }
 
     #[test]
@@ -996,7 +1064,8 @@ mod tests {
 
     #[test]
     fn test_template_matching() {
-        let matches = get_matching_templates("Should we use microservices or stay with our monolith?");
+        let matches =
+            get_matching_templates("Should we use microservices or stay with our monolith?");
         assert!(!matches.is_empty());
         assert!(matches[0].template.id == "monolith-vs-microservices");
     }

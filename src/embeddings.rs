@@ -10,10 +10,14 @@
 //!
 //! Model: all-MiniLM-L6-v2 (22MB, 384 dimensions, runs on CPU)
 
-use anyhow::{Context, Result, anyhow};
+use anyhow::{anyhow, Context, Result};
 use ndarray::Array2;
-use ort::{inputs, session::{Session, builder::GraphOptimizationLevel}, value::Tensor};
-use rusqlite::{Connection, params};
+use ort::{
+    inputs,
+    session::{builder::GraphOptimizationLevel, Session},
+    value::Tensor,
+};
+use rusqlite::{params, Connection};
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use tokenizers::Tokenizer;
@@ -87,12 +91,17 @@ impl SemanticEngine {
     /// Compute embedding for a single text
     pub fn embed(&mut self, text: &str) -> Result<Vec<f32>> {
         // Tokenize
-        let encoding = self.tokenizer
+        let encoding = self
+            .tokenizer
             .encode(text, true)
             .map_err(|e| anyhow!("Tokenization failed: {}", e))?;
 
         let ids: Vec<i64> = encoding.get_ids().iter().map(|&id| id as i64).collect();
-        let attention_mask: Vec<i64> = encoding.get_attention_mask().iter().map(|&m| m as i64).collect();
+        let attention_mask: Vec<i64> = encoding
+            .get_attention_mask()
+            .iter()
+            .map(|&m| m as i64)
+            .collect();
         let token_type_ids: Vec<i64> = vec![0i64; ids.len()];
 
         // Truncate if necessary
@@ -114,7 +123,8 @@ impl SemanticEngine {
         ])?;
 
         // Extract embeddings (last_hidden_state -> mean pooling)
-        let output = outputs.get("last_hidden_state")
+        let output = outputs
+            .get("last_hidden_state")
             .or_else(|| outputs.get("token_embeddings"))
             .ok_or_else(|| anyhow!("No embedding output found"))?;
 
@@ -143,7 +153,11 @@ impl SemanticEngine {
         let mut result = vec![0.0f32; EMBEDDING_DIM];
 
         // Get actual embedding dimension from shape (should be shape[2])
-        let embed_dim = if shape.len() >= 3 { shape[2] as usize } else { EMBEDDING_DIM };
+        let embed_dim = if shape.len() >= 3 {
+            shape[2] as usize
+        } else {
+            EMBEDDING_DIM
+        };
 
         // Data is in row-major order: [batch][seq][embed]
         // batch_size = 1, so we skip batch dimension
@@ -182,9 +196,8 @@ impl SemanticEngine {
 
     /// Load pre-computed embeddings from database
     pub fn load_embeddings(&mut self, conn: &Connection) -> Result<usize> {
-        let mut stmt = conn.prepare(
-            "SELECT id, embedding FROM principles WHERE embedding IS NOT NULL"
-        )?;
+        let mut stmt =
+            conn.prepare("SELECT id, embedding FROM principles WHERE embedding IS NOT NULL")?;
 
         let rows = stmt.query_map([], |row| {
             let id: String = row.get(0)?;
@@ -215,7 +228,7 @@ impl SemanticEngine {
         // Get all principles without embeddings
         let mut stmt = conn.prepare(
             "SELECT id, name, description, COALESCE(application_rule, '')
-             FROM principles WHERE embedding IS NULL"
+             FROM principles WHERE embedding IS NULL",
         )?;
 
         let principles: Vec<(String, String, String, String)> = stmt
@@ -224,11 +237,12 @@ impl SemanticEngine {
             })?
             .collect::<Result<Vec<_>, _>>()?;
 
-        println!("Computing embeddings for {} principles...", principles.len());
+        println!(
+            "Computing embeddings for {} principles...",
+            principles.len()
+        );
 
-        let mut update_stmt = conn.prepare(
-            "UPDATE principles SET embedding = ?2 WHERE id = ?1"
-        )?;
+        let mut update_stmt = conn.prepare("UPDATE principles SET embedding = ?2 WHERE id = ?1")?;
 
         let mut count = 0;
         for (id, name, description, application_rule) in principles {
@@ -238,10 +252,7 @@ impl SemanticEngine {
             match self.embed(&text) {
                 Ok(embedding) => {
                     // Convert to bytes
-                    let bytes: Vec<u8> = embedding
-                        .iter()
-                        .flat_map(|f| f.to_le_bytes())
-                        .collect();
+                    let bytes: Vec<u8> = embedding.iter().flat_map(|f| f.to_le_bytes()).collect();
 
                     update_stmt.execute(params![id, bytes])?;
                     count += 1;
@@ -264,7 +275,8 @@ impl SemanticEngine {
     pub fn search(&mut self, query: &str, top_k: usize) -> Result<Vec<SemanticMatch>> {
         let query_embedding = self.embed(query)?;
 
-        let mut results: Vec<SemanticMatch> = self.principle_embeddings
+        let mut results: Vec<SemanticMatch> = self
+            .principle_embeddings
             .iter()
             .map(|(id, emb)| {
                 let similarity = Self::cosine_similarity(&query_embedding, emb);
@@ -334,7 +346,8 @@ impl SemanticEngine {
             .map(|(i, (id, _))| (*id, i + 1))
             .collect();
 
-        let all_ids: std::collections::HashSet<_> = semantic_map.keys()
+        let all_ids: std::collections::HashSet<_> = semantic_map
+            .keys()
             .chain(bm25_map.keys())
             .cloned()
             .collect();
@@ -378,7 +391,7 @@ impl SemanticEngine {
             WHERE principles_fts MATCH ?1
             ORDER BY score
             LIMIT ?2
-            "#
+            "#,
         )?;
 
         let results = stmt
@@ -420,17 +433,17 @@ pub struct HybridMatch {
 /// Add embedding column to schema if not exists
 pub fn init_embedding_schema(conn: &Connection) -> Result<()> {
     // Check if column exists
-    let has_column: bool = conn.query_row(
-        "SELECT COUNT(*) FROM pragma_table_info('principles') WHERE name='embedding'",
-        [],
-        |row| row.get(0),
-    ).unwrap_or(0) > 0;
+    let has_column: bool = conn
+        .query_row(
+            "SELECT COUNT(*) FROM pragma_table_info('principles') WHERE name='embedding'",
+            [],
+            |row| row.get(0),
+        )
+        .unwrap_or(0)
+        > 0;
 
     if !has_column {
-        conn.execute(
-            "ALTER TABLE principles ADD COLUMN embedding BLOB",
-            [],
-        )?;
+        conn.execute("ALTER TABLE principles ADD COLUMN embedding BLOB", [])?;
         println!("Added embedding column to principles table");
     }
 
@@ -449,8 +462,8 @@ pub fn get_model_dir() -> PathBuf {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use tempfile::tempdir;
     use crate::db;
+    use tempfile::tempdir;
 
     #[test]
     fn test_cosine_similarity() {
@@ -510,7 +523,10 @@ mod tests {
         let vec = vec![1.0, 2.0, 3.0, 4.0, 5.0];
         let normalized = SemanticEngine::l2_normalize(&vec);
         let length: f32 = normalized.iter().map(|x| x * x).sum::<f32>().sqrt();
-        assert!((length - 1.0).abs() < 0.001, "Normalized vector should have length 1");
+        assert!(
+            (length - 1.0).abs() < 0.001,
+            "Normalized vector should have length 1"
+        );
     }
 
     #[test]
@@ -518,7 +534,10 @@ mod tests {
         let path = get_model_dir();
         // Should contain expected path components
         let path_str = path.to_string_lossy();
-        assert!(path_str.contains("100minds"), "Path should contain '100minds'");
+        assert!(
+            path_str.contains("100minds"),
+            "Path should contain '100minds'"
+        );
         assert!(path_str.contains("models"), "Path should contain 'models'");
         assert!(path_str.contains("minilm"), "Path should contain 'minilm'");
     }
@@ -530,36 +549,48 @@ mod tests {
         let conn = db::init_db(&db_path).unwrap();
 
         // Initially, embedding column shouldn't exist
-        let has_embedding: i32 = conn.query_row(
-            "SELECT COUNT(*) FROM pragma_table_info('principles') WHERE name='embedding'",
-            [],
-            |row| row.get(0),
-        ).unwrap();
-        assert_eq!(has_embedding, 0, "Embedding column shouldn't exist initially");
+        let has_embedding: i32 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM pragma_table_info('principles') WHERE name='embedding'",
+                [],
+                |row| row.get(0),
+            )
+            .unwrap();
+        assert_eq!(
+            has_embedding, 0,
+            "Embedding column shouldn't exist initially"
+        );
 
         // Initialize schema
         init_embedding_schema(&conn).unwrap();
 
         // Now embedding column should exist
-        let has_embedding: i32 = conn.query_row(
-            "SELECT COUNT(*) FROM pragma_table_info('principles') WHERE name='embedding'",
-            [],
-            |row| row.get(0),
-        ).unwrap();
+        let has_embedding: i32 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM pragma_table_info('principles') WHERE name='embedding'",
+                [],
+                |row| row.get(0),
+            )
+            .unwrap();
         assert_eq!(has_embedding, 1, "Embedding column should exist after init");
 
         // Second init should be idempotent
         init_embedding_schema(&conn).unwrap();
-        let has_embedding: i32 = conn.query_row(
-            "SELECT COUNT(*) FROM pragma_table_info('principles') WHERE name='embedding'",
-            [],
-            |row| row.get(0),
-        ).unwrap();
+        let has_embedding: i32 = conn
+            .query_row(
+                "SELECT COUNT(*) FROM pragma_table_info('principles') WHERE name='embedding'",
+                [],
+                |row| row.get(0),
+            )
+            .unwrap();
         assert_eq!(has_embedding, 1, "Second init should be idempotent");
     }
 
     #[test]
     fn test_embedding_dim_constant() {
-        assert_eq!(EMBEDDING_DIM, 384, "MiniLM embedding dimension should be 384");
+        assert_eq!(
+            EMBEDDING_DIM, 384,
+            "MiniLM embedding dimension should be 384"
+        );
     }
 }

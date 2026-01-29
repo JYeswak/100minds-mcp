@@ -191,7 +191,8 @@ pub struct SyncPosteriorsResponse {
     /// Per-principle Thompson posteriors
     pub posteriors: std::collections::HashMap<String, PrinciplePosterior>,
     /// Per-domain per-principle posteriors
-    pub domains: std::collections::HashMap<String, std::collections::HashMap<String, PrinciplePosterior>>,
+    pub domains:
+        std::collections::HashMap<String, std::collections::HashMap<String, PrinciplePosterior>>,
     /// Unix timestamp of last update
     pub last_updated: i64,
 }
@@ -303,7 +304,10 @@ impl CounselResponse {
 
     fn generate_summary(positions: &[CounselPosition], challenge: &CounselPosition) -> String {
         let for_count = positions.iter().filter(|p| p.stance == Stance::For).count();
-        let against_count = positions.iter().filter(|p| p.stance == Stance::Against).count();
+        let against_count = positions
+            .iter()
+            .filter(|p| p.stance == Stance::Against)
+            .count();
 
         let highest_confidence = positions
             .iter()
@@ -382,9 +386,18 @@ mod tests {
     #[test]
     fn test_stance_serialization() {
         assert_eq!(serde_json::to_string(&Stance::For).unwrap(), "\"for\"");
-        assert_eq!(serde_json::to_string(&Stance::Against).unwrap(), "\"against\"");
-        assert_eq!(serde_json::to_string(&Stance::Synthesize).unwrap(), "\"synthesize\"");
-        assert_eq!(serde_json::to_string(&Stance::Challenge).unwrap(), "\"challenge\"");
+        assert_eq!(
+            serde_json::to_string(&Stance::Against).unwrap(),
+            "\"against\""
+        );
+        assert_eq!(
+            serde_json::to_string(&Stance::Synthesize).unwrap(),
+            "\"synthesize\""
+        );
+        assert_eq!(
+            serde_json::to_string(&Stance::Challenge).unwrap(),
+            "\"challenge\""
+        );
     }
 
     #[test]
@@ -442,17 +455,11 @@ mod tests {
 
     #[test]
     fn test_counsel_response_generates_causal_hints() {
-        let positions = vec![
-            mock_position(Stance::For, "Kent Beck", vec!["tdd"]),
-        ];
+        let positions = vec![mock_position(Stance::For, "Kent Beck", vec!["tdd"])];
         let challenge = mock_position(Stance::Challenge, "Taleb", vec![]);
 
-        let response = CounselResponse::new(
-            "Test".to_string(),
-            positions,
-            challenge,
-            mock_provenance(),
-        );
+        let response =
+            CounselResponse::new("Test".to_string(), positions, challenge, mock_provenance());
 
         assert!(!response.causal_hints.is_empty());
         assert!(response.causal_hints[0].contains("Kent Beck"));
@@ -469,12 +476,8 @@ mod tests {
         ];
         let challenge = mock_position(Stance::Challenge, "D", vec![]);
 
-        let response = CounselResponse::new(
-            "Test".to_string(),
-            positions,
-            challenge,
-            mock_provenance(),
-        );
+        let response =
+            CounselResponse::new("Test".to_string(), positions, challenge, mock_provenance());
 
         assert!(response.summary.contains("2 position(s) FOR"));
         assert!(response.summary.contains("1 AGAINST"));
@@ -488,9 +491,18 @@ mod tests {
 
     #[test]
     fn test_counsel_depth_serialization() {
-        assert_eq!(serde_json::to_string(&CounselDepth::Quick).unwrap(), "\"quick\"");
-        assert_eq!(serde_json::to_string(&CounselDepth::Standard).unwrap(), "\"standard\"");
-        assert_eq!(serde_json::to_string(&CounselDepth::Deep).unwrap(), "\"deep\"");
+        assert_eq!(
+            serde_json::to_string(&CounselDepth::Quick).unwrap(),
+            "\"quick\""
+        );
+        assert_eq!(
+            serde_json::to_string(&CounselDepth::Standard).unwrap(),
+            "\"standard\""
+        );
+        assert_eq!(
+            serde_json::to_string(&CounselDepth::Deep).unwrap(),
+            "\"deep\""
+        );
     }
 
     #[test]

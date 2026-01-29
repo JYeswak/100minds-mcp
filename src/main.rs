@@ -7,10 +7,8 @@
 
 use anyhow::Result;
 use minds_mcp::{
-    counsel::CounselEngine,
-    db, embeddings, eval, mcp, outcome, prd, provenance::Provenance,
-    templates,
-    types::*,
+    counsel::CounselEngine, db, embeddings, eval, mcp, outcome, prd, provenance::Provenance,
+    templates, types::*,
 };
 use std::path::PathBuf;
 
@@ -82,10 +80,12 @@ async fn main() -> Result<()> {
             "counsel" => {
                 // counsel <question> [--json] [--domain=X]
                 let json_output = args.iter().any(|a| a == "--json");
-                let domain = args.iter()
+                let domain = args
+                    .iter()
                     .find(|a| a.starts_with("--domain="))
                     .map(|a| a.strip_prefix("--domain=").unwrap().to_string());
-                let question: String = args[2..].iter()
+                let question: String = args[2..]
+                    .iter()
                     .filter(|a| !a.starts_with("--"))
                     .cloned()
                     .collect::<Vec<_>>()
@@ -94,7 +94,8 @@ async fn main() -> Result<()> {
             }
             "--serve" => {
                 // HTTP server mode for swarm integration
-                let port: u16 = args.iter()
+                let port: u16 = args
+                    .iter()
                     .find(|a| a.starts_with("--port="))
                     .and_then(|a| a.strip_prefix("--port=").and_then(|p| p.parse().ok()))
                     .unwrap_or(3100);
@@ -123,7 +124,10 @@ async fn main() -> Result<()> {
         tracing::info!("Database initialized at {:?}", db_path);
         let key_path = data_dir.join("agent.key");
         let provenance = Provenance::init(&key_path)?;
-        tracing::info!("Provenance initialized, pubkey: {}", provenance.public_key_hex());
+        tracing::info!(
+            "Provenance initialized, pubkey: {}",
+            provenance.public_key_hex()
+        );
         run_cli_mode(&conn, &provenance).await?;
     }
 
@@ -150,13 +154,23 @@ fn run_analyze_prd(prd_path: &str, output_path: Option<&str>) -> Result<()> {
     // Score
     let score_bar = "█".repeat((metadata.validation_score / 10.0) as usize);
     let empty_bar = "░".repeat(10 - (metadata.validation_score / 10.0) as usize);
-    let status = if metadata.validation_score >= 70.0 { "✅ GOOD" } else { "⚠️ NEEDS WORK" };
-    println!("Score: [{}{score_bar}{empty_bar}] {:.0}/100  {}", "", metadata.validation_score, status);
+    let status = if metadata.validation_score >= 70.0 {
+        "✅ GOOD"
+    } else {
+        "⚠️ NEEDS WORK"
+    };
+    println!(
+        "Score: [{}{score_bar}{empty_bar}] {:.0}/100  {}",
+        "", metadata.validation_score, status
+    );
     println!();
 
     // Principles applied
     if !metadata.principles_applied.is_empty() {
-        println!("📚 Principles Applied: {}", metadata.principles_applied.join(", "));
+        println!(
+            "📚 Principles Applied: {}",
+            metadata.principles_applied.join(", ")
+        );
         println!();
     }
 
@@ -194,7 +208,10 @@ fn run_analyze_prd(prd_path: &str, output_path: Option<&str>) -> Result<()> {
     }
 
     if !metadata.scope_analysis.out_of_scope.is_empty() {
-        println!("   Out of Scope ({}):", metadata.scope_analysis.out_of_scope.len());
+        println!(
+            "   Out of Scope ({}):",
+            metadata.scope_analysis.out_of_scope.len()
+        );
         for item in &metadata.scope_analysis.out_of_scope {
             println!("      ✗ {}", item);
         }
@@ -203,7 +220,11 @@ fn run_analyze_prd(prd_path: &str, output_path: Option<&str>) -> Result<()> {
     if !metadata.scope_analysis.deferred.is_empty() {
         println!("   Deferred ({}):", metadata.scope_analysis.deferred.len());
         for item in &metadata.scope_analysis.deferred {
-            println!("      ⏸ {} → {}", item.item, item.suggested_prd.as_deref().unwrap_or("later"));
+            println!(
+                "      ⏸ {} → {}",
+                item.item,
+                item.suggested_prd.as_deref().unwrap_or("later")
+            );
             println!("         Reason: {}", item.reason);
         }
     }
@@ -240,15 +261,34 @@ fn run_validate_prd(prd_path: &str) -> Result<()> {
     // Score with visual bar
     let score_bar = "█".repeat((result.score / 10.0) as usize);
     let empty_bar = "░".repeat(10 - (result.score / 10.0) as usize);
-    let status = if result.valid { "✅ PASSED" } else { "❌ FAILED" };
+    let status = if result.valid {
+        "✅ PASSED"
+    } else {
+        "❌ FAILED"
+    };
 
-    println!("Score: [{}{score_bar}{empty_bar}] {:.0}/100  {}", "", result.score, status);
+    println!(
+        "Score: [{}{score_bar}{empty_bar}] {:.0}/100  {}",
+        "", result.score, status
+    );
     println!();
 
     // Warnings by severity
-    let errors: Vec<_> = result.warnings.iter().filter(|w| w.severity == "error").collect();
-    let warnings: Vec<_> = result.warnings.iter().filter(|w| w.severity == "warning").collect();
-    let infos: Vec<_> = result.warnings.iter().filter(|w| w.severity == "info").collect();
+    let errors: Vec<_> = result
+        .warnings
+        .iter()
+        .filter(|w| w.severity == "error")
+        .collect();
+    let warnings: Vec<_> = result
+        .warnings
+        .iter()
+        .filter(|w| w.severity == "warning")
+        .collect();
+    let infos: Vec<_> = result
+        .warnings
+        .iter()
+        .filter(|w| w.severity == "info")
+        .collect();
 
     if !errors.is_empty() {
         println!("🔴 ERRORS ({}):", errors.len());
@@ -293,7 +333,10 @@ fn run_validate_prd(prd_path: &str) -> Result<()> {
     }
 
     // Principles applied
-    println!("📚 Principles Applied: {}", result.principles_applied.join(", "));
+    println!(
+        "📚 Principles Applied: {}",
+        result.principles_applied.join(", ")
+    );
 
     Ok(())
 }
@@ -316,7 +359,12 @@ fn run_template_match(question: &str) -> Result<()> {
     }
 
     for (i, m) in matches.iter().enumerate() {
-        println!("{}. {} (match score: {:.1})", i + 1, m.template.name, m.match_score);
+        println!(
+            "{}. {} (match score: {:.1})",
+            i + 1,
+            m.template.name,
+            m.match_score
+        );
         println!("   {}", m.template.description);
         println!();
 
@@ -329,7 +377,12 @@ fn run_template_match(question: &str) -> Result<()> {
         if !m.template.synergies.is_empty() {
             println!("   SYNERGIES:");
             for s in &m.template.synergies {
-                println!("   • {} + {} = {}", s.principles.join(" + "), s.thinkers.join(", "), s.combined_power);
+                println!(
+                    "   • {} + {} = {}",
+                    s.principles.join(" + "),
+                    s.thinkers.join(", "),
+                    s.combined_power
+                );
             }
             println!();
         }
@@ -338,7 +391,10 @@ fn run_template_match(question: &str) -> Result<()> {
         if !m.template.blind_spots.is_empty() {
             println!("   BLIND SPOTS:");
             for bs in &m.template.blind_spots {
-                println!("   • [{:?}] {}: {}", bs.severity, bs.name, bs.check_question);
+                println!(
+                    "   • [{:?}] {}: {}",
+                    bs.severity, bs.name, bs.check_question
+                );
             }
             println!();
         }
@@ -347,7 +403,10 @@ fn run_template_match(question: &str) -> Result<()> {
         if !m.template.anti_patterns.is_empty() {
             println!("   ANTI-PATTERNS TO AVOID:");
             for ap in &m.template.anti_patterns {
-                println!("   • {} ({}): {}", ap.name, ap.source_thinker, ap.description);
+                println!(
+                    "   • {} ({}): {}",
+                    ap.name, ap.source_thinker, ap.description
+                );
             }
             println!();
         }
@@ -363,7 +422,11 @@ fn print_decision_tree_node(tree: &templates::DecisionTree, prefix: &str) {
     }
 
     for (i, opt) in tree.options.iter().enumerate() {
-        let branch = if i == tree.options.len() - 1 { "└" } else { "├" };
+        let branch = if i == tree.options.len() - 1 {
+            "└"
+        } else {
+            "├"
+        };
         println!("{}{}─ {} - {}", prefix, branch, opt.label, opt.description);
 
         if let Some(rec) = &opt.recommendation {
@@ -463,22 +526,25 @@ fn run_stats() -> Result<()> {
     println!("└─────────────────────────────────────────────────────────────┘\n");
 
     // Count thinkers
-    let thinker_count: i64 = conn.query_row("SELECT COUNT(*) FROM thinkers", [], |row| row.get(0))?;
+    let thinker_count: i64 =
+        conn.query_row("SELECT COUNT(*) FROM thinkers", [], |row| row.get(0))?;
     println!("Thinkers: {}", thinker_count);
 
     // Count principles
-    let principle_count: i64 = conn.query_row("SELECT COUNT(*) FROM principles", [], |row| row.get(0))?;
+    let principle_count: i64 =
+        conn.query_row("SELECT COUNT(*) FROM principles", [], |row| row.get(0))?;
     println!("Principles: {}", principle_count);
 
     // Count decisions
-    let decision_count: i64 = conn.query_row("SELECT COUNT(*) FROM decisions", [], |row| row.get(0))?;
+    let decision_count: i64 =
+        conn.query_row("SELECT COUNT(*) FROM decisions", [], |row| row.get(0))?;
     println!("Decisions recorded: {}", decision_count);
 
     // Count outcomes
     let outcome_count: i64 = conn.query_row(
         "SELECT COUNT(*) FROM decisions WHERE outcome_success IS NOT NULL",
         [],
-        |row| row.get(0)
+        |row| row.get(0),
     )?;
     println!("Outcomes recorded: {}", outcome_count);
 
@@ -489,7 +555,7 @@ fn run_stats() -> Result<()> {
     // Top principles by confidence
     println!("\n📈 TOP PRINCIPLES BY CONFIDENCE:");
     let mut stmt = conn.prepare(
-        "SELECT name, learned_confidence FROM principles ORDER BY learned_confidence DESC LIMIT 5"
+        "SELECT name, learned_confidence FROM principles ORDER BY learned_confidence DESC LIMIT 5",
     )?;
     let rows = stmt.query_map([], |row| {
         Ok((row.get::<_, String>(0)?, row.get::<_, f64>(1)?))
@@ -639,7 +705,9 @@ fn handle_http_request(
             break;
         }
         if header.to_lowercase().starts_with("content-length:") {
-            content_length = header.split(':').nth(1)
+            content_length = header
+                .split(':')
+                .nth(1)
                 .and_then(|s| s.trim().parse().ok())
                 .unwrap_or(0);
         }
@@ -653,11 +721,17 @@ fn handle_http_request(
 
     // Parse JSON-RPC request
     let body_str = String::from_utf8_lossy(&body);
-    let json_req: serde_json::Value = serde_json::from_str(&body_str)
-        .unwrap_or(serde_json::json!({}));
+    let json_req: serde_json::Value =
+        serde_json::from_str(&body_str).unwrap_or(serde_json::json!({}));
 
-    let method = json_req.get("method").and_then(|m| m.as_str()).unwrap_or("");
-    let params = json_req.get("params").cloned().unwrap_or(serde_json::json!({}));
+    let method = json_req
+        .get("method")
+        .and_then(|m| m.as_str())
+        .unwrap_or("");
+    let params = json_req
+        .get("params")
+        .cloned()
+        .unwrap_or(serde_json::json!({}));
     let id = json_req.get("id").cloned().unwrap_or(serde_json::json!(1));
 
     // Route to handler
@@ -666,7 +740,10 @@ fn handle_http_request(
 
     let result = match method {
         "counsel" | "tools/call" => {
-            let tool_name = params.get("name").and_then(|n| n.as_str()).unwrap_or("counsel");
+            let tool_name = params
+                .get("name")
+                .and_then(|n| n.as_str())
+                .unwrap_or("counsel");
             match tool_name {
                 "counsel" => handle_counsel_tool(&conn, &provenance, &params),
                 "record_outcome" => handle_record_outcome_tool(&conn, &params),
@@ -731,12 +808,23 @@ fn handle_record_outcome_tool(
     params: &serde_json::Value,
 ) -> Result<serde_json::Value> {
     let args = params.get("arguments").unwrap_or(params);
-    let decision_id = args.get("decision_id").and_then(|d| d.as_str()).unwrap_or("");
-    let success = args.get("success").and_then(|s| s.as_bool()).unwrap_or(false);
+    let decision_id = args
+        .get("decision_id")
+        .and_then(|d| d.as_str())
+        .unwrap_or("");
+    let success = args
+        .get("success")
+        .and_then(|s| s.as_bool())
+        .unwrap_or(false);
     let notes = args.get("notes").and_then(|n| n.as_str());
-    let principle_ids: Vec<String> = args.get("principle_ids")
+    let principle_ids: Vec<String> = args
+        .get("principle_ids")
         .and_then(|p| p.as_array())
-        .map(|arr| arr.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_str().map(String::from))
+                .collect()
+        })
         .unwrap_or_default();
     let domain = args.get("domain").and_then(|d| d.as_str());
     let confidence_score = args.get("confidence_score").and_then(|c| c.as_f64());
@@ -777,9 +865,14 @@ fn handle_counterfactual_sim_tool(
     let args = params.get("arguments").unwrap_or(params);
     let question = args.get("question").and_then(|q| q.as_str()).unwrap_or("");
     let domain = args.get("domain").and_then(|d| d.as_str());
-    let excluded_principles: Vec<String> = args.get("excluded_principles")
+    let excluded_principles: Vec<String> = args
+        .get("excluded_principles")
         .and_then(|p| p.as_array())
-        .map(|arr| arr.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|v| v.as_str().map(String::from))
+                .collect()
+        })
         .unwrap_or_default();
 
     let engine = CounselEngine::new(conn, provenance);
@@ -799,7 +892,10 @@ fn handle_counterfactual_sim_tool(
 fn print_decision_tree(response: &CounselResponse, elapsed: std::time::Duration) {
     // Header with timing
     println!("\n┌─────────────────────────────────────────────────────────────┐");
-    println!("│ 🧠 100MINDS DECISION INTELLIGENCE   [{:>6.1}ms]              │", elapsed.as_secs_f64() * 1000.0);
+    println!(
+        "│ 🧠 100MINDS DECISION INTELLIGENCE   [{:>6.1}ms]              │",
+        elapsed.as_secs_f64() * 1000.0
+    );
     println!("└─────────────────────────────────────────────────────────────┘");
     println!();
     println!("📋 {}", response.question);
@@ -807,13 +903,21 @@ fn print_decision_tree(response: &CounselResponse, elapsed: std::time::Duration)
 
     // Decision tree format
     println!("┌─ IF YOU PROCEED ────────────────────────────────────────────");
-    for position in response.positions.iter().filter(|p| matches!(p.stance, Stance::For | Stance::Synthesize)) {
+    for position in response
+        .positions
+        .iter()
+        .filter(|p| matches!(p.stance, Stance::For | Stance::Synthesize))
+    {
         print_tree_node(position, "│  ");
     }
     println!("│");
 
     println!("├─ WATCH OUT FOR ──────────────────────────────────────────────");
-    for position in response.positions.iter().filter(|p| matches!(p.stance, Stance::Against)) {
+    for position in response
+        .positions
+        .iter()
+        .filter(|p| matches!(p.stance, Stance::Against))
+    {
         print_tree_node(position, "│  ");
     }
     println!("│");
@@ -824,9 +928,13 @@ fn print_decision_tree(response: &CounselResponse, elapsed: std::time::Duration)
 
     // Provenance footer
     println!("─────────────────────────────────────────────────────────────────");
-    println!("Decision #{} │ Chain: {}",
+    println!(
+        "Decision #{} │ Chain: {}",
         &response.decision_id[..8],
-        response.provenance.previous_hash.as_ref()
+        response
+            .provenance
+            .previous_hash
+            .as_ref()
             .map(|h| format!("{}→{}", &h[..6], &response.provenance.content_hash[..6]))
             .unwrap_or_else(|| format!("genesis→{}", &response.provenance.content_hash[..6]))
     );
@@ -900,22 +1008,18 @@ fn truncate_str(s: &str, max: usize) -> String {
     if s.len() <= max {
         s.to_string()
     } else {
-        format!("{}...", &s[..max.min(s.len())-3])
+        format!("{}...", &s[..max.min(s.len()) - 3])
     }
 }
 
 fn get_data_dir() -> Result<PathBuf> {
     // Use XDG data dir on Linux, ~/Library/Application Support on macOS
-    let base = dirs::data_dir()
-        .unwrap_or_else(|| PathBuf::from("."));
+    let base = dirs::data_dir().unwrap_or_else(|| PathBuf::from("."));
 
     Ok(base.join("100minds"))
 }
 
-async fn run_cli_mode(
-    conn: &rusqlite::Connection,
-    provenance: &Provenance,
-) -> Result<()> {
+async fn run_cli_mode(conn: &rusqlite::Connection, provenance: &Provenance) -> Result<()> {
     use std::io::{self, BufRead, Write};
 
     let engine = CounselEngine::new(conn, provenance);
@@ -1018,7 +1122,12 @@ fn print_counsel_response(response: &CounselResponse) {
     println!("╚═══════════════════════════════════════════════════════════╝\n");
 
     for position in &response.positions {
-        println!("{} {} ({})", position.stance.emoji(), position.thinker, position.stance.name());
+        println!(
+            "{} {} ({})",
+            position.stance.emoji(),
+            position.thinker,
+            position.stance.name()
+        );
         println!("   Confidence: {:.0}%", position.confidence * 100.0);
         println!("   {}", wrap_text(&position.argument, 60, "   "));
         if let Some(falsifiable) = &position.falsifiable_if {
@@ -1036,7 +1145,11 @@ fn print_counsel_response(response: &CounselResponse) {
     println!("─────────────────────────────────────────────────────────────");
     println!("Provenance: {}", &response.provenance.content_hash[..16]);
     if let Some(prev) = &response.provenance.previous_hash {
-        println!("Chain: ...{} → {}", &prev[..8], &response.provenance.content_hash[..8]);
+        println!(
+            "Chain: ...{} → {}",
+            &prev[..8],
+            &response.provenance.content_hash[..8]
+        );
     }
     println!();
 }
@@ -1045,7 +1158,7 @@ fn truncate(s: &str, max: usize) -> String {
     if s.len() <= max {
         s.to_string()
     } else {
-        format!("{}...", &s[..max-3])
+        format!("{}...", &s[..max - 3])
     }
 }
 
@@ -1093,7 +1206,8 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
 
     match subcommand {
         "scenarios" => {
-            let scenario_dir = args.first()
+            let scenario_dir = args
+                .first()
                 .map(|s| PathBuf::from(s))
                 .unwrap_or_else(|| data_dir.join("scenarios"));
 
@@ -1101,9 +1215,13 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
 
             let scenarios = eval::scenarios::load_all_scenarios(&scenario_dir)?;
             if scenarios.is_empty() {
-                println!("No scenarios found. Create JSON files in {:?}", scenario_dir);
+                println!(
+                    "No scenarios found. Create JSON files in {:?}",
+                    scenario_dir
+                );
                 println!("\nExample scenario format:");
-                println!(r#"{{
+                println!(
+                    r#"{{
   "id": "arch-001",
   "category": "architecture",
   "question": "Should we use microservices?",
@@ -1111,7 +1229,8 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
   "expected_thinkers": ["Sam Newman", "Martin Fowler"],
   "anti_principles": ["Always Use Microservices"],
   "difficulty": 3
-}}"#);
+}}"#
+                );
                 return Ok(());
             }
 
@@ -1135,7 +1254,10 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             }
             println!("   Recall: {:.1}%", results.aggregate.recall * 100.0);
             println!("   NDCG: {:.3}", results.aggregate.ndcg);
-            println!("   Anti-principle rate: {:.1}%", results.aggregate.anti_principle_rate * 100.0);
+            println!(
+                "   Anti-principle rate: {:.1}%",
+                results.aggregate.anti_principle_rate * 100.0
+            );
             println!("   Avg latency: {}ms", results.aggregate.latency_ms);
             println!();
 
@@ -1143,7 +1265,12 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             println!("BY CATEGORY:");
             for (cat, metrics) in &results.by_category {
                 let p3 = metrics.precision_at_k.get(&3).unwrap_or(&0.0);
-                println!("   {:20} P@3: {:.0}%  Recall: {:.0}%", cat, p3 * 100.0, metrics.recall * 100.0);
+                println!(
+                    "   {:20} P@3: {:.0}%  Recall: {:.0}%",
+                    cat,
+                    p3 * 100.0,
+                    metrics.recall * 100.0
+                );
             }
             println!();
 
@@ -1152,15 +1279,18 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
                 println!("WORST PERFORMERS:");
                 for result in results.worst_performers.iter().take(5) {
                     let p3 = result.metrics.precision_at_k.get(&3).unwrap_or(&0.0);
-                    println!("   [P@3: {:.0}%] {} - {}", p3 * 100.0, result.scenario_id, result.question);
+                    println!(
+                        "   [P@3: {:.0}%] {} - {}",
+                        p3 * 100.0,
+                        result.scenario_id,
+                        result.question
+                    );
                 }
             }
         }
 
         "monte-carlo" => {
-            let num_sims = args.first()
-                .and_then(|s| s.parse().ok())
-                .unwrap_or(1000);
+            let num_sims = args.first().and_then(|s| s.parse().ok()).unwrap_or(1000);
 
             println!("Running {} Monte Carlo simulations...", num_sims);
 
@@ -1177,9 +1307,10 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
 
             println!("Simulations: {}", results.num_simulations);
             println!("Selection variance: {:.3}", results.selection_variance);
-            println!("95% CI: [{:.2}, {:.2}]",
-                     results.confidence_interval_95.0,
-                     results.confidence_interval_95.1);
+            println!(
+                "95% CI: [{:.2}, {:.2}]",
+                results.confidence_interval_95.0, results.confidence_interval_95.1
+            );
             println!("Tail risk (<50%): {:.1}%", results.tail_risk * 100.0);
             println!();
 
@@ -1194,9 +1325,18 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
 
             // Outcome distribution
             println!("SIMULATED OUTCOMES:");
-            println!("   Success: {:.1}%", results.simulated_outcomes.success_rate * 100.0);
-            println!("   Partial: {:.1}%", results.simulated_outcomes.partial_success_rate * 100.0);
-            println!("   Failure: {:.1}%", results.simulated_outcomes.failure_rate * 100.0);
+            println!(
+                "   Success: {:.1}%",
+                results.simulated_outcomes.success_rate * 100.0
+            );
+            println!(
+                "   Partial: {:.1}%",
+                results.simulated_outcomes.partial_success_rate * 100.0
+            );
+            println!(
+                "   Failure: {:.1}%",
+                results.simulated_outcomes.failure_rate * 100.0
+            );
         }
 
         "coverage" => {
@@ -1225,7 +1365,11 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             let scenario_dir = data_dir.join("scenarios");
             let scenarios = eval::scenarios::load_all_scenarios(&scenario_dir).unwrap_or_default();
             let scenario_results = if !scenarios.is_empty() {
-                Some(eval::scenarios::run_benchmark(&conn, &provenance, &scenarios)?)
+                Some(eval::scenarios::run_benchmark(
+                    &conn,
+                    &provenance,
+                    &scenarios,
+                )?)
             } else {
                 println!("   (no scenarios found in {:?})", scenario_dir);
                 None
@@ -1258,9 +1402,7 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
         }
 
         "synthetic" => {
-            let count = args.first()
-                .and_then(|s| s.parse().ok())
-                .unwrap_or(1000);
+            let count = args.first().and_then(|s| s.parse().ok()).unwrap_or(1000);
 
             let output_path = args.get(1).map(|s| PathBuf::from(s));
 
@@ -1275,7 +1417,8 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             let questions = eval::synthetic::generate_sample(&config, count, seed);
 
             // Print stats
-            let mut domain_counts: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
+            let mut domain_counts: std::collections::HashMap<String, usize> =
+                std::collections::HashMap::new();
             for q in &questions {
                 *domain_counts.entry(q.domain.clone()).or_insert(0) += 1;
             }
@@ -1306,11 +1449,12 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
 
         "data-driven" => {
             // Data-driven evaluation: no hardcoded expectations, learn from heuristics
-            let count = args.first()
-                .and_then(|s| s.parse().ok())
-                .unwrap_or(500);
+            let count = args.first().and_then(|s| s.parse().ok()).unwrap_or(500);
 
-            println!("📊 Running data-driven evaluation on {} synthetic questions...\n", count);
+            println!(
+                "📊 Running data-driven evaluation on {} synthetic questions...\n",
+                count
+            );
             println!("This evaluation uses heuristics (not hardcoded expectations).");
             println!("It measures: principle diversity, thinker coverage, domain relevance.\n");
 
@@ -1326,11 +1470,12 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
 
         "eval-synthetic" => {
             // Generate + evaluate in one step
-            let count = args.first()
-                .and_then(|s| s.parse().ok())
-                .unwrap_or(100);
+            let count = args.first().and_then(|s| s.parse().ok()).unwrap_or(100);
 
-            println!("🧪 Generating and evaluating {} synthetic questions...\n", count);
+            println!(
+                "🧪 Generating and evaluating {} synthetic questions...\n",
+                count
+            );
 
             let config = eval::synthetic::GeneratorConfig::default();
             let questions = eval::synthetic::generate_sample(&config, count, 42);
@@ -1338,7 +1483,8 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             let engine = CounselEngine::new(&conn, &provenance);
 
             let mut total_score = 0.0;
-            let mut domain_scores: std::collections::HashMap<String, Vec<f64>> = std::collections::HashMap::new();
+            let mut domain_scores: std::collections::HashMap<String, Vec<f64>> =
+                std::collections::HashMap::new();
 
             for (i, q) in questions.iter().enumerate() {
                 let request = CounselRequest {
@@ -1350,7 +1496,9 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
                 };
 
                 if let Ok(response) = engine.counsel(&request) {
-                    let principles_count = response.positions.iter()
+                    let principles_count = response
+                        .positions
+                        .iter()
                         .map(|p| p.principles_cited.len())
                         .sum::<usize>();
                     let thinkers_count = response.positions.len();
@@ -1360,12 +1508,17 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
                         + (principles_count.min(10) as f64 / 10.0) * 0.5;
 
                     total_score += score;
-                    domain_scores.entry(q.domain.clone()).or_default().push(score);
+                    domain_scores
+                        .entry(q.domain.clone())
+                        .or_default()
+                        .push(score);
 
                     if i < 5 {
                         println!("[{}] Q: {}", i + 1, q.question);
-                        println!("    Thinkers: {}, Principles: {}, Score: {:.2}",
-                                 thinkers_count, principles_count, score);
+                        println!(
+                            "    Thinkers: {}, Principles: {}, Score: {:.2}",
+                            thinkers_count, principles_count, score
+                        );
                         println!();
                     }
                 }
@@ -1376,7 +1529,10 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             }
 
             println!("\nRESULTS:");
-            println!("   Overall avg score: {:.2}/1.00", total_score / count as f64);
+            println!(
+                "   Overall avg score: {:.2}/1.00",
+                total_score / count as f64
+            );
 
             println!("\n   By domain:");
             for (domain, scores) in &domain_scores {
@@ -1444,7 +1600,10 @@ fn run_analyze(subcommand: &str) -> Result<()> {
             println!("└─────────────────────────────────────────────────────────────┘\n");
 
             // Orphans
-            println!("ORPHAN PRINCIPLES ({} never selected):", analysis.orphan_principles.len());
+            println!(
+                "ORPHAN PRINCIPLES ({} never selected):",
+                analysis.orphan_principles.len()
+            );
             for p in &analysis.orphan_principles {
                 println!("   • {}", p);
             }
@@ -1516,8 +1675,14 @@ fn run_thompson(subcommand: &str) -> Result<()> {
             println!("TOP 20 PRINCIPLES BY MEAN:");
             for (i, stat) in stats.iter().take(20).enumerate() {
                 let ci = format!("[{:.2}, {:.2}]", stat.ci_lower, stat.ci_upper);
-                println!("   {:2}. {:35} mean: {:.2}  CI: {:15}  n: {:.0}",
-                         i + 1, truncate_str(&stat.name, 35), stat.mean, ci, stat.total_observations);
+                println!(
+                    "   {:2}. {:35} mean: {:.2}  CI: {:15}  n: {:.0}",
+                    i + 1,
+                    truncate_str(&stat.name, 35),
+                    stat.mean,
+                    ci,
+                    stat.total_observations
+                );
             }
             println!();
 
@@ -1525,9 +1690,18 @@ fn run_thompson(subcommand: &str) -> Result<()> {
             for stat in stats.iter().rev().take(10) {
                 let ci = format!("[{:.2}, {:.2}]", stat.ci_lower, stat.ci_upper);
                 let ci_width = stat.ci_upper - stat.ci_lower;
-                let uncertainty = if ci_width > 0.5 { "⚠️ high uncertainty" } else { "" };
-                println!("   {:35} mean: {:.2}  CI: {:15}  {}",
-                         truncate_str(&stat.name, 35), stat.mean, ci, uncertainty);
+                let uncertainty = if ci_width > 0.5 {
+                    "⚠️ high uncertainty"
+                } else {
+                    ""
+                };
+                println!(
+                    "   {:35} mean: {:.2}  CI: {:15}  {}",
+                    truncate_str(&stat.name, 35),
+                    stat.mean,
+                    ci,
+                    uncertainty
+                );
             }
         }
 
@@ -1557,7 +1731,9 @@ fn run_thompson(subcommand: &str) -> Result<()> {
             )?;
 
             let poor_performers: Vec<(String, String, f64, i64)> = stmt
-                .query_map([], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?)))?
+                .query_map([], |row| {
+                    Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?))
+                })?
                 .filter_map(|r| r.ok())
                 .collect();
 
@@ -1574,18 +1750,30 @@ fn run_thompson(subcommand: &str) -> Result<()> {
             for (id, name, conf, adj_count) in &poor_performers {
                 if *adj_count < 5 {
                     // Not enough data - give second chance
-                    println!("   🔄 RESET: {} (conf: {:.2}, only {} samples)",
-                             truncate_str(name, 40), conf, adj_count);
+                    println!(
+                        "   🔄 RESET: {} (conf: {:.2}, only {} samples)",
+                        truncate_str(name, 40),
+                        conf,
+                        adj_count
+                    );
                     to_reset.push(id.clone());
                 } else if *conf < 0.15 {
                     // Sufficient data, still failing - archive
-                    println!("   📦 ARCHIVE: {} (conf: {:.2}, {} samples)",
-                             truncate_str(name, 40), conf, adj_count);
+                    println!(
+                        "   📦 ARCHIVE: {} (conf: {:.2}, {} samples)",
+                        truncate_str(name, 40),
+                        conf,
+                        adj_count
+                    );
                     to_archive.push(id.clone());
                 } else {
                     // Low but recovering - leave alone
-                    println!("   ⏳ WATCH: {} (conf: {:.2}, {} samples)",
-                             truncate_str(name, 40), conf, adj_count);
+                    println!(
+                        "   ⏳ WATCH: {} (conf: {:.2}, {} samples)",
+                        truncate_str(name, 40),
+                        conf,
+                        adj_count
+                    );
                 }
             }
 
@@ -1593,25 +1781,34 @@ fn run_thompson(subcommand: &str) -> Result<()> {
 
             // Apply remediation
             if !to_reset.is_empty() {
-                println!("Resetting {} principles to baseline (0.5)...", to_reset.len());
+                println!(
+                    "Resetting {} principles to baseline (0.5)...",
+                    to_reset.len()
+                );
                 for id in &to_reset {
                     conn.execute(
                         "UPDATE principles SET learned_confidence = 0.5 WHERE id = ?1",
-                        [id]
+                        [id],
                     )?;
                 }
                 println!("✅ Reset complete");
             }
 
             if !to_archive.is_empty() {
-                println!("\n⚠️  {} principles marked for archive (confidence < 0.15 with 5+ samples)", to_archive.len());
+                println!(
+                    "\n⚠️  {} principles marked for archive (confidence < 0.15 with 5+ samples)",
+                    to_archive.len()
+                );
                 println!("   Run with --thompson archive to move them to inactive status");
             }
 
             println!("\n📊 Summary:");
             println!("   Reset (second chance): {}", to_reset.len());
             println!("   Recommend archive: {}", to_archive.len());
-            println!("   Watching (recovering): {}", poor_performers.len() - to_reset.len() - to_archive.len());
+            println!(
+                "   Watching (recovering): {}",
+                poor_performers.len() - to_reset.len() - to_archive.len()
+            );
         }
 
         "explore" => {
@@ -1627,7 +1824,7 @@ fn run_thompson(subcommand: &str) -> Result<()> {
                      ORDER BY RANDOM()
                      LIMIT 10
                  )",
-                []
+                [],
             )?;
 
             println!("✅ Boosted 10 random poor performers to 0.6 confidence");
@@ -1670,19 +1867,25 @@ fn run_thompson(subcommand: &str) -> Result<()> {
                             anti_pattern, falsification, base_confidence, learned_confidence,
                             datetime('now'), 'low_confidence'
                      FROM principles WHERE id = ?1",
-                    [id]
+                    [id],
                 )?;
                 // Soft-delete by setting confidence to -1 (excluded from searches)
                 conn.execute(
                     "UPDATE principles SET learned_confidence = -1.0 WHERE id = ?1",
-                    [id]
+                    [id],
                 )?;
             }
 
             // Rebuild FTS index
-            conn.execute("INSERT INTO principles_fts(principles_fts) VALUES('rebuild')", [])?;
+            conn.execute(
+                "INSERT INTO principles_fts(principles_fts) VALUES('rebuild')",
+                [],
+            )?;
 
-            println!("\n✅ Culled {} principles (archived, not deleted)", culled.len());
+            println!(
+                "\n✅ Culled {} principles (archived, not deleted)",
+                culled.len()
+            );
             println!("   To restore: SELECT * FROM archived_principles");
         }
 
@@ -1691,21 +1894,32 @@ fn run_thompson(subcommand: &str) -> Result<()> {
             println!("🔍 DISCOVERY: Mining patterns from successful outcomes...\n");
 
             // Get successful decisions with their context
-            let successes: Vec<(String, String)> = conn.prepare(
-                "SELECT question, context_json FROM decisions
+            let successes: Vec<(String, String)> = conn
+                .prepare(
+                    "SELECT question, context_json FROM decisions
                  WHERE outcome_success = 1
                  ORDER BY outcome_recorded_at DESC
-                 LIMIT 500"
-            )?
-            .query_map([], |row| Ok((row.get(0)?, row.get::<_, Option<String>>(1)?.unwrap_or_default())))?
-            .filter_map(|r| r.ok())
-            .collect();
+                 LIMIT 500",
+                )?
+                .query_map([], |row| {
+                    Ok((
+                        row.get(0)?,
+                        row.get::<_, Option<String>>(1)?.unwrap_or_default(),
+                    ))
+                })?
+                .filter_map(|r| r.ok())
+                .collect();
 
             println!("Analyzing {} successful decisions...\n", successes.len());
 
             // Extract common patterns/keywords
-            let mut keyword_counts: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
-            let stopwords = ["should", "we", "the", "a", "an", "to", "for", "is", "it", "our", "use", "add", "do", "can", "be", "this", "that", "with", "from", "or", "and", "in", "on", "of", "how", "what", "when", "why"];
+            let mut keyword_counts: std::collections::HashMap<String, usize> =
+                std::collections::HashMap::new();
+            let stopwords = [
+                "should", "we", "the", "a", "an", "to", "for", "is", "it", "our", "use", "add",
+                "do", "can", "be", "this", "that", "with", "from", "or", "and", "in", "on", "of",
+                "how", "what", "when", "why",
+            ];
 
             for (question, _context) in &successes {
                 for word in question.to_lowercase().split_whitespace() {
@@ -1728,18 +1942,19 @@ fn run_thompson(subcommand: &str) -> Result<()> {
 
             // Get top principles from successes
             println!("\nTOP PRINCIPLES IN SUCCESSFUL OUTCOMES:");
-            let top_principles: Vec<(String, i64)> = conn.prepare(
-                "SELECT p.name, COUNT(*) as cnt
+            let top_principles: Vec<(String, i64)> = conn
+                .prepare(
+                    "SELECT p.name, COUNT(*) as cnt
                  FROM framework_adjustments fa
                  JOIN principles p ON fa.principle_id = p.id
                  WHERE fa.success = 1
                  GROUP BY fa.principle_id
                  ORDER BY cnt DESC
-                 LIMIT 15"
-            )?
-            .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?
-            .filter_map(|r| r.ok())
-            .collect();
+                 LIMIT 15",
+                )?
+                .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?
+                .filter_map(|r| r.ok())
+                .collect();
 
             for (name, count) in &top_principles {
                 let bar = "█".repeat(*count as usize / 3);
@@ -1749,13 +1964,25 @@ fn run_thompson(subcommand: &str) -> Result<()> {
             // Suggest new principles based on gaps
             println!("\n💡 SUGGESTED NEW PRINCIPLES (based on patterns):");
             let suggestions = vec![
-                ("Pattern: 'microservices' frequent", "Consider adding: 'Start Monolith, Extract Later' from Sam Newman"),
-                ("Pattern: 'scale/scaling' frequent", "Consider adding: 'Horizontal vs Vertical Scaling' heuristics"),
-                ("Pattern: 'team/teams' frequent", "Consider adding: 'Inverse Conway Maneuver' from Team Topologies"),
+                (
+                    "Pattern: 'microservices' frequent",
+                    "Consider adding: 'Start Monolith, Extract Later' from Sam Newman",
+                ),
+                (
+                    "Pattern: 'scale/scaling' frequent",
+                    "Consider adding: 'Horizontal vs Vertical Scaling' heuristics",
+                ),
+                (
+                    "Pattern: 'team/teams' frequent",
+                    "Consider adding: 'Inverse Conway Maneuver' from Team Topologies",
+                ),
             ];
 
             for (pattern, suggestion) in suggestions {
-                if sorted.iter().any(|(w, c)| *c > 10 && pattern.to_lowercase().contains(w)) {
+                if sorted
+                    .iter()
+                    .any(|(w, c)| *c > 10 && pattern.to_lowercase().contains(w))
+                {
                     println!("   • {}", suggestion);
                 }
             }
@@ -1779,13 +2006,13 @@ fn run_thompson(subcommand: &str) -> Result<()> {
             let explore_count: i64 = conn.query_row(
                 "SELECT COUNT(*) FROM principles WHERE learned_confidence < 0.3",
                 [],
-                |row| row.get(0)
+                |row| row.get(0),
             )?;
 
             let total_outcomes: i64 = conn.query_row(
                 "SELECT COUNT(*) FROM decisions WHERE outcome_success IS NOT NULL",
                 [],
-                |row| row.get(0)
+                |row| row.get(0),
             )?;
 
             // Output JSON for Yuzu to consume
@@ -1874,15 +2101,16 @@ fn run_thompson(subcommand: &str) -> Result<()> {
 
             for (domain_tag, domain_name) in &domains {
                 // Find principles with this domain tag
-                let principles: Vec<(String, String, f64)> = conn.prepare(
-                    "SELECT id, name, learned_confidence FROM principles
-                     WHERE domain_tags LIKE ?1 AND learned_confidence > 0"
-                )?
-                .query_map([format!("%{}%", domain_tag)], |row| {
-                    Ok((row.get(0)?, row.get(1)?, row.get(2)?))
-                })?
-                .filter_map(|r| r.ok())
-                .collect();
+                let principles: Vec<(String, String, f64)> = conn
+                    .prepare(
+                        "SELECT id, name, learned_confidence FROM principles
+                     WHERE domain_tags LIKE ?1 AND learned_confidence > 0",
+                    )?
+                    .query_map([format!("%{}%", domain_tag)], |row| {
+                        Ok((row.get(0)?, row.get(1)?, row.get(2)?))
+                    })?
+                    .filter_map(|r| r.ok())
+                    .collect();
 
                 let count = principles.len();
                 if count > 0 {
@@ -1890,8 +2118,8 @@ fn run_thompson(subcommand: &str) -> Result<()> {
 
                     for (id, _name, conf) in &principles {
                         // Initialize with prior based on learned_confidence
-                        let alpha = 1.0 + conf * 5.0;  // Higher confidence = more successes
-                        let beta = 1.0 + (1.0 - conf) * 5.0;  // Lower confidence = more failures
+                        let alpha = 1.0 + conf * 5.0; // Higher confidence = more successes
+                        let beta = 1.0 + (1.0 - conf) * 5.0; // Lower confidence = more failures
 
                         conn.execute(
                             "INSERT OR IGNORE INTO contextual_arms
@@ -1919,15 +2147,16 @@ fn run_thompson(subcommand: &str) -> Result<()> {
             ];
 
             for (keyword, domain) in &keyword_mappings {
-                let principles: Vec<(String, f64)> = conn.prepare(
-                    "SELECT id, learned_confidence FROM principles
-                     WHERE (name LIKE ?1 OR description LIKE ?1) AND learned_confidence > 0"
-                )?
-                .query_map([format!("%{}%", keyword)], |row| {
-                    Ok((row.get(0)?, row.get(1)?))
-                })?
-                .filter_map(|r| r.ok())
-                .collect();
+                let principles: Vec<(String, f64)> = conn
+                    .prepare(
+                        "SELECT id, learned_confidence FROM principles
+                     WHERE (name LIKE ?1 OR description LIKE ?1) AND learned_confidence > 0",
+                    )?
+                    .query_map([format!("%{}%", keyword)], |row| {
+                        Ok((row.get(0)?, row.get(1)?))
+                    })?
+                    .filter_map(|r| r.ok())
+                    .collect();
 
                 for (id, conf) in &principles {
                     let alpha = 1.0 + conf * 5.0;
@@ -1942,13 +2171,13 @@ fn run_thompson(subcommand: &str) -> Result<()> {
                 }
             }
 
-            let final_count: i64 = conn.query_row(
-                "SELECT COUNT(*) FROM contextual_arms",
-                [],
-                |row| row.get(0),
-            )?;
+            let final_count: i64 =
+                conn.query_row("SELECT COUNT(*) FROM contextual_arms", [], |row| row.get(0))?;
 
-            println!("\n✅ Created {} contextual arms across all domains", final_count);
+            println!(
+                "\n✅ Created {} contextual arms across all domains",
+                final_count
+            );
             println!("   Contextual learning will now adjust confidence per-domain.");
             println!("\n   To view: sqlite3 wisdom.db 'SELECT domain, COUNT(*) FROM contextual_arms GROUP BY domain'");
         }
@@ -1958,11 +2187,10 @@ fn run_thompson(subcommand: &str) -> Result<()> {
             println!("⏳ TEMPORAL DECAY: Weighting recent outcomes more heavily...\n");
 
             // Get total adjustments
-            let total_before: i64 = conn.query_row(
-                "SELECT COUNT(*) FROM framework_adjustments",
-                [],
-                |row| row.get(0),
-            )?;
+            let total_before: i64 =
+                conn.query_row("SELECT COUNT(*) FROM framework_adjustments", [], |row| {
+                    row.get(0)
+                })?;
 
             println!("   Total adjustments: {}", total_before);
 
@@ -1979,34 +2207,42 @@ fn run_thompson(subcommand: &str) -> Result<()> {
 
             // Recalculate with time-weighted adjustments in Rust
             // Recent adjustments get full weight, older ones get decayed
-            let adjustments: Vec<(String, f64, String)> = conn.prepare(
-                "SELECT principle_id, adjustment, created_at
+            let adjustments: Vec<(String, f64, String)> = conn
+                .prepare(
+                    "SELECT principle_id, adjustment, created_at
                  FROM framework_adjustments
-                 WHERE created_at IS NOT NULL"
-            )?
-            .query_map([], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)))?
-            .filter_map(|r| r.ok())
-            .collect();
+                 WHERE created_at IS NOT NULL",
+                )?
+                .query_map([], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)))?
+                .filter_map(|r| r.ok())
+                .collect();
 
             // Calculate days since each adjustment and apply decay
             let now = chrono::Utc::now();
-            let mut decayed_by_principle: std::collections::HashMap<String, f64> = std::collections::HashMap::new();
+            let mut decayed_by_principle: std::collections::HashMap<String, f64> =
+                std::collections::HashMap::new();
 
             for (principle_id, adjustment, created_at) in &adjustments {
                 // Parse date and calculate days ago
-                let days_ago = if let Ok(dt) = chrono::NaiveDateTime::parse_from_str(created_at, "%Y-%m-%d %H:%M:%S") {
-                    let created = chrono::DateTime::<chrono::Utc>::from_naive_utc_and_offset(dt, chrono::Utc);
+                let days_ago = if let Ok(dt) =
+                    chrono::NaiveDateTime::parse_from_str(created_at, "%Y-%m-%d %H:%M:%S")
+                {
+                    let created =
+                        chrono::DateTime::<chrono::Utc>::from_naive_utc_and_offset(dt, chrono::Utc);
                     (now - created).num_days() as f64
                 } else {
-                    0.0  // Recent if unparseable
+                    0.0 // Recent if unparseable
                 };
 
                 // Decay factor: 0.95^days (half-life ≈ 13 days)
                 let decay = 0.95_f64.powf(days_ago);
-                *decayed_by_principle.entry(principle_id.clone()).or_insert(0.0) += adjustment * decay;
+                *decayed_by_principle
+                    .entry(principle_id.clone())
+                    .or_insert(0.0) += adjustment * decay;
             }
 
-            let decayed_adjustments: Vec<(String, f64)> = decayed_by_principle.into_iter().collect();
+            let decayed_adjustments: Vec<(String, f64)> =
+                decayed_by_principle.into_iter().collect();
 
             let mut updated = 0;
             for (principle_id, decayed_adj) in &decayed_adjustments {
@@ -2028,7 +2264,10 @@ fn run_thompson(subcommand: &str) -> Result<()> {
                 [],
             )?;
 
-            println!("   Updated {} principles with time-weighted confidence", updated);
+            println!(
+                "   Updated {} principles with time-weighted confidence",
+                updated
+            );
             println!("   Decayed contextual arms with >50 samples");
             println!("\n✅ Temporal decay applied. Recent outcomes now weighted more heavily.");
         }
@@ -2127,19 +2366,24 @@ fn run_hybrid_search(query: &str) -> Result<()> {
     println!("TOP 10 MATCHES (60% semantic, 40% BM25):\n");
     for (i, m) in results.iter().enumerate() {
         // Get principle details
-        let details: (String, String, String) = conn.query_row(
-            "SELECT p.name, t.name, p.description FROM principles p
+        let details: (String, String, String) = conn
+            .query_row(
+                "SELECT p.name, t.name, p.description FROM principles p
              JOIN thinkers t ON p.thinker_id = t.id
              WHERE p.id = ?1",
-            [&m.principle_id],
-            |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
-        ).unwrap_or_else(|_| (m.principle_id.clone(), "Unknown".into(), "".into()));
+                [&m.principle_id],
+                |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
+            )
+            .unwrap_or_else(|_| (m.principle_id.clone(), "Unknown".into(), "".into()));
 
         let (name, thinker, desc) = details;
 
         println!("{}. {} ({:.2})", i + 1, name, m.combined_score);
         println!("   Thinker: {}", thinker);
-        println!("   Semantic: {:.2}  BM25: {:.2}", m.semantic_score, m.bm25_score);
+        println!(
+            "   Semantic: {:.2}  BM25: {:.2}",
+            m.semantic_score, m.bm25_score
+        );
         println!("   {}", truncate_str(&desc, 70));
         println!();
     }
@@ -2206,7 +2450,14 @@ fn run_outcome_cmd(args: &[String]) -> Result<()> {
     println!("└─────────────────────────────────────────────────────────────┘\n");
 
     println!("Decision: {}", decision_id);
-    println!("Outcome: {}", if success { "✅ SUCCESS" } else { "❌ FAILURE" });
+    println!(
+        "Outcome: {}",
+        if success {
+            "✅ SUCCESS"
+        } else {
+            "❌ FAILURE"
+        }
+    );
     println!("Principles: {:?}", principles);
     if !notes.is_empty() {
         println!("Notes: {}", notes);
@@ -2231,7 +2482,8 @@ fn run_outcome_cmd(args: &[String]) -> Result<()> {
         for adj in &result.principles_adjusted {
             let arrow = if adj.delta > 0.0 { "↑" } else { "↓" };
             let color_hint = if adj.delta > 0.0 { "📈" } else { "📉" };
-            println!("   {} {} {}: {:.0}% → {:.0}% ({}{:.0}%)",
+            println!(
+                "   {} {} {}: {:.0}% → {:.0}% ({}{:.0}%)",
                 color_hint,
                 arrow,
                 adj.principle_name,
@@ -2242,9 +2494,14 @@ fn run_outcome_cmd(args: &[String]) -> Result<()> {
             );
         }
         println!();
-        println!("✅ Flywheel activated! {} principles updated.", result.principles_adjusted.len());
+        println!(
+            "✅ Flywheel activated! {} principles updated.",
+            result.principles_adjusted.len()
+        );
         println!("   Asymmetric learning: failures hurt more (-10%) than successes help (+5%)");
-        println!("   This implements Taleb's 'skin in the game' - bad advice is penalized heavily.");
+        println!(
+            "   This implements Taleb's 'skin in the game' - bad advice is penalized heavily."
+        );
     }
 
     Ok(())
@@ -2275,4 +2532,3 @@ fn run_learning_stats() -> Result<()> {
 
     Ok(())
 }
-

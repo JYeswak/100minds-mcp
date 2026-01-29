@@ -8,7 +8,8 @@ use std::collections::HashMap;
 
 /// Helper function to build variables HashMap from static data
 fn build_variables(pairs: &[(&str, &[&str])]) -> HashMap<String, Vec<String>> {
-    pairs.iter()
+    pairs
+        .iter()
         .map(|(k, v)| (k.to_string(), v.iter().map(|s| s.to_string()).collect()))
         .collect()
 }
@@ -94,21 +95,113 @@ fn default_domains() -> Vec<DomainConfig> {
                 "Should we introduce {middleware_type} between {system_a} and {system_b}?".into(),
             ],
             variables: build_variables(&[
-                ("action", &["rewrite", "refactor", "decompose", "consolidate", "modernize", "migrate"]),
-                ("system_type", &["monolith", "API", "backend", "frontend", "data pipeline", "auth system"]),
+                (
+                    "action",
+                    &[
+                        "rewrite",
+                        "refactor",
+                        "decompose",
+                        "consolidate",
+                        "modernize",
+                        "migrate",
+                    ],
+                ),
+                (
+                    "system_type",
+                    &[
+                        "monolith",
+                        "API",
+                        "backend",
+                        "frontend",
+                        "data pipeline",
+                        "auth system",
+                    ],
+                ),
                 ("migrate_verb", &["migrate", "move", "transition", "switch"]),
-                ("tech_old", &["Django", "Rails", "Spring", "PHP", "jQuery", "Angular 1.x", "MySQL"]),
-                ("tech_new", &["FastAPI", "Next.js", "Go", "Rust", "React", "Vue", "PostgreSQL"]),
-                ("component", &["database layer", "API gateway", "auth service", "notification system"]),
-                ("problem", &["too slow", "unmaintainable", "doesn't scale", "has security issues"]),
-                ("pattern", &["microservices", "event sourcing", "CQRS", "hexagonal architecture"]),
-                ("use_case", &["real-time features", "multi-tenant SaaS", "high-write workloads"]),
-                ("architectural_decision", &["breaking up our monolith", "adding a message queue", "going serverless"]),
-                ("decomposition_action", &["split", "extract", "separate", "isolate"]),
-                ("monolith_component", &["user service", "payment processing", "reporting"]),
-                ("middleware_type", &["a message queue", "an API gateway", "a cache layer"]),
+                (
+                    "tech_old",
+                    &[
+                        "Django",
+                        "Rails",
+                        "Spring",
+                        "PHP",
+                        "jQuery",
+                        "Angular 1.x",
+                        "MySQL",
+                    ],
+                ),
+                (
+                    "tech_new",
+                    &[
+                        "FastAPI",
+                        "Next.js",
+                        "Go",
+                        "Rust",
+                        "React",
+                        "Vue",
+                        "PostgreSQL",
+                    ],
+                ),
+                (
+                    "component",
+                    &[
+                        "database layer",
+                        "API gateway",
+                        "auth service",
+                        "notification system",
+                    ],
+                ),
+                (
+                    "problem",
+                    &[
+                        "too slow",
+                        "unmaintainable",
+                        "doesn't scale",
+                        "has security issues",
+                    ],
+                ),
+                (
+                    "pattern",
+                    &[
+                        "microservices",
+                        "event sourcing",
+                        "CQRS",
+                        "hexagonal architecture",
+                    ],
+                ),
+                (
+                    "use_case",
+                    &[
+                        "real-time features",
+                        "multi-tenant SaaS",
+                        "high-write workloads",
+                    ],
+                ),
+                (
+                    "architectural_decision",
+                    &[
+                        "breaking up our monolith",
+                        "adding a message queue",
+                        "going serverless",
+                    ],
+                ),
+                (
+                    "decomposition_action",
+                    &["split", "extract", "separate", "isolate"],
+                ),
+                (
+                    "monolith_component",
+                    &["user service", "payment processing", "reporting"],
+                ),
+                (
+                    "middleware_type",
+                    &["a message queue", "an API gateway", "a cache layer"],
+                ),
                 ("system_a", &["our API", "the frontend", "the mobile app"]),
-                ("system_b", &["the database", "third-party services", "the backend"]),
+                (
+                    "system_b",
+                    &["the database", "third-party services", "the backend"],
+                ),
             ]),
             difficulty_modifiers: vec![
                 "with a tight deadline".into(),
@@ -135,15 +228,40 @@ fn default_domains() -> Vec<DomainConfig> {
             ],
             variables: build_variables(&[
                 ("multiplier", &["10", "100", "1000", "10x", "100x"]),
-                ("scale_direction", &["horizontally", "vertically", "out", "up"]),
-                ("scaling_pattern", &["auto-scaling", "sharding", "read replicas", "CDN"]),
-                ("workload_type", &["read-heavy", "write-heavy", "mixed", "bursty"]),
-                ("bottleneck", &["database", "API servers", "message queue", "storage"]),
-                ("limit_type", &["CPU", "memory", "disk I/O", "network", "connection pool"]),
-                ("resource_type", &["servers", "database nodes", "cache instances"]),
-                ("event_type", &["Black Friday", "a viral post", "product launch"]),
+                (
+                    "scale_direction",
+                    &["horizontally", "vertically", "out", "up"],
+                ),
+                (
+                    "scaling_pattern",
+                    &["auto-scaling", "sharding", "read replicas", "CDN"],
+                ),
+                (
+                    "workload_type",
+                    &["read-heavy", "write-heavy", "mixed", "bursty"],
+                ),
+                (
+                    "bottleneck",
+                    &["database", "API servers", "message queue", "storage"],
+                ),
+                (
+                    "limit_type",
+                    &["CPU", "memory", "disk I/O", "network", "connection pool"],
+                ),
+                (
+                    "resource_type",
+                    &["servers", "database nodes", "cache instances"],
+                ),
+                (
+                    "event_type",
+                    &["Black Friday", "a viral post", "product launch"],
+                ),
             ]),
-            difficulty_modifiers: vec!["without downtime".into(), "with zero budget increase".into(), "overnight".into()],
+            difficulty_modifiers: vec![
+                "without downtime".into(),
+                "with zero budget increase".into(),
+                "overnight".into(),
+            ],
             stakeholder_variants: vec![],
         },
         DomainConfig {
@@ -159,16 +277,40 @@ fn default_domains() -> Vec<DomainConfig> {
             ],
             variables: build_variables(&[
                 ("timing", &["before", "after", "during", "alongside"]),
-                ("duration", &["2 hours", "30 minutes", "all night", "too long"]),
-                ("testing_approach", &["TDD", "BDD", "property-based testing", "mutation testing"]),
-                ("test_target", &["API", "frontend", "integration points", "business logic"]),
-                ("risk_level", &["mission-critical", "financial", "healthcare", "normal"]),
-                ("test_problem", &["flaky", "slow", "not catching bugs", "hard to maintain"]),
-                ("test_action", &["delete", "rewrite", "parallelize", "mock out"]),
+                (
+                    "duration",
+                    &["2 hours", "30 minutes", "all night", "too long"],
+                ),
+                (
+                    "testing_approach",
+                    &["TDD", "BDD", "property-based testing", "mutation testing"],
+                ),
+                (
+                    "test_target",
+                    &["API", "frontend", "integration points", "business logic"],
+                ),
+                (
+                    "risk_level",
+                    &["mission-critical", "financial", "healthcare", "normal"],
+                ),
+                (
+                    "test_problem",
+                    &["flaky", "slow", "not catching bugs", "hard to maintain"],
+                ),
+                (
+                    "test_action",
+                    &["delete", "rewrite", "parallelize", "mock out"],
+                ),
                 ("test_type", &["unit", "integration", "e2e", "performance"]),
-                ("test_philosophy", &["100% coverage", "TDD", "testing in production"]),
+                (
+                    "test_philosophy",
+                    &["100% coverage", "TDD", "testing in production"],
+                ),
             ]),
-            difficulty_modifiers: vec!["for a legacy codebase".into(), "with limited CI resources".into()],
+            difficulty_modifiers: vec![
+                "for a legacy codebase".into(),
+                "with limited CI resources".into(),
+            ],
             stakeholder_variants: vec![],
         },
         DomainConfig {
@@ -183,15 +325,39 @@ fn default_domains() -> Vec<DomainConfig> {
             ],
             variables: build_variables(&[
                 ("count", &["2", "5", "10", "more"]),
-                ("timeline", &["late", "behind-schedule", "struggling", "on-fire"]),
-                ("structure", &["smaller squads", "feature teams", "platform + product"]),
-                ("team_problem", &["low morale", "constant firefighting", "knowledge silos"]),
-                ("hiring_action", &["hire contractors", "build in-house expertise", "outsource"]),
-                ("skill_type", &["ML", "infrastructure", "mobile", "security"]),
-                ("process", &["sprint planning", "code review", "oncall rotation"]),
-                ("management_approach", &["Scrum", "Kanban", "SAFe", "no process"]),
+                (
+                    "timeline",
+                    &["late", "behind-schedule", "struggling", "on-fire"],
+                ),
+                (
+                    "structure",
+                    &["smaller squads", "feature teams", "platform + product"],
+                ),
+                (
+                    "team_problem",
+                    &["low morale", "constant firefighting", "knowledge silos"],
+                ),
+                (
+                    "hiring_action",
+                    &["hire contractors", "build in-house expertise", "outsource"],
+                ),
+                (
+                    "skill_type",
+                    &["ML", "infrastructure", "mobile", "security"],
+                ),
+                (
+                    "process",
+                    &["sprint planning", "code review", "oncall rotation"],
+                ),
+                (
+                    "management_approach",
+                    &["Scrum", "Kanban", "SAFe", "no process"],
+                ),
             ]),
-            difficulty_modifiers: vec!["during a hiring freeze".into(), "with remote-first constraints".into()],
+            difficulty_modifiers: vec![
+                "during a hiring freeze".into(),
+                "with remote-first constraints".into(),
+            ],
             stakeholder_variants: vec![],
         },
         DomainConfig {
@@ -205,18 +371,42 @@ fn default_domains() -> Vec<DomainConfig> {
                 "Should we add {caching_strategy} to improve response times?".into(),
             ],
             variables: build_variables(&[
-                ("component", &["API", "database queries", "frontend bundle", "search"]),
-                ("optimization_action", &["add caching", "optimize queries", "add indexes"]),
-                ("optimization_technique", &["memoization", "lazy loading", "connection pooling"]),
-                ("perf_use_case", &["dashboard loads", "search results", "report generation"]),
-                ("system", &["application", "database", "backend", "frontend"]),
-                ("slow_part", &["the hot path", "image processing", "data transformation"]),
+                (
+                    "component",
+                    &["API", "database queries", "frontend bundle", "search"],
+                ),
+                (
+                    "optimization_action",
+                    &["add caching", "optimize queries", "add indexes"],
+                ),
+                (
+                    "optimization_technique",
+                    &["memoization", "lazy loading", "connection pooling"],
+                ),
+                (
+                    "perf_use_case",
+                    &["dashboard loads", "search results", "report generation"],
+                ),
+                (
+                    "system",
+                    &["application", "database", "backend", "frontend"],
+                ),
+                (
+                    "slow_part",
+                    &["the hot path", "image processing", "data transformation"],
+                ),
                 ("fast_language", &["Rust", "Go", "C++", "WASM"]),
                 ("duration", &["5 seconds", "10 seconds", "30 seconds"]),
                 ("target", &["under 1 second", "sub-500ms", "instant"]),
-                ("caching_strategy", &["Redis", "in-memory cache", "CDN", "edge caching"]),
+                (
+                    "caching_strategy",
+                    &["Redis", "in-memory cache", "CDN", "edge caching"],
+                ),
             ]),
-            difficulty_modifiers: vec!["without increasing costs".into(), "while maintaining correctness".into()],
+            difficulty_modifiers: vec![
+                "without increasing costs".into(),
+                "while maintaining correctness".into(),
+            ],
             stakeholder_variants: vec![],
         },
         DomainConfig {
@@ -229,15 +419,41 @@ fn default_domains() -> Vec<DomainConfig> {
                 "We need {capability}. Build, buy, or partner?".into(),
             ],
             variables: build_variables(&[
-                ("build_system", &["auth system", "billing", "analytics", "search"]),
+                (
+                    "build_system",
+                    &["auth system", "billing", "analytics", "search"],
+                ),
                 ("vendor", &["Auth0", "Stripe", "Segment", "Algolia"]),
-                ("saas_product", &["DataDog", "PagerDuty", "LaunchDarkly", "Amplitude"]),
+                (
+                    "saas_product",
+                    &["DataDog", "PagerDuty", "LaunchDarkly", "Amplitude"],
+                ),
                 ("vendor_contract", &["Stripe", "AWS", "DataDog"]),
-                ("replace_action", &["replace", "sunset", "migrate away from"]),
-                ("off_shelf", &["an open-source solution", "a SaaS product", "a cloud service"]),
-                ("capability", &["real-time analytics", "ML infrastructure", "notification system"]),
+                (
+                    "replace_action",
+                    &["replace", "sunset", "migrate away from"],
+                ),
+                (
+                    "off_shelf",
+                    &[
+                        "an open-source solution",
+                        "a SaaS product",
+                        "a cloud service",
+                    ],
+                ),
+                (
+                    "capability",
+                    &[
+                        "real-time analytics",
+                        "ML infrastructure",
+                        "notification system",
+                    ],
+                ),
             ]),
-            difficulty_modifiers: vec!["with compliance requirements".into(), "when vendor lock-in is a concern".into()],
+            difficulty_modifiers: vec![
+                "with compliance requirements".into(),
+                "when vendor lock-in is a concern".into(),
+            ],
             stakeholder_variants: vec![],
         },
         DomainConfig {
@@ -251,16 +467,51 @@ fn default_domains() -> Vec<DomainConfig> {
                 "Our {legacy_system} hasn't been touched in {time}. Rewrite or leave it?".into(),
             ],
             variables: build_variables(&[
-                ("codebase_area", &["backend", "frontend", "data layer", "API"]),
-                ("debt_level", &["crushing", "significant", "growing", "concerning"]),
-                ("debt_type", &["architectural debt", "testing debt", "documentation debt"]),
-                ("symptom", &["every change breaks something", "nobody understands it", "deployments are scary"]),
-                ("debt_category", &["infrastructure", "code quality", "dependency", "design"]),
-                ("breaking_symptom", &["breaks something unexpected", "requires touching 20 files", "causes regressions"]),
-                ("legacy_system", &["billing system", "user management", "reporting module"]),
-                ("time", &["2 years", "5 years", "since the founders built it"]),
+                (
+                    "codebase_area",
+                    &["backend", "frontend", "data layer", "API"],
+                ),
+                (
+                    "debt_level",
+                    &["crushing", "significant", "growing", "concerning"],
+                ),
+                (
+                    "debt_type",
+                    &["architectural debt", "testing debt", "documentation debt"],
+                ),
+                (
+                    "symptom",
+                    &[
+                        "every change breaks something",
+                        "nobody understands it",
+                        "deployments are scary",
+                    ],
+                ),
+                (
+                    "debt_category",
+                    &["infrastructure", "code quality", "dependency", "design"],
+                ),
+                (
+                    "breaking_symptom",
+                    &[
+                        "breaks something unexpected",
+                        "requires touching 20 files",
+                        "causes regressions",
+                    ],
+                ),
+                (
+                    "legacy_system",
+                    &["billing system", "user management", "reporting module"],
+                ),
+                (
+                    "time",
+                    &["2 years", "5 years", "since the founders built it"],
+                ),
             ]),
-            difficulty_modifiers: vec!["while shipping features".into(), "with limited engineering time".into()],
+            difficulty_modifiers: vec![
+                "while shipping features".into(),
+                "with limited engineering time".into(),
+            ],
             stakeholder_variants: vec![],
         },
         DomainConfig {
@@ -273,16 +524,52 @@ fn default_domains() -> Vec<DomainConfig> {
                 "How do we handle {data_challenge} at our scale?".into(),
             ],
             variables: build_variables(&[
-                ("db_old", &["PostgreSQL", "MySQL", "MongoDB", "SQLite", "Oracle"]),
-                ("db_new", &["PostgreSQL", "CockroachDB", "TiDB", "ScyllaDB", "DynamoDB"]),
-                ("db_problem", &["hitting connection limits", "running out of disk", "too slow"]),
-                ("db_pattern", &["sharding", "read replicas", "multi-master", "CQRS"]),
-                ("data_use_case", &["analytics workload", "OLTP", "time-series data", "graph data"]),
-                ("db_feature", &["read replicas", "connection pooling", "materialized views"]),
-                ("performance_aspect", &["read latency", "write throughput", "query performance"]),
-                ("data_challenge", &["schema migrations", "data consistency", "backup/restore"]),
+                (
+                    "db_old",
+                    &["PostgreSQL", "MySQL", "MongoDB", "SQLite", "Oracle"],
+                ),
+                (
+                    "db_new",
+                    &["PostgreSQL", "CockroachDB", "TiDB", "ScyllaDB", "DynamoDB"],
+                ),
+                (
+                    "db_problem",
+                    &[
+                        "hitting connection limits",
+                        "running out of disk",
+                        "too slow",
+                    ],
+                ),
+                (
+                    "db_pattern",
+                    &["sharding", "read replicas", "multi-master", "CQRS"],
+                ),
+                (
+                    "data_use_case",
+                    &[
+                        "analytics workload",
+                        "OLTP",
+                        "time-series data",
+                        "graph data",
+                    ],
+                ),
+                (
+                    "db_feature",
+                    &["read replicas", "connection pooling", "materialized views"],
+                ),
+                (
+                    "performance_aspect",
+                    &["read latency", "write throughput", "query performance"],
+                ),
+                (
+                    "data_challenge",
+                    &["schema migrations", "data consistency", "backup/restore"],
+                ),
             ]),
-            difficulty_modifiers: vec!["with zero downtime".into(), "while maintaining ACID guarantees".into()],
+            difficulty_modifiers: vec![
+                "with zero downtime".into(),
+                "while maintaining ACID guarantees".into(),
+            ],
             stakeholder_variants: vec![],
         },
         DomainConfig {
@@ -295,18 +582,68 @@ fn default_domains() -> Vec<DomainConfig> {
                 "Should we {security_action} before {deadline}?".into(),
             ],
             variables: build_variables(&[
-                ("security_measure", &["MFA", "SSO", "encryption at rest", "WAF"]),
-                ("sec_system", &["customer portal", "admin panel", "API", "mobile app"]),
-                ("security_concern", &["credential rotation", "secret management", "access control"]),
-                ("sec_context", &["multi-tenant environment", "regulated industry", "public API"]),
-                ("auth_approach", &["OAuth 2.0", "JWT", "session tokens", "API keys"]),
-                ("sec_use_case", &["B2B SaaS", "consumer app", "internal tools", "partner integrations"]),
-                ("security_audit", &["pentest", "security review", "compliance audit"]),
-                ("finding", &["SQL injection", "IDOR vulnerabilities", "weak encryption"]),
-                ("security_action", &["fix critical vulnerabilities", "achieve SOC2", "implement zero-trust"]),
-                ("deadline", &["a big customer deal", "compliance deadline", "board meeting"]),
+                (
+                    "security_measure",
+                    &["MFA", "SSO", "encryption at rest", "WAF"],
+                ),
+                (
+                    "sec_system",
+                    &["customer portal", "admin panel", "API", "mobile app"],
+                ),
+                (
+                    "security_concern",
+                    &["credential rotation", "secret management", "access control"],
+                ),
+                (
+                    "sec_context",
+                    &[
+                        "multi-tenant environment",
+                        "regulated industry",
+                        "public API",
+                    ],
+                ),
+                (
+                    "auth_approach",
+                    &["OAuth 2.0", "JWT", "session tokens", "API keys"],
+                ),
+                (
+                    "sec_use_case",
+                    &[
+                        "B2B SaaS",
+                        "consumer app",
+                        "internal tools",
+                        "partner integrations",
+                    ],
+                ),
+                (
+                    "security_audit",
+                    &["pentest", "security review", "compliance audit"],
+                ),
+                (
+                    "finding",
+                    &["SQL injection", "IDOR vulnerabilities", "weak encryption"],
+                ),
+                (
+                    "security_action",
+                    &[
+                        "fix critical vulnerabilities",
+                        "achieve SOC2",
+                        "implement zero-trust",
+                    ],
+                ),
+                (
+                    "deadline",
+                    &[
+                        "a big customer deal",
+                        "compliance deadline",
+                        "board meeting",
+                    ],
+                ),
             ]),
-            difficulty_modifiers: vec!["without disrupting users".into(), "with a compliance deadline".into()],
+            difficulty_modifiers: vec![
+                "without disrupting users".into(),
+                "with a compliance deadline".into(),
+            ],
             stakeholder_variants: vec![],
         },
         DomainConfig {
@@ -319,15 +656,45 @@ fn default_domains() -> Vec<DomainConfig> {
                 "How do we improve our {devops_metric}?".into(),
             ],
             variables: build_variables(&[
-                ("infra_platform", &["Kubernetes", "serverless", "ECS", "bare metal"]),
-                ("current_setup", &["VMs", "Heroku", "Docker Compose", "manual deploys"]),
-                ("devops_practice", &["GitOps", "trunk-based development", "feature flags"]),
-                ("deployment_issue", &["slow deployments", "frequent rollbacks", "environment drift"]),
+                (
+                    "infra_platform",
+                    &["Kubernetes", "serverless", "ECS", "bare metal"],
+                ),
+                (
+                    "current_setup",
+                    &["VMs", "Heroku", "Docker Compose", "manual deploys"],
+                ),
+                (
+                    "devops_practice",
+                    &["GitOps", "trunk-based development", "feature flags"],
+                ),
+                (
+                    "deployment_issue",
+                    &[
+                        "slow deployments",
+                        "frequent rollbacks",
+                        "environment drift",
+                    ],
+                ),
                 ("devops_tool", &["Terraform", "Pulumi", "ArgoCD", "Datadog"]),
-                ("devops_use_case", &["infrastructure as code", "monitoring", "CI/CD", "secrets management"]),
-                ("devops_metric", &["deployment frequency", "MTTR", "change failure rate"]),
+                (
+                    "devops_use_case",
+                    &[
+                        "infrastructure as code",
+                        "monitoring",
+                        "CI/CD",
+                        "secrets management",
+                    ],
+                ),
+                (
+                    "devops_metric",
+                    &["deployment frequency", "MTTR", "change failure rate"],
+                ),
             ]),
-            difficulty_modifiers: vec!["with a small ops team".into(), "during a cloud migration".into()],
+            difficulty_modifiers: vec![
+                "with a small ops team".into(),
+                "during a cloud migration".into(),
+            ],
             stakeholder_variants: vec![],
         },
     ]
@@ -385,7 +752,8 @@ pub fn generate_exhaustive(config: &GeneratorConfig) -> Vec<SyntheticQuestion> {
     for domain in &config.domains {
         for (template_idx, _template) in domain.templates.iter().enumerate() {
             let var_names: Vec<_> = domain.variables.keys().cloned().collect();
-            let var_sizes: Vec<_> = var_names.iter()
+            let var_sizes: Vec<_> = var_names
+                .iter()
                 .map(|k| domain.variables.get(k).map(|v| v.len()).unwrap_or(1))
                 .collect();
 
@@ -401,12 +769,20 @@ pub fn generate_exhaustive(config: &GeneratorConfig) -> Vec<SyntheticQuestion> {
                     for stage in &config.company_stages {
                         for urgency in &config.urgency_levels {
                             let q = generate_question(
-                                domain, template_idx, &choices,
-                                stakeholder, stage, urgency, None, id,
+                                domain,
+                                template_idx,
+                                &choices,
+                                stakeholder,
+                                stage,
+                                urgency,
+                                None,
+                                id,
                             );
                             questions.push(q);
                             id += 1;
-                            if id >= config.target_count { return questions; }
+                            if id >= config.target_count {
+                                return questions;
+                            }
                         }
                     }
                 }
@@ -415,10 +791,16 @@ pub fn generate_exhaustive(config: &GeneratorConfig) -> Vec<SyntheticQuestion> {
                 for i in 0..indices.len() {
                     if carry {
                         indices[i] += 1;
-                        if indices[i] >= var_sizes[i] { indices[i] = 0; } else { carry = false; }
+                        if indices[i] >= var_sizes[i] {
+                            indices[i] = 0;
+                        } else {
+                            carry = false;
+                        }
                     }
                 }
-                if carry { break; }
+                if carry {
+                    break;
+                }
             }
         }
     }
@@ -426,7 +808,11 @@ pub fn generate_exhaustive(config: &GeneratorConfig) -> Vec<SyntheticQuestion> {
 }
 
 /// Generate a random sample of questions
-pub fn generate_sample(config: &GeneratorConfig, count: usize, seed: u64) -> Vec<SyntheticQuestion> {
+pub fn generate_sample(
+    config: &GeneratorConfig,
+    count: usize,
+    seed: u64,
+) -> Vec<SyntheticQuestion> {
     use std::collections::hash_map::DefaultHasher;
     use std::hash::{Hash, Hasher};
 
@@ -453,11 +839,14 @@ pub fn generate_sample(config: &GeneratorConfig, count: usize, seed: u64) -> Vec
         }
 
         let q = generate_question(
-            domain, template_idx, &choices,
+            domain,
+            template_idx,
+            &choices,
             &config.stakeholders[stakeholder_idx],
             &config.company_stages[stage_idx],
             &config.urgency_levels[urgency_idx],
-            None, i,
+            None,
+            i,
         );
         questions.push(q);
     }
@@ -467,7 +856,10 @@ pub fn generate_sample(config: &GeneratorConfig, count: usize, seed: u64) -> Vec
 /// Hard negative generator - questions that SEEM related but shouldn't cite a principle
 pub fn generate_hard_negatives(principle_name: &str, principle_domain: &str) -> Vec<String> {
     let mut negatives = Vec::new();
-    negatives.push(format!("What are the main criticisms of {}?", principle_name));
+    negatives.push(format!(
+        "What are the main criticisms of {}?",
+        principle_name
+    ));
     negatives.push(format!("When does {} NOT apply?", principle_name));
     negatives.push(format!("Give me examples where {} failed", principle_name));
 
@@ -487,8 +879,14 @@ pub fn generate_hard_negatives(principle_name: &str, principle_domain: &str) -> 
         _ => {}
     }
 
-    negatives.push(format!("I heard about {} but it doesn't apply to us, right?", principle_name));
-    negatives.push(format!("My friend says {} is outdated. Is that true?", principle_name));
+    negatives.push(format!(
+        "I heard about {} but it doesn't apply to us, right?",
+        principle_name
+    ));
+    negatives.push(format!(
+        "My friend says {} is outdated. Is that true?",
+        principle_name
+    ));
     negatives
 }
 
@@ -502,12 +900,17 @@ mod tests {
         let questions = generate_sample(&config, 100, 42);
         assert_eq!(questions.len(), 100);
 
-        let domains: std::collections::HashSet<_> = questions.iter().map(|q| q.domain.as_str()).collect();
+        let domains: std::collections::HashSet<_> =
+            questions.iter().map(|q| q.domain.as_str()).collect();
         assert!(domains.len() > 3, "Should have multiple domains");
 
         for q in &questions {
             assert!(!q.question.is_empty());
-            assert!(!q.question.contains('{'), "Unsubstituted variable: {}", q.question);
+            assert!(
+                !q.question.contains('{'),
+                "Unsubstituted variable: {}",
+                q.question
+            );
         }
     }
 

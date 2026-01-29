@@ -67,19 +67,14 @@ fn analyze_thinker_utilization(conn: &Connection) -> Result<HashMap<String, f64>
     let mut utilization = HashMap::new();
 
     // Get all thinkers
-    let mut thinker_stmt = conn.prepare(
-        "SELECT id, name FROM thinkers"
-    )?;
-    let thinkers: Vec<(String, String)> = thinker_stmt.query_map([], |row| {
-        Ok((row.get(0)?, row.get(1)?))
-    })?.collect::<Result<Vec<_>, _>>()?;
+    let mut thinker_stmt = conn.prepare("SELECT id, name FROM thinkers")?;
+    let thinkers: Vec<(String, String)> = thinker_stmt
+        .query_map([], |row| Ok((row.get(0)?, row.get(1)?)))?
+        .collect::<Result<Vec<_>, _>>()?;
 
     // Get total decisions
-    let total_decisions: i64 = conn.query_row(
-        "SELECT COUNT(*) FROM decisions",
-        [],
-        |row| row.get(0),
-    )?;
+    let total_decisions: i64 =
+        conn.query_row("SELECT COUNT(*) FROM decisions", [], |row| row.get(0))?;
 
     if total_decisions == 0 {
         // No decisions yet - all thinkers have 0 utilization
@@ -110,11 +105,11 @@ fn analyze_domain_coverage(conn: &Connection) -> Result<HashMap<String, f64>> {
     let mut coverage = HashMap::new();
 
     // Get all unique domains from principles
-    let mut domain_stmt = conn.prepare(
-        "SELECT DISTINCT domain_tags FROM principles WHERE domain_tags IS NOT NULL"
-    )?;
+    let mut domain_stmt =
+        conn.prepare("SELECT DISTINCT domain_tags FROM principles WHERE domain_tags IS NOT NULL")?;
 
-    let domain_tags: Vec<String> = domain_stmt.query_map([], |row| row.get(0))?
+    let domain_tags: Vec<String> = domain_stmt
+        .query_map([], |row| row.get(0))?
         .filter_map(|r| r.ok())
         .collect();
 
@@ -129,16 +124,13 @@ fn analyze_domain_coverage(conn: &Connection) -> Result<HashMap<String, f64>> {
     }
 
     // Count principles per domain
-    let total_principles: i64 = conn.query_row(
-        "SELECT COUNT(*) FROM principles",
-        [],
-        |row| row.get(0),
-    )?;
+    let total_principles: i64 =
+        conn.query_row("SELECT COUNT(*) FROM principles", [], |row| row.get(0))?;
 
     for domain in &all_domains {
         let count: i64 = conn.query_row(
             "SELECT COUNT(*) FROM principles WHERE domain_tags LIKE ?1",
-            [format!("%\"{}\"%" , domain)],
+            [format!("%\"{}\"%", domain)],
             |row| row.get(0),
         )?;
 
@@ -154,13 +146,11 @@ fn find_redundant_principles(conn: &Connection) -> Result<Vec<(String, String, f
     let mut redundant = Vec::new();
 
     // Get all principles
-    let mut stmt = conn.prepare(
-        "SELECT id, name, description FROM principles"
-    )?;
+    let mut stmt = conn.prepare("SELECT id, name, description FROM principles")?;
 
-    let principles: Vec<(String, String, String)> = stmt.query_map([], |row| {
-        Ok((row.get(0)?, row.get(1)?, row.get(2)?))
-    })?.collect::<Result<Vec<_>, _>>()?;
+    let principles: Vec<(String, String, String)> = stmt
+        .query_map([], |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)))?
+        .collect::<Result<Vec<_>, _>>()?;
 
     // Compare each pair (O(n²) but principles count is small ~345)
     for i in 0..principles.len() {
@@ -192,13 +182,15 @@ fn find_orphan_principles(conn: &Connection) -> Result<Vec<String>> {
 
     // Get all principle names
     let mut stmt = conn.prepare("SELECT name FROM principles")?;
-    let all_names: Vec<String> = stmt.query_map([], |row| row.get(0))?
+    let all_names: Vec<String> = stmt
+        .query_map([], |row| row.get(0))?
         .filter_map(|r| r.ok())
         .collect();
 
     // Get all principles cited in decisions
     let mut cited_stmt = conn.prepare("SELECT counsel_json FROM decisions")?;
-    let counsel_jsons: Vec<String> = cited_stmt.query_map([], |row| row.get(0))?
+    let counsel_jsons: Vec<String> = cited_stmt
+        .query_map([], |row| row.get(0))?
         .filter_map(|r| r.ok())
         .collect();
 
@@ -258,10 +250,7 @@ fn generate_recommendations(
     // Find thinkers with 0% utilization who have many principles
     for (thinker, util) in utilization {
         if *util < 0.01 {
-            removals.push(format!(
-                "{} (cited in <1% of decisions)",
-                thinker
-            ));
+            removals.push(format!("{} (cited in <1% of decisions)", thinker));
         }
     }
 
@@ -279,10 +268,7 @@ fn generate_recommendations(
             additions.push(ThinkerSuggestion {
                 name: format!("{} Thought Leader", capitalize_domain(domain)),
                 domain: domain.to_string(),
-                reason: format!(
-                    "Important domain '{}' has no dedicated principles",
-                    domain
-                ),
+                reason: format!("Important domain '{}' has no dedicated principles", domain),
             });
         }
     }
@@ -364,7 +350,11 @@ pub fn print_coverage_analysis(analysis: &CoverageAnalysis) {
     println!("└─────────────────────────────────────────────────────────────┘\n");
 
     // Thinker utilization
-    let active = analysis.thinker_utilization.values().filter(|&&u| u > 0.01).count();
+    let active = analysis
+        .thinker_utilization
+        .values()
+        .filter(|&&u| u > 0.01)
+        .count();
     let total = analysis.thinker_utilization.len();
     println!("THINKER UTILIZATION: {}/{} active (>1%)", active, total);
 
@@ -385,7 +375,10 @@ pub fn print_coverage_analysis(analysis: &CoverageAnalysis) {
 
     // Orphans
     if !analysis.orphan_principles.is_empty() {
-        println!("\nORPHAN PRINCIPLES ({}): never selected", analysis.orphan_principles.len());
+        println!(
+            "\nORPHAN PRINCIPLES ({}): never selected",
+            analysis.orphan_principles.len()
+        );
         for p in analysis.orphan_principles.iter().take(5) {
             println!("   • {}", p);
         }
@@ -430,16 +423,27 @@ mod tests {
 
         let sim = compute_text_similarity(a, b);
         // Jaccard on bigrams: ~0.57 for these sentences (8/14 shared n-grams)
-        assert!(sim > 0.5, "Expected similar sentences to have sim > 0.5, got {}", sim);
+        assert!(
+            sim > 0.5,
+            "Expected similar sentences to have sim > 0.5, got {}",
+            sim
+        );
 
         let c = "Microservices require careful consideration";
         let sim2 = compute_text_similarity(a, c);
-        assert!(sim2 < 0.3, "Expected dissimilar sentences to have sim < 0.3, got {}", sim2);
+        assert!(
+            sim2 < 0.3,
+            "Expected dissimilar sentences to have sim < 0.3, got {}",
+            sim2
+        );
     }
 
     #[test]
     fn test_capitalize_domain() {
-        assert_eq!(capitalize_domain("software-architecture"), "Software Architecture");
+        assert_eq!(
+            capitalize_domain("software-architecture"),
+            "Software Architecture"
+        );
         assert_eq!(capitalize_domain("ai-ml"), "Ai Ml");
         assert_eq!(capitalize_domain("security"), "Security");
     }

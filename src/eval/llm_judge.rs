@@ -50,19 +50,26 @@ impl Default for JudgeRubric {
             criteria: vec![
                 JudgeCriterion {
                     name: "relevance".to_string(),
-                    description: "Do the cited principles directly address the decision question?".to_string(),
+                    description: "Do the cited principles directly address the decision question?"
+                        .to_string(),
                     weight: 0.25,
                     scale_descriptions: vec![
                         (1, "Principles are unrelated to the question".to_string()),
                         (2, "Some tangential relevance".to_string()),
                         (3, "Generally relevant but missing key aspects".to_string()),
                         (4, "Mostly relevant with minor gaps".to_string()),
-                        (5, "Highly relevant, directly addresses the question".to_string()),
-                    ].into_iter().collect(),
+                        (
+                            5,
+                            "Highly relevant, directly addresses the question".to_string(),
+                        ),
+                    ]
+                    .into_iter()
+                    .collect(),
                 },
                 JudgeCriterion {
                     name: "completeness".to_string(),
-                    description: "Are important considerations and perspectives covered?".to_string(),
+                    description: "Are important considerations and perspectives covered?"
+                        .to_string(),
                     weight: 0.20,
                     scale_descriptions: vec![
                         (1, "Major perspectives missing".to_string()),
@@ -70,7 +77,9 @@ impl Default for JudgeRubric {
                         (3, "Covers basics but lacks depth".to_string()),
                         (4, "Good coverage with minor omissions".to_string()),
                         (5, "Comprehensive coverage of all key angles".to_string()),
-                    ].into_iter().collect(),
+                    ]
+                    .into_iter()
+                    .collect(),
                 },
                 JudgeCriterion {
                     name: "actionability".to_string(),
@@ -79,22 +88,33 @@ impl Default for JudgeRubric {
                     scale_descriptions: vec![
                         (1, "Vague platitudes, no concrete guidance".to_string()),
                         (2, "Some direction but unclear next steps".to_string()),
-                        (3, "Reasonable guidance but needs interpretation".to_string()),
+                        (
+                            3,
+                            "Reasonable guidance but needs interpretation".to_string(),
+                        ),
                         (4, "Clear actionable steps with minor ambiguity".to_string()),
                         (5, "Immediately actionable with specific steps".to_string()),
-                    ].into_iter().collect(),
+                    ]
+                    .into_iter()
+                    .collect(),
                 },
                 JudgeCriterion {
                     name: "balance".to_string(),
-                    description: "Are FOR/AGAINST positions genuinely opposed and fair?".to_string(),
+                    description: "Are FOR/AGAINST positions genuinely opposed and fair?"
+                        .to_string(),
                     weight: 0.15,
                     scale_descriptions: vec![
                         (1, "One-sided or strawman arguments".to_string()),
                         (2, "Weak counter-arguments".to_string()),
                         (3, "Both sides present but uneven strength".to_string()),
                         (4, "Good balance with genuine tension".to_string()),
-                        (5, "Excellent adversarial balance, both sides compelling".to_string()),
-                    ].into_iter().collect(),
+                        (
+                            5,
+                            "Excellent adversarial balance, both sides compelling".to_string(),
+                        ),
+                    ]
+                    .into_iter()
+                    .collect(),
                 },
                 JudgeCriterion {
                     name: "authority".to_string(),
@@ -106,7 +126,9 @@ impl Default for JudgeRubric {
                         (3, "General relevant expertise".to_string()),
                         (4, "Strong domain expertise".to_string()),
                         (5, "Recognized authorities in the specific area".to_string()),
-                    ].into_iter().collect(),
+                    ]
+                    .into_iter()
+                    .collect(),
                 },
             ],
         }
@@ -180,17 +202,18 @@ pub async fn evaluate_responses(
 
     // Calculate averages
     let n = responses.len() as f64;
-    let average_scores: HashMap<String, f64> = score_sums
-        .into_iter()
-        .map(|(k, v)| (k, v / n))
-        .collect();
+    let average_scores: HashMap<String, f64> =
+        score_sums.into_iter().map(|(k, v)| (k, v / n)).collect();
 
     // Calculate weighted average
-    let overall = config.rubric.criteria.iter()
-        .map(|c| {
-            average_scores.get(&c.name).unwrap_or(&0.0) * c.weight
-        })
-        .sum::<f64>() / config.rubric.criteria.iter().map(|c| c.weight).sum::<f64>() * 5.0;
+    let overall = config
+        .rubric
+        .criteria
+        .iter()
+        .map(|c| average_scores.get(&c.name).unwrap_or(&0.0) * c.weight)
+        .sum::<f64>()
+        / config.rubric.criteria.iter().map(|c| c.weight).sum::<f64>()
+        * 5.0;
 
     Ok(JudgeResults {
         total_evaluated: responses.len(),
@@ -246,27 +269,36 @@ async fn evaluate_single(
     let response_json: serde_json::Value = api_response.json().await?;
 
     // Parse the judge's response
-    let content = response_json["content"][0]["text"]
-        .as_str()
-        .unwrap_or("");
+    let content = response_json["content"][0]["text"].as_str().unwrap_or("");
 
     parse_judgment(content, &response.question)
 }
 
 /// Build the prompt for the LLM judge
 fn build_judge_prompt(config: &JudgeConfig, response: &EvalResponse) -> String {
-    let criteria_text: String = config.rubric.criteria.iter()
+    let criteria_text: String = config
+        .rubric
+        .criteria
+        .iter()
         .map(|c| {
-            let scale = c.scale_descriptions.iter()
+            let scale = c
+                .scale_descriptions
+                .iter()
                 .map(|(k, v)| format!("  {}: {}", k, v))
                 .collect::<Vec<_>>()
                 .join("\n");
-            format!("### {}\n{}\n{}", c.name.to_uppercase(), c.description, scale)
+            format!(
+                "### {}\n{}\n{}",
+                c.name.to_uppercase(),
+                c.description,
+                scale
+            )
         })
         .collect::<Vec<_>>()
         .join("\n\n");
 
-    format!(r#"You are evaluating the quality of decision advice from an AI wisdom system.
+    format!(
+        r#"You are evaluating the quality of decision advice from an AI wisdom system.
 
 ## Question Asked
 {question}
@@ -324,7 +356,13 @@ fn parse_judgment(content: &str, question: &str) -> Result<Judgment> {
     let mut reasoning = String::new();
 
     // Parse scores
-    for criterion in ["relevance", "completeness", "actionability", "balance", "authority"] {
+    for criterion in [
+        "relevance",
+        "completeness",
+        "actionability",
+        "balance",
+        "authority",
+    ] {
         if let Some(line) = content.lines().find(|l| l.starts_with(criterion)) {
             if let Some(score_str) = line.split(':').nth(1) {
                 if let Ok(score) = score_str.trim().parse::<u8>() {
@@ -335,7 +373,13 @@ fn parse_judgment(content: &str, question: &str) -> Result<Judgment> {
     }
 
     // Fill in defaults for missing scores
-    for criterion in ["relevance", "completeness", "actionability", "balance", "authority"] {
+    for criterion in [
+        "relevance",
+        "completeness",
+        "actionability",
+        "balance",
+        "authority",
+    ] {
         scores.entry(criterion.to_string()).or_insert(3);
     }
 
@@ -382,11 +426,16 @@ fn parse_judgment(content: &str, question: &str) -> Result<Judgment> {
 
     // Calculate weighted score
     let default_rubric = JudgeRubric::default();
-    let weighted_score = default_rubric.criteria.iter()
-        .map(|c| {
-            *scores.get(&c.name).unwrap_or(&3) as f64 * c.weight
-        })
-        .sum::<f64>() / default_rubric.criteria.iter().map(|c| c.weight).sum::<f64>();
+    let weighted_score = default_rubric
+        .criteria
+        .iter()
+        .map(|c| *scores.get(&c.name).unwrap_or(&3) as f64 * c.weight)
+        .sum::<f64>()
+        / default_rubric
+            .criteria
+            .iter()
+            .map(|c| c.weight)
+            .sum::<f64>();
 
     Ok(Judgment {
         question: question.to_string(),
@@ -422,7 +471,11 @@ pub async fn compare_pairwise(
     }
 
     let total = (wins + losses + ties) as f64;
-    let win_rate = if total > 0.0 { wins as f64 / total } else { 0.5 };
+    let win_rate = if total > 0.0 {
+        wins as f64 / total
+    } else {
+        0.5
+    };
 
     Ok(PairwiseResults {
         wins,
@@ -439,7 +492,8 @@ async fn compare_single(
     a: &EvalResponse,
     b: &EvalResponse,
 ) -> Result<String> {
-    let prompt = format!(r#"Compare these two responses to the question: "{}"
+    let prompt = format!(
+        r#"Compare these two responses to the question: "{}"
 
 RESPONSE A:
 {}
@@ -454,7 +508,9 @@ Which response provides better decision guidance? Consider:
 - Credibility of sources
 
 Reply with ONLY one of: "A", "B", or "TIE"
-"#, a.question, a.response_text, b.response_text);
+"#,
+        a.question, a.response_text, b.response_text
+    );
 
     let request_body = serde_json::json!({
         "model": config.model,

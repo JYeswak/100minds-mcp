@@ -13,15 +13,15 @@
 //! - Bayesian hyperparameter optimization
 //! - Multi-criteria LLM-as-judge rubric
 
-pub mod scenarios;
-pub mod monte_carlo;
-pub mod thompson;
-pub mod llm_judge;
-pub mod coverage;
-pub mod synthetic;
-pub mod judge;
 pub mod bandit;
+pub mod coverage;
 pub mod data_driven;
+pub mod judge;
+pub mod llm_judge;
+pub mod monte_carlo;
+pub mod scenarios;
+pub mod synthetic;
+pub mod thompson;
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -91,9 +91,12 @@ impl EvalReport {
 
         // Analyze scenario results
         if let Some(ref sr) = self.scenario_results {
-            let avg_precision = sr.by_category.values()
+            let avg_precision = sr
+                .by_category
+                .values()
                 .filter_map(|m| m.precision_at_k.get(&3))
-                .sum::<f64>() / sr.by_category.len().max(1) as f64;
+                .sum::<f64>()
+                / sr.by_category.len().max(1) as f64;
 
             scores.push(avg_precision);
 
@@ -101,7 +104,8 @@ impl EvalReport {
                 strengths.push(format!("Strong P@3: {:.1}%", avg_precision * 100.0));
             } else {
                 weaknesses.push(format!("Low P@3: {:.1}%", avg_precision * 100.0));
-                recommendations.push("Improve relevance scoring or add missing principles".to_string());
+                recommendations
+                    .push("Improve relevance scoring or add missing principles".to_string());
             }
 
             if sr.aggregate.anti_principle_rate > 0.05 {
@@ -120,7 +124,8 @@ impl EvalReport {
                     "{} orphan principles never selected",
                     ca.orphan_principles.len()
                 ));
-                recommendations.push("Remove or improve keywords for orphan principles".to_string());
+                recommendations
+                    .push("Remove or improve keywords for orphan principles".to_string());
             }
 
             if !ca.recommended_removals.is_empty() {
@@ -131,7 +136,9 @@ impl EvalReport {
             }
 
             // Check thinker diversity
-            let active_thinkers = ca.thinker_utilization.values()
+            let active_thinkers = ca
+                .thinker_utilization
+                .values()
                 .filter(|&&u| u > 0.01)
                 .count();
             let total_thinkers = ca.thinker_utilization.len();
@@ -152,7 +159,8 @@ impl EvalReport {
             let variance = mc.selection_variance;
             if variance > 0.3 {
                 weaknesses.push(format!("High selection variance: {:.2}", variance));
-                recommendations.push("Stabilize principle selection with better scoring".to_string());
+                recommendations
+                    .push("Stabilize principle selection with better scoring".to_string());
             } else {
                 strengths.push(format!("Stable selection: variance {:.2}", variance));
             }
@@ -180,14 +188,21 @@ impl EvalReport {
 pub fn print_eval_report(report: &EvalReport) {
     println!("\n┌─────────────────────────────────────────────────────────────┐");
     println!("│ 🧪 100MINDS EVALUATION REPORT                               │");
-    println!("│    {}                                          │", &report.timestamp[..10]);
+    println!(
+        "│    {}                                          │",
+        &report.timestamp[..10]
+    );
     println!("└─────────────────────────────────────────────────────────────┘\n");
 
     // Overall score
     let score_bar = "█".repeat((report.summary.overall_score * 10.0) as usize);
     let empty_bar = "░".repeat(10 - (report.summary.overall_score * 10.0) as usize);
-    println!("OVERALL SCORE: [{}{}] {:.0}%\n", score_bar, empty_bar,
-             report.summary.overall_score * 100.0);
+    println!(
+        "OVERALL SCORE: [{}{}] {:.0}%\n",
+        score_bar,
+        empty_bar,
+        report.summary.overall_score * 100.0
+    );
 
     // Strengths
     if !report.summary.strengths.is_empty() {
@@ -246,8 +261,14 @@ fn print_scenario_results(results: &scenarios::ScenarioResults) {
     }
     println!("   Recall: {:.1}%", results.aggregate.recall * 100.0);
     println!("   NDCG: {:.3}", results.aggregate.ndcg);
-    println!("   Anti-principle rate: {:.1}%", results.aggregate.anti_principle_rate * 100.0);
-    println!("   Thinker diversity: {:.1}%", results.aggregate.thinker_diversity * 100.0);
+    println!(
+        "   Anti-principle rate: {:.1}%",
+        results.aggregate.anti_principle_rate * 100.0
+    );
+    println!(
+        "   Thinker diversity: {:.1}%",
+        results.aggregate.thinker_diversity * 100.0
+    );
     println!("   Avg latency: {}ms", results.aggregate.latency_ms);
     println!();
 
@@ -255,8 +276,12 @@ fn print_scenario_results(results: &scenarios::ScenarioResults) {
     println!("BY CATEGORY:");
     for (cat, metrics) in &results.by_category {
         let p3 = metrics.precision_at_k.get(&3).unwrap_or(&0.0);
-        println!("   {:20} P@3: {:.0}%  Recall: {:.0}%",
-                 cat, p3 * 100.0, metrics.recall * 100.0);
+        println!(
+            "   {:20} P@3: {:.0}%  Recall: {:.0}%",
+            cat,
+            p3 * 100.0,
+            metrics.recall * 100.0
+        );
     }
     println!();
 }
@@ -267,10 +292,14 @@ fn print_monte_carlo_results(results: &monte_carlo::MonteCarloResults) {
     println!("─────────────────────────────────────────────────────────────");
     println!("Simulations: {}", results.num_simulations);
     println!("Selection variance: {:.3}", results.selection_variance);
-    println!("95% CI: [{:.2}, {:.2}]",
-             results.confidence_interval_95.0,
-             results.confidence_interval_95.1);
-    println!("Tail risk (<50% relevance): {:.1}%", results.tail_risk * 100.0);
+    println!(
+        "95% CI: [{:.2}, {:.2}]",
+        results.confidence_interval_95.0, results.confidence_interval_95.1
+    );
+    println!(
+        "Tail risk (<50% relevance): {:.1}%",
+        results.tail_risk * 100.0
+    );
     println!();
 
     // Top over-selected
@@ -297,9 +326,16 @@ fn print_coverage_results(analysis: &coverage::CoverageAnalysis) {
     println!("─────────────────────────────────────────────────────────────");
 
     // Thinker utilization
-    let active = analysis.thinker_utilization.values().filter(|&&u| u > 0.01).count();
+    let active = analysis
+        .thinker_utilization
+        .values()
+        .filter(|&&u| u > 0.01)
+        .count();
     let total = analysis.thinker_utilization.len();
-    println!("Thinker utilization: {}/{} actively cited (>1%)", active, total);
+    println!(
+        "Thinker utilization: {}/{} actively cited (>1%)",
+        active, total
+    );
     println!();
 
     // Top thinkers

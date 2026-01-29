@@ -110,7 +110,7 @@ impl Default for JudgeConfig {
         Self {
             model: "claude-3-haiku-20240307".into(),
             rubric: JudgeRubric::default(),
-            temperature: 0.0,  // Deterministic
+            temperature: 0.0, // Deterministic
             max_concurrent: 10,
         }
     }
@@ -124,12 +124,22 @@ pub fn build_eval_prompt(
     thinkers_cited: &[String],
     rubric: &JudgeRubric,
 ) -> String {
-    let criteria_text: String = rubric.criteria.iter()
-        .map(|c| format!("- **{}** ({}%): {}", c.name, (c.weight * 100.0) as u32, c.prompt))
+    let criteria_text: String = rubric
+        .criteria
+        .iter()
+        .map(|c| {
+            format!(
+                "- **{}** ({}%): {}",
+                c.name,
+                (c.weight * 100.0) as u32,
+                c.prompt
+            )
+        })
         .collect::<Vec<_>>()
         .join("\n");
 
-    format!(r#"You are evaluating the quality of a decision-support response.
+    format!(
+        r#"You are evaluating the quality of a decision-support response.
 
 ## Question
 {question}
@@ -173,12 +183,9 @@ Evaluate this response on each criterion. Output JSON only:
 }
 
 /// Generate prompt for pairwise comparison
-pub fn build_pairwise_prompt(
-    question: &str,
-    response_a: &str,
-    response_b: &str,
-) -> String {
-    format!(r#"You are comparing two decision-support responses.
+pub fn build_pairwise_prompt(question: &str, response_a: &str, response_b: &str) -> String {
+    format!(
+        r#"You are comparing two decision-support responses.
 
 ## Question
 {question}
@@ -226,12 +233,14 @@ pub fn parse_eval_response(json_str: &str) -> Result<JudgeResult> {
 
     // Calculate weighted overall score
     let rubric = JudgeRubric::default();
-    let overall_score = rubric.criteria.iter()
+    let overall_score = rubric
+        .criteria
+        .iter()
         .filter_map(|c| raw.scores.get(&c.name).map(|s| s * c.weight))
         .sum();
 
     Ok(JudgeResult {
-        question: String::new(),  // Filled in by caller
+        question: String::new(), // Filled in by caller
         scores: raw.scores,
         overall_score,
         reasoning: raw.reasoning,
@@ -271,8 +280,11 @@ pub fn parse_pairwise_response(json_str: &str) -> Result<PairwiseResult> {
 fn extract_json(text: &str) -> String {
     // Try to find JSON in code block
     if let Some(start) = text.find("```json") {
-        if let Some(end) = text[start..].find("```\n").or_else(|| text[start..].rfind("```")) {
-            let json_start = start + 7;  // Skip "```json"
+        if let Some(end) = text[start..]
+            .find("```\n")
+            .or_else(|| text[start..].rfind("```"))
+        {
+            let json_start = start + 7; // Skip "```json"
             return text[json_start..start + end].trim().to_string();
         }
     }
@@ -309,17 +321,21 @@ pub fn aggregate_judge_results(results: &[JudgeResult]) -> JudgeSummary {
     // Confidence-weighted average
     let total_confidence: f64 = results.iter().map(|r| r.confidence).sum();
     let confidence_weighted = if total_confidence > 0.0 {
-        results.iter()
+        results
+            .iter()
             .map(|r| r.overall_score * r.confidence)
-            .sum::<f64>() / total_confidence
+            .sum::<f64>()
+            / total_confidence
     } else {
         overall_average
     };
 
     // Standard deviation
-    let variance = results.iter()
+    let variance = results
+        .iter()
         .map(|r| (r.overall_score - overall_average).powi(2))
-        .sum::<f64>() / n;
+        .sum::<f64>()
+        / n;
     let std_dev = variance.sqrt();
 
     // Common suggested improvements
@@ -332,7 +348,8 @@ pub fn aggregate_judge_results(results: &[JudgeResult]) -> JudgeSummary {
     }
     let mut common_improvements: Vec<_> = improvement_counts.into_iter().collect();
     common_improvements.sort_by_key(|(_, count)| std::cmp::Reverse(*count));
-    let top_improvements: Vec<String> = common_improvements.into_iter()
+    let top_improvements: Vec<String> = common_improvements
+        .into_iter()
         .take(5)
         .map(|(imp, _)| imp.to_string())
         .collect();
@@ -344,12 +361,8 @@ pub fn aggregate_judge_results(results: &[JudgeResult]) -> JudgeSummary {
         std_deviation: std_dev,
         criterion_averages,
         common_improvements: top_improvements,
-        low_scorers: results.iter()
-            .filter(|r| r.overall_score < 2.5)
-            .count(),
-        high_scorers: results.iter()
-            .filter(|r| r.overall_score >= 4.0)
-            .count(),
+        low_scorers: results.iter().filter(|r| r.overall_score < 2.5).count(),
+        high_scorers: results.iter().filter(|r| r.overall_score >= 4.0).count(),
     }
 }
 
@@ -377,7 +390,8 @@ pub struct SyntheticGroundTruth {
 
 /// Prompt for generating ground truth annotations
 pub fn build_annotation_prompt(question: &str, available_principles: &[String]) -> String {
-    format!(r#"You are annotating ground truth for a decision-support benchmark.
+    format!(
+        r#"You are annotating ground truth for a decision-support benchmark.
 
 ## Question
 {question}
@@ -440,29 +454,28 @@ pub fn build_consensus_annotation(
     }
 
     // Only keep items with sufficient agreement
-    let expected_principles: Vec<String> = principle_counts.into_iter()
+    let expected_principles: Vec<String> = principle_counts
+        .into_iter()
         .filter(|(_, count)| *count >= min_agreement)
         .map(|(p, _)| p)
         .collect();
 
-    let expected_thinkers: Vec<String> = thinker_counts.into_iter()
+    let expected_thinkers: Vec<String> = thinker_counts
+        .into_iter()
         .filter(|(_, count)| *count >= min_agreement)
         .map(|(t, _)| t)
         .collect();
 
-    let anti_principles: Vec<String> = anti_counts.into_iter()
+    let anti_principles: Vec<String> = anti_counts
+        .into_iter()
         .filter(|(_, count)| *count >= min_agreement)
         .map(|(a, _)| a)
         .collect();
 
     // Average difficulty and confidence
     let n = annotations.len() as f64;
-    let avg_difficulty = annotations.iter()
-        .map(|a| a.difficulty as f64)
-        .sum::<f64>() / n;
-    let avg_confidence = annotations.iter()
-        .map(|a| a.confidence)
-        .sum::<f64>() / n;
+    let avg_difficulty = annotations.iter().map(|a| a.difficulty as f64).sum::<f64>() / n;
+    let avg_confidence = annotations.iter().map(|a| a.confidence).sum::<f64>() / n;
 
     SyntheticGroundTruth {
         expected_principles,
