@@ -1636,3 +1636,155 @@ fn performance_optimization() -> DecisionTemplate {
         times_used: 0,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_templates_returns_all_12() {
+        let templates = get_templates();
+        assert_eq!(templates.len(), 12);
+
+        // Verify all have unique IDs
+        let ids: Vec<_> = templates.iter().map(|t| &t.id).collect();
+        let mut unique_ids = ids.clone();
+        unique_ids.sort();
+        unique_ids.dedup();
+        assert_eq!(ids.len(), unique_ids.len(), "Template IDs should be unique");
+    }
+
+    #[test]
+    fn test_get_templates_have_required_fields() {
+        for template in get_templates() {
+            assert!(!template.id.is_empty(), "Template ID should not be empty");
+            assert!(!template.name.is_empty(), "Template name should not be empty");
+            assert!(!template.domain.is_empty(), "Template domain should not be empty");
+            assert!(!template.triggers.is_empty(), "Template should have triggers");
+            assert!(!template.tree.question.is_empty(), "Template tree should have a question");
+            assert!(!template.tree.options.is_empty(), "Template tree should have options");
+        }
+    }
+
+    #[test]
+    fn test_match_templates_microservices() {
+        let matches = match_templates("Should we use microservices or stay with a monolith?");
+        assert!(!matches.is_empty(), "Should match microservices template");
+        assert_eq!(matches[0].0.id, "monolith-vs-microservices");
+    }
+
+    #[test]
+    fn test_match_templates_rewrite() {
+        let matches = match_templates("Should we rewrite this legacy system from scratch?");
+        assert!(!matches.is_empty(), "Should match rewrite template");
+        assert_eq!(matches[0].0.id, "rewrite-vs-refactor");
+    }
+
+    #[test]
+    fn test_match_templates_build_vs_buy() {
+        let matches = match_templates("Should we build our own auth system or use a third party?");
+        assert!(!matches.is_empty(), "Should match build vs buy template");
+        assert_eq!(matches[0].0.id, "build-vs-buy");
+    }
+
+    #[test]
+    fn test_match_templates_late_project() {
+        let matches = match_templates("We're behind schedule, should we add more people to the team?");
+        assert!(!matches.is_empty(), "Should match scale team template");
+        assert_eq!(matches[0].0.id, "scale-team");
+    }
+
+    #[test]
+    fn test_match_templates_testing() {
+        let matches = match_templates("How should we approach testing this new feature?");
+        assert!(!matches.is_empty(), "Should match testing template");
+        assert_eq!(matches[0].0.id, "testing-strategy");
+    }
+
+    #[test]
+    fn test_match_templates_performance() {
+        let matches = match_templates("The app is too slow, how should we optimize performance?");
+        assert!(!matches.is_empty(), "Should match performance template");
+        assert_eq!(matches[0].0.id, "performance-optimization");
+    }
+
+    #[test]
+    fn test_match_templates_prioritization() {
+        let matches = match_templates("Which feature should we prioritize and build first?");
+        assert!(!matches.is_empty(), "Should match prioritization template");
+        assert_eq!(matches[0].0.id, "feature-prioritization");
+    }
+
+    #[test]
+    fn test_match_templates_no_match() {
+        let matches = match_templates("What should I have for lunch?");
+        assert!(matches.is_empty(), "Random question should not match any template");
+    }
+
+    #[test]
+    fn test_match_templates_case_insensitive() {
+        let matches_lower = match_templates("should we use MICROSERVICES?");
+        let matches_upper = match_templates("SHOULD WE USE microservices?");
+        assert!(!matches_lower.is_empty());
+        assert!(!matches_upper.is_empty());
+        assert_eq!(matches_lower[0].0.id, matches_upper[0].0.id);
+    }
+
+    #[test]
+    fn test_match_templates_sorted_by_score() {
+        // A question with multiple keyword matches should score higher
+        let matches = match_templates("microservices vs monolith architecture service decompose");
+        assert!(!matches.is_empty());
+        // First match should have highest score
+        if matches.len() > 1 {
+            assert!(matches[0].1 >= matches[1].1, "Results should be sorted by score descending");
+        }
+    }
+
+    #[test]
+    fn test_blind_spot_severity_values() {
+        // Verify BlindSpotSeverity enum works correctly
+        assert_eq!(
+            serde_json::to_string(&BlindSpotSeverity::Critical).unwrap(),
+            "\"critical\""
+        );
+        assert_eq!(
+            serde_json::to_string(&BlindSpotSeverity::High).unwrap(),
+            "\"high\""
+        );
+        assert_eq!(
+            serde_json::to_string(&BlindSpotSeverity::Medium).unwrap(),
+            "\"medium\""
+        );
+        assert_eq!(
+            serde_json::to_string(&BlindSpotSeverity::Low).unwrap(),
+            "\"low\""
+        );
+    }
+
+    #[test]
+    fn test_decision_tree_depth() {
+        // Verify nested decision trees work
+        let template = monolith_vs_microservices();
+        let first_option = &template.tree.options[0];
+        assert!(first_option.next.is_some(), "First option should have nested tree");
+
+        let nested = first_option.next.as_ref().unwrap();
+        assert!(!nested.question.is_empty());
+        assert!(!nested.options.is_empty());
+    }
+
+    #[test]
+    fn test_template_serialization() {
+        // Verify templates can be serialized to JSON
+        let templates = get_templates();
+        let json = serde_json::to_string(&templates);
+        assert!(json.is_ok(), "Templates should serialize to JSON");
+
+        // And deserialize back
+        let json_str = json.unwrap();
+        let parsed: Result<Vec<DecisionTemplate>, _> = serde_json::from_str(&json_str);
+        assert!(parsed.is_ok(), "Templates should deserialize from JSON");
+        assert_eq!(parsed.unwrap().len(), 12);
+    }
+}
