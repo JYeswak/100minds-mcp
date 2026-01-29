@@ -39,17 +39,98 @@ impl<'a> CounselEngine<'a> {
         let provenance_info = self.create_provenance(request, &positions, &challenge)?;
 
         // 5. Build the response
-        let response = CounselResponse::new(
+        let mut response = CounselResponse::new(
             request.question.clone(),
             positions,
             challenge,
             provenance_info,
         );
 
-        // 6. Store the decision in the database
+        // 6. Detect urgency for swarm integration
+        response.urgency_adjustment = self.detect_urgency(request, &response.positions);
+
+        // 7. Store the decision in the database
         self.store_decision(&response, request)?;
 
         Ok(response)
+    }
+
+    /// Detect urgency based on question content and position analysis
+    /// Returns "escalate" | "defer" | None
+    fn detect_urgency(&self, request: &CounselRequest, positions: &[CounselPosition]) -> Option<String> {
+        let q = request.question.to_lowercase();
+
+        // ESCALATE signals - indicates decision needs human review or senior attention
+        let escalate_keywords = [
+            "security", "vulnerable", "breach", "hack",
+            "data loss", "corruption", "production down",
+            "breaking change", "backwards compat",
+            "legal", "compliance", "gdpr", "pii",
+            "money", "billing", "payment",
+            "deadline", "blocker", "critical",
+        ];
+
+        let escalate_score: usize = escalate_keywords.iter()
+            .filter(|kw| q.contains(*kw))
+            .count();
+
+        // DEFER signals - indicates decision can wait for more information
+        let defer_keywords = [
+            "future", "eventually", "someday", "maybe",
+            "nice to have", "phase 2", "later",
+            "considering", "thinking about", "exploring",
+            "research", "spike", "poc", "prototype",
+        ];
+
+        let defer_score: usize = defer_keywords.iter()
+            .filter(|kw| q.contains(*kw))
+            .count();
+
+        // Analyze position confidence spread
+        let confidences: Vec<f64> = positions.iter().map(|p| p.confidence).collect();
+        let avg_confidence = if !confidences.is_empty() {
+            confidences.iter().sum::<f64>() / confidences.len() as f64
+        } else {
+            0.5
+        };
+
+        // Low confidence + high stakes = escalate
+        if avg_confidence < 0.5 && escalate_score >= 1 {
+            return Some("escalate".to_string());
+        }
+
+        // High confidence + escalate keywords = still escalate (stakes matter)
+        if escalate_score >= 2 {
+            return Some("escalate".to_string());
+        }
+
+        // Defer keywords present = defer
+        if defer_score >= 2 {
+            return Some("defer".to_string());
+        }
+
+        // Check for conflicting positions (FOR and AGAINST with similar confidence)
+        let has_for = positions.iter().any(|p| p.stance == Stance::For);
+        let has_against = positions.iter().any(|p| p.stance == Stance::Against);
+
+        if has_for && has_against {
+            let for_confidence: f64 = positions.iter()
+                .filter(|p| p.stance == Stance::For)
+                .map(|p| p.confidence)
+                .sum::<f64>();
+            let against_confidence: f64 = positions.iter()
+                .filter(|p| p.stance == Stance::Against)
+                .map(|p| p.confidence)
+                .sum::<f64>();
+
+            // Near-equal confidence = contentious decision, escalate
+            let diff = (for_confidence - against_confidence).abs();
+            if diff < 0.2 && (for_confidence + against_confidence) > 1.0 {
+                return Some("escalate".to_string());
+            }
+        }
+
+        None
     }
 
     /// Find principles relevant to the question
