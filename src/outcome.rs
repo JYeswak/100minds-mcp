@@ -154,14 +154,16 @@ fn update_thompson_params(
     context_pattern: Option<&str>,
 ) -> Result<()> {
     // Update global Thompson parameters
+    // Beta distribution: alpha = successes + 1, beta = failures + 1
     let (alpha_delta, beta_delta) = if success { (1.0, 0.0) } else { (0.0, 1.0) };
 
     conn.execute(
-        "INSERT INTO thompson_arms (principle_id, alpha, beta)
-         VALUES (?1, ?2, ?3)
+        "INSERT INTO thompson_arms (principle_id, alpha, beta, pulls)
+         VALUES (?1, 1.0 + ?2, 1.0 + ?3, 1)
          ON CONFLICT(principle_id) DO UPDATE SET
             alpha = alpha + ?2,
             beta = beta + ?3,
+            pulls = pulls + 1,
             updated_at = CURRENT_TIMESTAMP",
         params![principle_id, alpha_delta, beta_delta],
     )?;
@@ -171,12 +173,13 @@ fn update_thompson_params(
         if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(ctx) {
             if let Some(domain) = parsed.get("domain").and_then(|d| d.as_str()) {
                 conn.execute(
-                    "INSERT INTO thompson_domain_arms (principle_id, domain, alpha, beta)
-                     VALUES (?1, ?2, ?3, ?4)
+                    "INSERT INTO thompson_domain_arms (principle_id, domain, alpha, beta, sample_count)
+                     VALUES (?1, ?2, 1.0 + ?3, 1.0 + ?4, 1)
                      ON CONFLICT(principle_id, domain) DO UPDATE SET
                         alpha = alpha + ?3,
                         beta = beta + ?4,
-                        updated_at = CURRENT_TIMESTAMP",
+                        sample_count = sample_count + 1,
+                        last_updated = CURRENT_TIMESTAMP",
                     params![principle_id, domain, alpha_delta, beta_delta],
                 )?;
             }
@@ -499,14 +502,61 @@ pub fn record_outcome_v2(
         "failure_stage": request.failure_stage,
     });
 
+    // If principle_ids not provided, look them up from stored counsel_json
+    let principle_ids = if request.principle_ids.is_empty() {
+        extract_principles_from_decision(conn, &request.decision_id)
+    } else {
+        request.principle_ids.clone()
+    };
+
     record_outcome(
         conn,
         &request.decision_id,
         request.success,
-        &request.principle_ids,
+        &principle_ids,
         request.notes.as_deref().unwrap_or(""),
         Some(&context.to_string()),
     )
+}
+
+/// Extract principle IDs from a stored decision's counsel_json
+fn extract_principles_from_decision(conn: &Connection, decision_id: &str) -> Vec<String> {
+    let counsel_json: Option<String> = conn
+        .query_row(
+            "SELECT counsel_json FROM decisions WHERE id = ?1",
+            [decision_id],
+            |row| row.get(0),
+        )
+        .ok();
+
+    let Some(json_str) = counsel_json else {
+        return vec![];
+    };
+
+    // Parse counsel_json and extract all principles_cited from positions
+    let Ok(counsel): Result<serde_json::Value, _> = serde_json::from_str(&json_str) else {
+        return vec![];
+    };
+
+    let mut principles = Vec::new();
+
+    // Extract from positions array
+    if let Some(positions) = counsel.get("positions").and_then(|p| p.as_array()) {
+        for position in positions {
+            if let Some(cited) = position.get("principles_cited").and_then(|c| c.as_array()) {
+                for p in cited {
+                    if let Some(id) = p.as_str() {
+                        principles.push(id.to_string());
+                    }
+                }
+            }
+        }
+    }
+
+    // Deduplicate
+    principles.sort();
+    principles.dedup();
+    principles
 }
 
 #[cfg(test)]
