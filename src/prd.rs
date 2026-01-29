@@ -536,4 +536,129 @@ mod tests {
         assert!(meta.principles_applied.contains(&"Brooks's Law".to_string()));
         assert!(meta.split_recommendation.as_ref().unwrap().should_split);
     }
+
+    #[test]
+    fn test_to_json_and_from_json_roundtrip() {
+        let stories = vec![
+            RawStory {
+                title: "Add feature".to_string(),
+                description: "Create new feature".to_string(),
+                priority: Some("P1".to_string()),
+                depends_on: None,
+                acceptance_criteria: Some(vec!["Works correctly".to_string()]),
+            },
+        ];
+
+        let prd = generate_prd(
+            "prd-test-001",
+            "Test PRD",
+            "Test description",
+            Some("/test/path"),
+            stories,
+        );
+
+        // Round-trip through JSON
+        let json = to_json(&prd).unwrap();
+        let parsed = from_json(&json).unwrap();
+
+        assert_eq!(parsed.id, prd.id);
+        assert_eq!(parsed.title, prd.title);
+        assert_eq!(parsed.stories.len(), prd.stories.len());
+        assert_eq!(parsed.stories[0].title, prd.stories[0].title);
+    }
+
+    #[test]
+    fn test_from_json_invalid() {
+        let result = from_json("not valid json");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_analyze_prd_good_size() {
+        // PRD with 3 stories should pass validation
+        let stories: Vec<Story> = (1..=3).map(|i| Story {
+            id: format!("US-{:03}", i),
+            title: format!("Story {}", i),
+            description: "Good description of the work".to_string(),
+            story_type: "feature".to_string(),
+            priority: "P2".to_string(),
+            depends_on: if i == 1 { vec![] } else { vec![format!("US-{:03}", i - 1)] },
+            acceptance_criteria: Some(vec!["Criteria 1".to_string()]),
+            status: None,
+        }).collect();
+
+        let mut prd = Prd {
+            id: "good-prd".to_string(),
+            title: "Well-Scoped PRD".to_string(),
+            description: "Clear description".to_string(),
+            project_path: Some("/project".to_string()),
+            stories,
+            minds_metadata: None,
+        };
+
+        let meta = analyze_prd(&mut prd);
+
+        // Should have a better score than the oversized PRD
+        assert!(meta.validation_score >= 70.0, "Good PRD should score >= 70");
+    }
+
+    #[test]
+    fn test_generate_prd_creates_correct_ids() {
+        let stories = vec![
+            RawStory {
+                title: "Feature 1".to_string(),
+                description: "Desc".to_string(),
+                priority: None,
+                depends_on: None,
+                acceptance_criteria: None,
+            },
+            RawStory {
+                title: "Feature 2".to_string(),
+                description: "Desc".to_string(),
+                priority: None,
+                depends_on: None,
+                acceptance_criteria: None,
+            },
+            RawStory {
+                title: "Cleanup task".to_string(),
+                description: "Desc".to_string(),
+                priority: None,
+                depends_on: None,
+                acceptance_criteria: None,
+            },
+        ];
+
+        let prd = generate_prd("test-id", "Title", "Desc", None, stories);
+
+        // US stories should be US-001, US-002
+        // CL stories depend on title pattern (checked in the function)
+        assert!(prd.stories.iter().any(|s| s.id == "US-001"));
+        assert!(prd.stories.iter().any(|s| s.id == "US-002"));
+    }
+
+    #[test]
+    fn test_generate_prd_with_explicit_depends() {
+        let stories = vec![
+            RawStory {
+                title: "Base feature".to_string(),
+                description: "Desc".to_string(),
+                priority: None,
+                depends_on: None,
+                acceptance_criteria: None,
+            },
+            RawStory {
+                title: "Dependent feature".to_string(),
+                description: "Desc".to_string(),
+                priority: None,
+                depends_on: Some(vec!["US-001".to_string()]),
+                acceptance_criteria: None,
+            },
+        ];
+
+        let prd = generate_prd("test-deps", "Title", "Desc", None, stories);
+
+        // Second story should have explicit dependency preserved
+        let second_story = &prd.stories[1];
+        assert!(second_story.depends_on.contains(&"US-001".to_string()));
+    }
 }

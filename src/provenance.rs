@@ -194,6 +194,13 @@ mod tests {
     use super::*;
     use tempfile::tempdir;
 
+    fn setup_provenance() -> (Provenance, tempfile::TempDir) {
+        let dir = tempdir().unwrap();
+        let key_path = dir.path().join("test.key");
+        let prov = Provenance::init(&key_path).unwrap();
+        (prov, dir)
+    }
+
     #[test]
     fn test_key_generation_and_signing() {
         let dir = tempdir().unwrap();
@@ -244,5 +251,184 @@ mod tests {
         assert_eq!(hash1, hash2);
         assert_ne!(hash1, hash3);
         assert_eq!(hash1.len(), 64); // SHA-256 = 32 bytes = 64 hex chars
+    }
+
+    #[test]
+    fn test_public_key_hex_format() {
+        let (prov, _dir) = setup_provenance();
+        let pubkey = prov.public_key_hex();
+
+        // Ed25519 public key = 32 bytes = 64 hex chars
+        assert_eq!(pubkey.len(), 64);
+        // Should be valid hex
+        assert!(hex::decode(&pubkey).is_ok());
+    }
+
+    #[test]
+    fn test_signature_format() {
+        let (prov, _dir) = setup_provenance();
+        let signature = prov.sign(b"test content").unwrap();
+
+        // Ed25519 signature = 64 bytes = 128 hex chars
+        assert_eq!(signature.len(), 128);
+        // Should be valid hex
+        assert!(hex::decode(&signature).is_ok());
+    }
+
+    #[test]
+    fn test_verify_invalid_signature_hex() {
+        let (prov, _dir) = setup_provenance();
+        let pubkey = prov.public_key_hex();
+
+        // Invalid hex should error
+        let result = prov.verify(b"test", "not-valid-hex!", &pubkey);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_verify_invalid_pubkey_hex() {
+        let (prov, _dir) = setup_provenance();
+        let signature = prov.sign(b"test").unwrap();
+
+        // Invalid hex should error
+        let result = prov.verify(b"test", &signature, "not-valid-hex!");
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_verify_wrong_length_signature() {
+        let (prov, _dir) = setup_provenance();
+        let pubkey = prov.public_key_hex();
+
+        // Too short signature (not 64 bytes)
+        let short_sig = hex::encode([0u8; 32]);
+        let result = prov.verify(b"test", &short_sig, &pubkey);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_verify_wrong_length_pubkey() {
+        let (prov, _dir) = setup_provenance();
+        let signature = prov.sign(b"test").unwrap();
+
+        // Too short pubkey (not 32 bytes)
+        let short_pubkey = hex::encode([0u8; 16]);
+        let result = prov.verify(b"test", &signature, &short_pubkey);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_verify_chain_valid() {
+        let (prov, _dir) = setup_provenance();
+        let pubkey = prov.public_key_hex();
+
+        // Create a valid chain
+        let content1 = b"decision 1".to_vec();
+        let hash1 = prov.hash(&content1);
+        let sig1 = prov.sign(&content1).unwrap();
+
+        let content2 = b"decision 2".to_vec();
+        let hash2 = prov.hash(&content2);
+        let sig2 = prov.sign(&content2).unwrap();
+
+        let chain = vec![
+            ChainLink {
+                content: content1,
+                content_hash: hash1.clone(),
+                previous_hash: None,
+                signature: sig1,
+                agent_pubkey: pubkey.clone(),
+            },
+            ChainLink {
+                content: content2,
+                content_hash: hash2,
+                previous_hash: Some(hash1),
+                signature: sig2,
+                agent_pubkey: pubkey,
+            },
+        ];
+
+        let result = prov.verify_chain(&chain);
+        assert!(result.valid, "Chain should be valid: {:?}", result.errors);
+        assert_eq!(result.chain_length, 2);
+    }
+
+    #[test]
+    fn test_verify_chain_broken_hash_link() {
+        let (prov, _dir) = setup_provenance();
+        let pubkey = prov.public_key_hex();
+
+        let content1 = b"decision 1".to_vec();
+        let hash1 = prov.hash(&content1);
+        let sig1 = prov.sign(&content1).unwrap();
+
+        let content2 = b"decision 2".to_vec();
+        let hash2 = prov.hash(&content2);
+        let sig2 = prov.sign(&content2).unwrap();
+
+        let chain = vec![
+            ChainLink {
+                content: content1,
+                content_hash: hash1,
+                previous_hash: None,
+                signature: sig1,
+                agent_pubkey: pubkey.clone(),
+            },
+            ChainLink {
+                content: content2,
+                content_hash: hash2,
+                previous_hash: Some("wrong-hash".to_string()), // Broken link!
+                signature: sig2,
+                agent_pubkey: pubkey,
+            },
+        ];
+
+        let result = prov.verify_chain(&chain);
+        assert!(!result.valid, "Chain with broken link should be invalid");
+        assert!(!result.errors.is_empty());
+    }
+
+    #[test]
+    fn test_verify_chain_tampered_content() {
+        let (prov, _dir) = setup_provenance();
+        let pubkey = prov.public_key_hex();
+
+        let content1 = b"decision 1".to_vec();
+        let hash1 = prov.hash(&content1);
+        let sig1 = prov.sign(&content1).unwrap();
+
+        let chain = vec![
+            ChainLink {
+                content: b"tampered content".to_vec(), // Different from hash!
+                content_hash: hash1,
+                previous_hash: None,
+                signature: sig1,
+                agent_pubkey: pubkey,
+            },
+        ];
+
+        let result = prov.verify_chain(&chain);
+        assert!(!result.valid, "Tampered content should be detected");
+    }
+
+    #[test]
+    fn test_verify_chain_empty() {
+        let (prov, _dir) = setup_provenance();
+
+        let result = prov.verify_chain(&[]);
+        assert!(result.valid, "Empty chain is trivially valid");
+        assert_eq!(result.chain_length, 0);
+    }
+
+    #[test]
+    fn test_hash_deterministic_known_value() {
+        let (prov, _dir) = setup_provenance();
+
+        // SHA-256 of "hello" is well-known
+        let hash = prov.hash(b"hello");
+        assert_eq!(
+            hash,
+            "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+        );
     }
 }

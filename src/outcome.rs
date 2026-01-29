@@ -505,6 +505,32 @@ pub fn record_outcome_v2(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::db;
+    use tempfile::tempdir;
+
+    fn setup_test_db() -> (Connection, tempfile::TempDir) {
+        let dir = tempdir().unwrap();
+        let db_path = dir.path().join("test.db");
+        let conn = db::init_db(&db_path).unwrap();
+        // Initialize Thompson schema
+        init_thompson_schema(&conn).unwrap();
+        (conn, dir)
+    }
+
+    fn insert_test_thinker(conn: &Connection, id: &str, name: &str, domain: &str) {
+        conn.execute(
+            "INSERT OR IGNORE INTO thinkers (id, name, domain) VALUES (?1, ?2, ?3)",
+            [id, name, domain],
+        ).unwrap();
+    }
+
+    fn insert_test_principle(conn: &Connection, id: &str, thinker_id: &str, name: &str) {
+        conn.execute(
+            "INSERT OR IGNORE INTO principles (id, thinker_id, name, description, learned_confidence)
+             VALUES (?1, ?2, ?3, ?4, 0.5)",
+            [id, thinker_id, name, "Test description"],
+        ).unwrap();
+    }
 
     #[test]
     fn test_category_to_domain() {
@@ -515,6 +541,15 @@ mod tests {
     }
 
     #[test]
+    fn test_category_to_domain_more_categories() {
+        assert_eq!(category_to_domain("[SCALE]"), "software-architecture");
+        assert_eq!(category_to_domain("[PERF]"), "performance");
+        assert_eq!(category_to_domain("[REFACTOR]"), "software-design");
+        assert_eq!(category_to_domain("[HEALING]"), "resilience");
+        assert_eq!(category_to_domain("[UNKNOWN]"), "general");
+    }
+
+    #[test]
     fn test_sync_posteriors_empty() {
         let conn = Connection::open_in_memory().unwrap();
         init_thompson_schema(&conn).unwrap();
@@ -522,5 +557,230 @@ mod tests {
         let result = sync_posteriors(&conn, None, None).unwrap();
         assert!(result.posteriors.is_empty());
         assert!(result.domains.is_empty());
+    }
+
+    #[test]
+    fn test_record_outcome_success() {
+        let (conn, _dir) = setup_test_db();
+        insert_test_thinker(&conn, "t1", "Thinker", "domain");
+        insert_test_principle(&conn, "p1", "t1", "Test Principle");
+
+        // Record success
+        let result = record_outcome(
+            &conn,
+            "test-decision-1",
+            true,
+            &["p1".to_string()],
+            "Success!",
+            None,
+        ).unwrap();
+
+        assert_eq!(result.decision_id, "test-decision-1");
+        assert_eq!(result.principles_adjusted.len(), 1);
+        assert_eq!(result.principles_adjusted[0].principle_id, "p1");
+        // Success adds 0.05
+        assert!((result.principles_adjusted[0].delta - 0.05).abs() < 0.001);
+        assert!(result.principles_adjusted[0].new_confidence > 0.5);
+    }
+
+    #[test]
+    fn test_record_outcome_failure_asymmetric() {
+        let (conn, _dir) = setup_test_db();
+        insert_test_thinker(&conn, "t2", "Thinker", "domain");
+        insert_test_principle(&conn, "p2", "t2", "Test Principle");
+
+        // Record failure
+        let result = record_outcome(
+            &conn,
+            "test-decision-2",
+            false,
+            &["p2".to_string()],
+            "Failed!",
+            None,
+        ).unwrap();
+
+        assert_eq!(result.principles_adjusted.len(), 1);
+        // Failure subtracts 0.10 (asymmetric - failures hurt more)
+        assert!((result.principles_adjusted[0].delta - (-0.10)).abs() < 0.001);
+        assert!(result.principles_adjusted[0].new_confidence < 0.5);
+    }
+
+    #[test]
+    fn test_record_outcome_updates_thompson_params() {
+        let (conn, _dir) = setup_test_db();
+        insert_test_thinker(&conn, "t3", "Thinker", "domain");
+        insert_test_principle(&conn, "p3", "t3", "Test Principle");
+
+        // Record success
+        record_outcome(
+            &conn,
+            "test-decision-3",
+            true,
+            &["p3".to_string()],
+            "Success!",
+            None,
+        ).unwrap();
+
+        // Check Thompson params updated
+        let (alpha, beta): (f64, f64) = conn.query_row(
+            "SELECT alpha, beta FROM thompson_arms WHERE principle_id = ?1",
+            ["p3"],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        ).unwrap();
+
+        // Fresh insert uses delta values directly: alpha=1.0, beta=0.0 for success
+        assert!((alpha - 1.0).abs() < 0.001);
+        assert!((beta - 0.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_record_bead_outcome() {
+        let (conn, _dir) = setup_test_db();
+        insert_test_thinker(&conn, "t4", "Thinker", "domain");
+        insert_test_principle(&conn, "p4", "t4", "Test Principle");
+
+        let result = record_bead_outcome(
+            &conn,
+            "bd-12345",
+            "Fix the bug",
+            true,
+            &["p4".to_string()],
+            "Worked!",
+            Some("[SWARM-FIX]"),
+        ).unwrap();
+
+        assert_eq!(result.decision_id, "bead-bd-12345");
+        assert_eq!(result.principles_adjusted.len(), 1);
+    }
+
+    #[test]
+    fn test_get_learning_stats_empty() {
+        let (conn, _dir) = setup_test_db();
+
+        let stats = get_learning_stats(&conn).unwrap();
+        assert_eq!(stats.total_outcomes, 0);
+        assert_eq!(stats.successful_outcomes, 0);
+        assert_eq!(stats.success_rate, 0.0);
+    }
+
+    #[test]
+    fn test_get_learning_stats_with_data() {
+        let (conn, _dir) = setup_test_db();
+        insert_test_thinker(&conn, "t5", "Thinker", "domain");
+        insert_test_principle(&conn, "p5", "t5", "Test Principle");
+
+        // Record 2 successes and 1 failure
+        record_outcome(&conn, "d1", true, &["p5".to_string()], "ok", None).unwrap();
+        record_outcome(&conn, "d2", true, &["p5".to_string()], "ok", None).unwrap();
+        record_outcome(&conn, "d3", false, &["p5".to_string()], "fail", None).unwrap();
+
+        let stats = get_learning_stats(&conn).unwrap();
+        assert_eq!(stats.total_outcomes, 3);
+        assert_eq!(stats.successful_outcomes, 2);
+        assert!((stats.success_rate - 0.666).abs() < 0.01);
+        assert_eq!(stats.principles_with_learning, 1);
+    }
+
+    #[test]
+    fn test_sync_posteriors_with_data() {
+        let (conn, _dir) = setup_test_db();
+        insert_test_thinker(&conn, "t6", "Thinker", "domain");
+        insert_test_principle(&conn, "p6", "t6", "Test Principle");
+
+        // Record outcome to populate Thompson params
+        record_outcome(&conn, "d4", true, &["p6".to_string()], "ok", None).unwrap();
+
+        let result = sync_posteriors(&conn, None, None).unwrap();
+        assert!(!result.posteriors.is_empty(), "Should have posteriors after recording outcome");
+        assert!(result.posteriors.contains_key("p6"), "Should contain principle p6");
+        // last_updated may be 0 if timestamp parsing fails - just check posteriors work
+    }
+
+    #[test]
+    fn test_record_outcomes_batch() {
+        let (conn, _dir) = setup_test_db();
+        insert_test_thinker(&conn, "t7", "Thinker", "domain");
+        insert_test_principle(&conn, "p7", "t7", "Test Principle");
+
+        let outcomes = vec![
+            RecordOutcomeRequest {
+                decision_id: "batch-1".to_string(),
+                success: true,
+                principle_ids: vec!["p7".to_string()],
+                notes: Some("batch ok".to_string()),
+                domain: Some("testing".to_string()),
+                confidence_score: None,
+                failure_stage: None,
+            },
+            RecordOutcomeRequest {
+                decision_id: "batch-2".to_string(),
+                success: false,
+                principle_ids: vec!["p7".to_string()],
+                notes: Some("batch fail".to_string()),
+                domain: Some("testing".to_string()),
+                confidence_score: None,
+                failure_stage: None,
+            },
+        ];
+
+        let results = record_outcomes_batch(&conn, &outcomes).unwrap();
+        assert_eq!(results.len(), 2);
+        assert_eq!(results[0].decision_id, "batch-1");
+        assert_eq!(results[1].decision_id, "batch-2");
+    }
+
+    #[test]
+    fn test_record_outcome_confidence_bounds() {
+        let (conn, _dir) = setup_test_db();
+        insert_test_thinker(&conn, "t8", "Thinker", "domain");
+
+        // Insert principle with very low confidence
+        conn.execute(
+            "INSERT INTO principles (id, thinker_id, name, description, learned_confidence)
+             VALUES ('p8', 't8', 'P', 'D', 0.15)",
+            [],
+        ).unwrap();
+
+        // Record failure - should be bounded at 0.1
+        let result = record_outcome(
+            &conn,
+            "test-bounds",
+            false,
+            &["p8".to_string()],
+            "Failed!",
+            None,
+        ).unwrap();
+
+        // New confidence should be bounded at 0.1 (not go below)
+        assert!(result.principles_adjusted[0].new_confidence >= 0.1);
+    }
+
+    #[test]
+    fn test_record_outcome_with_domain_context() {
+        let (conn, _dir) = setup_test_db();
+        insert_test_thinker(&conn, "t9", "Thinker", "domain");
+        insert_test_principle(&conn, "p9", "t9", "Test Principle");
+
+        let context = serde_json::json!({
+            "domain": "software-design"
+        }).to_string();
+
+        record_outcome(
+            &conn,
+            "test-domain",
+            true,
+            &["p9".to_string()],
+            "Success!",
+            Some(&context),
+        ).unwrap();
+
+        // Check domain-specific Thompson params were created
+        let count: i64 = conn.query_row(
+            "SELECT COUNT(*) FROM thompson_domain_arms WHERE principle_id = ?1 AND domain = ?2",
+            params!["p9", "software-design"],
+            |row| row.get(0),
+        ).unwrap();
+
+        assert_eq!(count, 1, "Domain-specific Thompson arm should exist");
     }
 }

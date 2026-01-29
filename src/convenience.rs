@@ -376,4 +376,48 @@ mod tests {
         let spots = generate_blind_spots("should I add a new caching layer?");
         assert!(spots.iter().any(|s| s.contains("YAGNI")));
     }
+
+    #[test]
+    fn test_generate_blind_spots_scale() {
+        let spots = generate_blind_spots("how do we scale this system?");
+        assert!(spots.iter().any(|s| s.contains("bottleneck")));
+    }
+
+    #[test]
+    fn test_generate_blind_spots_rewrite() {
+        let spots = generate_blind_spots("should we rewrite the legacy system?");
+        assert!(spots.iter().any(|s| s.contains("Strangler Fig")));
+    }
+
+    #[test]
+    fn test_generate_blind_spots_team() {
+        let spots = generate_blind_spots("should we add more people to the team?");
+        assert!(spots.iter().any(|s| s.contains("Brooks")));
+    }
+
+    #[test]
+    fn test_generate_anti_patterns_rewrite() {
+        let patterns = generate_anti_patterns("let's rewrite everything");
+        assert!(patterns.iter().any(|p| p.contains("Big-bang")));
+    }
+
+    #[test]
+    fn test_generate_anti_patterns_microservice() {
+        let patterns = generate_anti_patterns("should we use microservices?");
+        assert!(patterns.iter().any(|p| p.contains("decomposition")));
+    }
+
+    #[test]
+    fn test_generate_anti_patterns_cache() {
+        let patterns = generate_anti_patterns("add a cache layer");
+        assert!(patterns.iter().any(|p| p.contains("invalidation")));
+    }
+
+    #[test]
+    fn test_category_to_domain_more() {
+        assert_eq!(category_to_domain("[CI-RETRY]"), "quality");
+        assert_eq!(category_to_domain("FEATURE"), "systems-thinking");
+        assert_eq!(category_to_domain("REFACTOR"), "software-design");
+        assert_eq!(category_to_domain("UNKNOWN"), "general");
+    }
 }

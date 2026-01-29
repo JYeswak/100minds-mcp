@@ -1,11 +1,33 @@
+# Build artifacts
 /target/
+
+# Note: Cargo.lock IS committed for reproducible builds
+
+# Database files
 *.db
-Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude-mem context files (auto-generated)
+CLAUDE.md
+
 # Temp files from eval runs
 --benchmark
 --thompson
 persist
-scenarios
 echo
-"Persisting Thompson stats..."
-"Scenario benchmark:"
+
+# Models (downloaded on first use)
+models/
+
+# Local config
+.env
+.env.local

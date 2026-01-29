@@ -449,6 +449,8 @@ pub fn get_model_dir() -> PathBuf {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use tempfile::tempdir;
+    use crate::db;
 
     #[test]
     fn test_cosine_similarity() {
@@ -468,5 +470,96 @@ mod tests {
         // 3-4-5 triangle: norm should be 5
         assert!((normalized[0] - 0.6).abs() < 0.001);
         assert!((normalized[1] - 0.8).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_cosine_similarity_opposite() {
+        let a = vec![1.0, 0.0];
+        let b = vec![-1.0, 0.0];
+        assert!((SemanticEngine::cosine_similarity(&a, &b) - (-1.0)).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_cosine_similarity_perpendicular() {
+        let a = vec![1.0, 0.0, 0.0];
+        let b = vec![0.0, 1.0, 0.0];
+        let c = vec![0.0, 0.0, 1.0];
+        assert!((SemanticEngine::cosine_similarity(&a, &b) - 0.0).abs() < 0.001);
+        assert!((SemanticEngine::cosine_similarity(&b, &c) - 0.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_l2_normalize_unit_vector() {
+        let vec = vec![1.0, 0.0, 0.0];
+        let normalized = SemanticEngine::l2_normalize(&vec);
+        assert!((normalized[0] - 1.0).abs() < 0.001);
+        assert!((normalized[1] - 0.0).abs() < 0.001);
+        assert!((normalized[2] - 0.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_l2_normalize_zero_vector() {
+        let vec = vec![0.0, 0.0, 0.0];
+        let normalized = SemanticEngine::l2_normalize(&vec);
+        // Zero vector normalizes to itself
+        assert!(normalized.iter().all(|&x| x == 0.0));
+    }
+
+    #[test]
+    fn test_l2_normalize_length_is_one() {
+        let vec = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+        let normalized = SemanticEngine::l2_normalize(&vec);
+        let length: f32 = normalized.iter().map(|x| x * x).sum::<f32>().sqrt();
+        assert!((length - 1.0).abs() < 0.001, "Normalized vector should have length 1");
+    }
+
+    #[test]
+    fn test_get_model_dir() {
+        let path = get_model_dir();
+        // Should contain expected path components
+        let path_str = path.to_string_lossy();
+        assert!(path_str.contains("100minds"), "Path should contain '100minds'");
+        assert!(path_str.contains("models"), "Path should contain 'models'");
+        assert!(path_str.contains("minilm"), "Path should contain 'minilm'");
+    }
+
+    #[test]
+    fn test_init_embedding_schema() {
+        let dir = tempdir().unwrap();
+        let db_path = dir.path().join("test.db");
+        let conn = db::init_db(&db_path).unwrap();
+
+        // Initially, embedding column shouldn't exist
+        let has_embedding: i32 = conn.query_row(
+            "SELECT COUNT(*) FROM pragma_table_info('principles') WHERE name='embedding'",
+            [],
+            |row| row.get(0),
+        ).unwrap();
+        assert_eq!(has_embedding, 0, "Embedding column shouldn't exist initially");
+
+        // Initialize schema
+        init_embedding_schema(&conn).unwrap();
+
+        // Now embedding column should exist
+        let has_embedding: i32 = conn.query_row(
+            "SELECT COUNT(*) FROM pragma_table_info('principles') WHERE name='embedding'",
+            [],
+            |row| row.get(0),
+        ).unwrap();
+        assert_eq!(has_embedding, 1, "Embedding column should exist after init");
+
+        // Second init should be idempotent
+        init_embedding_schema(&conn).unwrap();
+        let has_embedding: i32 = conn.query_row(
+            "SELECT COUNT(*) FROM pragma_table_info('principles') WHERE name='embedding'",
+            [],
+            |row| row.get(0),
+        ).unwrap();
+        assert_eq!(has_embedding, 1, "Second init should be idempotent");
+    }
+
+    #[test]
+    fn test_embedding_dim_constant() {
+        assert_eq!(EMBEDDING_DIM, 384, "MiniLM embedding dimension should be 384");
     }
 }
