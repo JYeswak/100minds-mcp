@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  100minds:
+    build: .
+    ports:
+      - "3100:3100"
+    volumes:
+      # Persist database across restarts
+      - 100minds-data:/app/data
+    environment:
+      - RUST_LOG=info
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3100/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  100minds-data:

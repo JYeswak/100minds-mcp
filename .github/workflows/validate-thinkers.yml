@@ -22,11 +22,11 @@ jobs:
         run: |
           COUNT=$(find data/thinkers -name "*.json" | wc -l)
           echo "Found $COUNT thinker files"
-          if [ "$COUNT" -lt 30 ]; then
-            echo "::error::Expected at least 30 thinkers, found $COUNT"
+          if [ "$COUNT" -ne 100 ]; then
+            echo "::error::Expected exactly 100 thinkers, found $COUNT"
             exit 1
           fi
-          echo "✓ Found $COUNT thinkers (minimum: 30)"
+          echo "✓ Found exactly 100 thinkers"
 
       - name: Validate JSON syntax
         run: |
