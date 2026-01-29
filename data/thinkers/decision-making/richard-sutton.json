@@ -1,0 +1,40 @@
+{
+  "id": "richard-sutton",
+  "name": "Richard S. Sutton",
+  "domain": "decision-making",
+  "background": "Canadian-American computer scientist, professor at University of Alberta and DeepMind. Pioneer of reinforcement learning (RL), inventor of temporal-difference (TD) learning (1988). Co-author of seminal RL textbook with Andrew Barto (1998, 2nd ed 2018). Received 2024 Turing Award for RL foundations. Authored 'The Bitter Lesson' (2019) arguing that methods leveraging increasing computation outperform knowledge-based approaches.",
+  "principles": [
+    {
+      "name": "Delayed Rewards & Long-term Optimization",
+      "description": "RL handles credit assignment over long horizons, crucial for SMB decisions like marketing spend ROI, employee training impact, customer retention.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When delayed rewards & long-term optimization leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Exploration vs Exploitation",
+      "description": "Balance discovering new strategies vs using known good ones. TD methods like Q-learning naturally handle this tradeoff.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When exploration vs exploitation leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Reinforcement Learning Fundamentals",
+      "description": "Agents learn optimal behavior through trial-and-error interaction with environment, maximizing cumulative rewards over time. Applicable to sequential decision-making in dynamic SMB settings like inventory, pricing, customer service.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When reinforcement learning fundamentals leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Temporal Difference Learning",
+      "description": "Efficient model-free method to learn value functions from ongoing experience. Updates estimates based on observed rewards and future value predictions. Enables real-time adaptation without full environment models.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When temporal difference learning leads to worse outcomes than alternatives"
+    }
+  ]
+}

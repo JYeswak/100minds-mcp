@@ -1,0 +1,40 @@
+{
+  "id": "kevin-murphy",
+  "name": "Kevin Murphy",
+  "domain": "decision-making",
+  "background": "Kevin P. Murphy is a Principal Scientist at Google DeepMind (formerly Google Brain). He is renowned for his work in probabilistic machine learning, graphical models, and Bayesian methods. Author of the influential book series 'Probabilistic Machine Learning' (MIT Press: 2012, 2022 Advanced Introduction, 2023 Topics). Previously Associate Professor at UBC. PhD UC Berkeley, postdoc MIT. Over 128k citations.",
+  "principles": [
+    {
+      "name": "Bayesian Methods",
+      "description": "Incorporate prior knowledge and quantify uncertainty via posterior distributions, enabling principled decision-making under uncertainty.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When bayesian methods leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Graphical Models",
+      "description": "Use directed/undirected graphs to represent complex joint distributions compactly, enabling efficient inference via message passing.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When graphical models leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Practical ML Applications",
+      "description": "Bridge theory and practice with open-source tools (pyprobml), covering prediction, decision-making, analysis, and synthesis.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When practical ml applications leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Probabilistic Modeling",
+      "description": "Treat ML as probabilistic inference over generative models, unifying supervised/unsupervised learning via p(y|x) = integral p(y|x,z) p(z|x) dz.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When probabilistic modeling leads to worse outcomes than alternatives"
+    }
+  ]
+}

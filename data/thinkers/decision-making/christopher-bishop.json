@@ -1,0 +1,40 @@
+{
+  "id": "christopher-bishop",
+  "name": "Christopher Bishop",
+  "domain": "decision-making",
+  "background": "British computer scientist (b. 1959), Microsoft Technical Fellow & Director Microsoft Research AI4Science. PhD theoretical physics (Edinburgh 1983, advisors Higgs/Wallace). Author seminal ML texts: Neural Networks for Pattern Recognition (1995), Pattern Recognition and Machine Learning (PRML 2006) - comprehensive Bayesian/probabilistic ML framework. FRS (2017), FREng, FRSE. Focus: pattern recognition, neural networks, graphical models.",
+  "principles": [
+    {
+      "name": "Graphical Models",
+      "description": "Bayesian networks/Markov Random Fields for modeling complex dependencies in structured data.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When graphical models leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Mixture Density Networks",
+      "description": "Modeling multi-modal conditional distributions for complex outputs (e.g., regression with uncertainty).",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When mixture density networks leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Neural Networks for Pattern Recognition",
+      "description": "Flexible nonlinear modeling with principled Bayesian regularization (e.g., Gaussian processes as limits).",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When neural networks for pattern recognition leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Probabilistic Framework",
+      "description": "Bayesian inference as foundation for ML, explicit uncertainty modeling via priors/posteriors for robust predictions.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When probabilistic framework leads to worse outcomes than alternatives"
+    }
+  ]
+}

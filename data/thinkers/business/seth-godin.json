@@ -1,0 +1,40 @@
+{
+  "id": "seth-godin",
+  "name": "Seth Godin",
+  "domain": "business",
+  "background": "Born 1960, Stanford MBA. Author of 20+ books on marketing/leadership. Founded Yoyodyne (sold Yahoo $30M). Daily blogger at seths.blog. Key works: Permission Marketing (1999), Purple Cow (2003), Tribes (2008), Linchpin (2010), This is Marketing (2018). Focus: Remarkability, permission, tribes, human-centered change.",
+  "principles": [
+    {
+      "name": "Ideavirus",
+      "description": "Remarkable ideas spread like viruses.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When ideavirus leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Linchpin",
+      "description": "Be indispensable via creativity, humanity, art\u2014not compliance.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When linchpin leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Marketing as Change",
+      "description": "Serve specific people's dreams/status/worldview.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When marketing as change leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Permission Marketing",
+      "description": "Earn anticipated, personal, relevant permission before interrupting.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When permission marketing leads to worse outcomes than alternatives"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "gary-mcgraw",
+  "name": "Gary McGraw",
+  "domain": "security",
+  "background": "Software security pioneer. Author of 'Software Security: Building Security In'. Created the Building Security In Maturity Model (BSIMM). VP of Security at Synopsys.",
+  "principles": [
+    {
+      "name": "Security must be built in, not bolted on",
+      "description": "Security added after development is expensive and incomplete. Integrate security into the SDLC from requirements through deployment. Shift left.",
+      "domain_tags": ["secure-sdlc", "shift-left", "design-security"],
+      "falsification": "When bolt-on security provides sufficient protection at lower cost for low-risk applications"
+    },
+    {
+      "name": "Risk analysis beats penetration testing",
+      "description": "Pen testing finds symptoms, not root causes. Architectural risk analysis prevents entire classes of vulnerabilities. Fix the design, not just the bugs.",
+      "domain_tags": ["risk-analysis", "architecture-review", "threat-modeling"],
+      "falsification": "When rapid iteration makes upfront analysis impractical"
+    },
+    {
+      "name": "Software security is about abuse cases, not just use cases",
+      "description": "Consider how an attacker would misuse your software. Every feature is an attack surface. Design for adversarial users, not just friendly ones.",
+      "domain_tags": ["abuse-cases", "adversarial-thinking", "threat-modeling"],
+      "falsification": "When the cost of adversarial design exceeds the value of what's being protected"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": "kent-beck",
+  "name": "Kent Beck",
+  "domain": "software",
+  "background": "Creator of Extreme Programming (XP), advocate of Test-Driven Development (TDD), and thought leader in Agile methodology. Instrumental in advancing principles like YAGNI, courage, and simplicity in software design.",
+  "principles": [
+    {
+      "name": "Courage",
+      "description": "Encourage open communication, admit mistakes, and improve the process. Strive for progress with honesty and confidence in iterative change.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When courage leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Do The Simplest Thing That Could Possibly Work",
+      "description": "Solve the problem using the simplest solution possible, with an emphasis on functionality and clarity over complexity.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When do the simplest thing that could possibly work leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Incremental Design",
+      "description": "Design software incrementally in small, manageable steps that provide value at each stage, allowing for adjustments based on feedback. refactor refactoring messy spaghetti code cleanup before adding features tech debt",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When incremental design leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Red-Green-Refactor",
+      "description": "TDD cycle: write failing test (red), make it pass (green), improve code (refactor). refactor refactoring messy spaghetti code cleanup before adding features tech debt",
+      "domain_tags": [
+        "software-practices",
+        "testing",
+        "tdd"
+      ],
+      "falsification": "When red-green-refactor leads to worse outcomes than alternatives"
+    }
+  ]
+}

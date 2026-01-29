@@ -1,0 +1,26 @@
+{
+  "id": "jeremiah-grossman",
+  "name": "Jeremiah Grossman",
+  "domain": "security",
+  "background": "Web application security pioneer. Founder of WhiteHat Security. Discovered numerous browser vulnerabilities. Author on web security. Black Hat speaker.",
+  "principles": [
+    {
+      "name": "The browser is the new operating system",
+      "description": "Most attacks now target web applications and browsers. The OS is increasingly secure; the browser is the new attack surface. Secure the browser, secure the user.",
+      "domain_tags": ["web-security", "browser-security", "attack-surface"],
+      "falsification": "When native applications become primary attack vectors again"
+    },
+    {
+      "name": "You can't secure what you don't know you have",
+      "description": "Shadow IT, forgotten APIs, legacy systems—you can't protect unknown assets. Asset inventory is the foundation of security. Discovery before defense.",
+      "domain_tags": ["asset-management", "discovery", "inventory"],
+      "falsification": "When automated discovery tools achieve complete coverage"
+    },
+    {
+      "name": "Measure security like you measure business",
+      "description": "Security without metrics is opinion. Track vulnerability density, time-to-fix, risk exposure. What gets measured gets managed.",
+      "domain_tags": ["metrics", "risk-management", "measurement"],
+      "falsification": "When metrics create perverse incentives that reduce actual security"
+    }
+  ]
+}

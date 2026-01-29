@@ -1,0 +1,50 @@
+{
+  "id": "w-edwards-deming",
+  "name": "W. Edwards Deming",
+  "domain": "systems",
+  "background": "W. Edwards Deming (1900-1993) was an American engineer, statistician, professor, author, and management consultant. Educated in electrical engineering (BS University of Wyoming), mathematical physics (MS University of Colorado, PhD Yale), he pioneered statistical quality control. Post-WWII, he transformed Japanese industry through lectures on statistical methods and management philosophy, earning the Order of the Sacred Treasure (1960) and inspiring the Deming Prize. In the US, his 1980 NBC documentary 'If Japan Can... Why Can't We?' sparked recognition. Key works: 'Out of the Crisis' (1982, 14 Points), 'The New Economics' (1993, System of Profound Knowledge). He emphasized 85% of problems stem from systems/management, not workers. Deming advocated PDCA/PDSA for continuous improvement, influencing Total Quality Management (TQM), Lean, and Six Sigma. Late career included consulting (e.g., Ford's turnaround) and founding the Deming Institute.",
+  "principles": [
+    {
+      "name": "14 Points for Management",
+      "description": "14 obligations for transforming management: e.g., 'Create constancy of purpose'; 'Cease dependence on inspection'; 'Drive out fear'; 'Improve constantly'; full list in 'Out of the Crisis'. Direct quote: 'Adopt the new philosophy... Western management must awaken to the challenge.' (deming.org)",
+      "domain_tags": [
+        "points",
+        "management",
+        "obligations",
+        "transforming",
+        "management"
+      ],
+      "falsification": "When 14 points for management leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Drive Out Fear / Psychology",
+      "description": "Replace fear/blame with trust; understand human motivation. Point 8: 'Drive out fear, so that everyone may work effectively.' Part of SoPK psychology.",
+      "domain_tags": [
+        "drive",
+        "fear",
+        "psychology",
+        "replace",
+        "fear"
+      ],
+      "falsification": "When drive out fear / psychology leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Feedback Loop",
+      "description": "Fast feedback enables rapid learning and correction. Shorten time between action and information.",
+      "domain_tags": [
+        "process",
+        "quality"
+      ],
+      "falsification": "When feedback loop leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Feedback Speed",
+      "description": "Faster feedback enables faster correction. CI, monitoring, user feedback.",
+      "domain_tags": [
+        "process",
+        "quality"
+      ],
+      "falsification": "When feedback speed leads to worse outcomes than alternatives"
+    }
+  ]
+}

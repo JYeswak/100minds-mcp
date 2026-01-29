@@ -1,0 +1,42 @@
+{
+  "id": "fred-brooks",
+  "name": "Fred Brooks",
+  "domain": "software",
+  "background": "Author of The Mythical Man-Month. Manager of IBM System/360 and OS/360. Turing Award winner. Pioneer in software engineering management wisdom.",
+  "principles": [
+    {
+      "name": "Brooks's Law",
+      "description": "Adding more engineers to a late project makes it later. Communication overhead grows quadratically with team size. The mythical man-month: months of work does not equal men-months. Applies to rewrite projects where throwing more people at the problem backfires.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When brooks's law leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Communication Overhead",
+      "description": "Adding people to a team increases communication paths exponentially. n(n-1)/2 communication channels.",
+      "domain_tags": [
+        "team",
+        "management"
+      ],
+      "falsification": "When communication overhead leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Complexity Cost",
+      "description": "Every complexity has ongoing cost. Maintenance, cognitive load, debugging time.",
+      "domain_tags": [
+        "design",
+        "architecture"
+      ],
+      "falsification": "When complexity cost leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Conceptual Integrity",
+      "description": "A system should look like one person designed it. Better to have one good idea consistently applied than many brilliant but conflicting ideas. Assign a chief architect.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When conceptual integrity leads to worse outcomes than alternatives"
+    }
+  ]
+}

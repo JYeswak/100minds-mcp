@@ -1,0 +1,40 @@
+{
+  "id": "david-chalmers",
+  "name": "David Chalmers",
+  "domain": "philosophy",
+  "background": "David John Chalmers (b. 1966) is an Australian-American philosopher and cognitive scientist, Professor of Philosophy and Neural Science at NYU, co-director of NYU's Center for Mind, Brain, and Consciousness. Known for philosophy of mind, consciousness, language. Key works: The Conscious Mind (1996), Reality+: Virtual Worlds and the Problems of Philosophy (2022). Formulated 'hard problem of consciousness'; defends naturalistic dualism, philosophical zombies.",
+  "principles": [
+    {
+      "name": "Extended Mind Thesis",
+      "description": "With Andy Clark: Cognition not confined to brain/skin; external tools/aids (notebooks, smartphones) as part of cognitive system if reliably used as 'mindlike'.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When extended mind thesis leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Hard Problem of Consciousness",
+      "description": "Distinguishes 'easy problems' (cognitive functions explainable by neuroscience) from 'hard problem': why physical processes give rise to subjective phenomenal experience (qualia). Argues consciousness not reducible to physicalism.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When hard problem of consciousness leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Naturalistic Dualism / Property Dualism",
+      "description": "Consciousness as fundamental non-physical property supervening on physical systems; psychophysical laws link brain states to experience. Supports via conceivability of philosophical zombies (physically identical but non-conscious beings).",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When naturalistic dualism / property dualism leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Two-Dimensional Semantics",
+      "description": "Terms have primary (epistemic, descriptive) and secondary (metaphysical, rigid) intensions; resolves Kripke-Putnam issues on necessity/reference.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When two-dimensional semantics leads to worse outcomes than alternatives"
+    }
+  ]
+}

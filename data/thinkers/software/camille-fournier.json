@@ -1,0 +1,32 @@
+{
+  "id": "camille-fournier",
+  "name": "Camille Fournier",
+  "domain": "software",
+  "background": "Expert in software",
+  "principles": [
+    {
+      "name": "Tech Lead Balance",
+      "description": "As tech lead, balance technical work with project management and team health. You can't do it all yourself. Tech leads spend 30% of time coding, down from 70%. The rest is code review, design, unblocking, and communication. Learn to delegate. Your job is to make the team successful, not to be the hero. Resist the urge to take on the hardest technical work yourself.",
+      "domain_tags": [
+        "tech lead",
+        "leadership",
+        "delegation",
+        "team",
+        "time management"
+      ],
+      "falsification": "When tech lead balance leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "The Manager's Path",
+      "description": "Technical leadership requires different skills at each level. Don't skip rungs on the ladder. Tech lead, manager, director, VP - each requires learning new skills while maintaining technical credibility. Tech leads code and mentor. Managers handle people. Directors build process. Each transition requires consciously developing new capabilities.",
+      "domain_tags": [
+        "management",
+        "leadership",
+        "career",
+        "team structure",
+        "growth"
+      ],
+      "falsification": "When the manager's path leads to worse outcomes than alternatives"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "gerald-weinberg",
+  "name": "Gerald Marvin Weinberg",
+  "domain": "systems",
+  "background": "American computer scientist, author, and teacher specializing in the psychology and anthropology of software development. PhD from University of Michigan (1963). Worked on IBM Project Mercury (1959-1963). Consultant at Weinberg & Weinberg since 1969. Visiting professor at University of Nebraska-Lincoln, Binghamton University, Columbia University. Authored over 40 books and 400 articles. Key awards: J.-D. Warnier Prize (1993), Stevens Award (2000), Luminary Award (2010).",
+  "principles": [
+    {
+      "name": "1. Systems Thinking",
+      "description": "Organizations and software development are complex systems; quality emerges from observing patterns, feedback loops, and interactions rather than isolated parts. (Quality Software Management Vol. 1: Systems Thinking)",
+      "domain_tags": [
+        "systems-thinking"
+      ],
+      "falsification": "When 1. systems thinking leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "2. Psychology of Programming",
+      "description": "Human factors like egoless programming, cognitive biases, and team dynamics profoundly impact software quality. (The Psychology of Computer Programming)",
+      "domain_tags": [
+        "systems-thinking"
+      ],
+      "falsification": "When 2. psychology of programming leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "3. Quality Before Metrics",
+      "description": "True quality requires understanding context and observing behaviors; avoid premature optimization or flawed measurement. (Quality Software Management series)",
+      "domain_tags": [
+        "systems-thinking"
+      ],
+      "falsification": "When 3. quality before metrics leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "4. Consulting Secrets",
+      "description": "Advice succeeds through building trust, understanding client systems, and knowing when not to advise. Law of Twins: Most efforts yield no significant results. (The Secrets of Consulting)",
+      "domain_tags": [
+        "systems-thinking"
+      ],
+      "falsification": "When 4. consulting secrets leads to worse outcomes than alternatives"
+    }
+  ]
+}

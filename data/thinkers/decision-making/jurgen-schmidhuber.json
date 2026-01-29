@@ -1,0 +1,40 @@
+{
+  "id": "jurgen-schmidhuber",
+  "name": "J\u00fcrgen Schmidhuber",
+  "domain": "decision-making",
+  "background": "German computer scientist (born 1963, Munich). Scientific director at IDSIA (Switzerland) since 1995, professor at KAUST (Saudi Arabia). Known as pioneer of LSTM (1997 with Hochreiter), artificial curiosity (1991), highway networks (2015), fast-weight attention mechanisms (1992, precursor to linear Transformers). Founder of NNAISENSE. Focus: self-improving AI, compression progress as driver of curiosity/creativity/beauty.",
+  "principles": [
+    {
+      "name": "Artificial Curiosity / Predictability Minimization",
+      "description": "Intrinsic motivation: agent learns world model to predict environment reactions. Maximizes info gain/compression progress. Precursor to GANs (1991 adversarial nets).",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When artificial curiosity / predictability minimization leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Compression Progress Principle",
+      "description": "Data is subjectively beautiful/novel/interesting when compressible via shorter programs. Drives curiosity, art, science, humor: seek data allowing better compression (history compression).",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When compression progress principle leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Fast Weights / Self-Attention (Linear Transformers)",
+      "description": "Slow net generates fast weights via outer products for dynamic attention. 1992 work equivalent to unnormalized linear Transformers (attention spotlight).",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When fast weights / self-attention (linear transformers) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Hierarchical RNNs / Highway Networks",
+      "description": "Pre-train RNN hierarchy level-by-level for deep learning. Highway gates (LSTM-inspired) enable 100s-layer nets, precursor to ResNets.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When hierarchical rnns / highway networks leads to worse outcomes than alternatives"
+    }
+  ]
+}

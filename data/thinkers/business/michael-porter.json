@@ -1,0 +1,40 @@
+{
+  "id": "michael-porter",
+  "name": "Michael Porter",
+  "domain": "business",
+  "background": "Michael Eugene Porter (born May 23, 1947) is an American academic known as the father of modern competitive strategy. A professor at Harvard Business School and director of the Institute for Strategy and Competitiveness, Porter has authored 20 books and pioneered frameworks like Porter's Five Forces, the Value Chain, and Competitive Advantage of Nations. His work influences business, government, and non-profits worldwide, emphasizing sustainable competitive positioning over operational efficiency.",
+  "principles": [
+    {
+      "name": "Competitive Advantage",
+      "description": "Achieved via cost leadership (lower costs than rivals) or differentiation (unique value), sustained through operational effectiveness and strategic positioning.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When competitive advantage leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Competitive Strategy",
+      "description": "Making deliberate trade-offs and choices to position uniquely, avoiding 'stuck in the middle' where firms neither lead on cost nor differentiate.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When competitive strategy leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Diamond Model (National Advantage)",
+      "description": "Four determinants (factor conditions, demand conditions, related/supporting industries, firm strategy/rivalry) plus government/chance explain national competitiveness.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When diamond model (national advantage) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Porter's Five Forces",
+      "description": "Framework analyzing industry attractiveness through threat of new entrants, bargaining power of suppliers/buyers, threat of substitutes, and rivalry among existing competitors.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When porter's five forces leads to worse outcomes than alternatives"
+    }
+  ]
+}

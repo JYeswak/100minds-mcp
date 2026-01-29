@@ -5,22 +5,49 @@
   "background": "Legendary game programmer. Created Doom, Quake, pioneered 3D graphics techniques. Known for extreme optimization, functional programming advocacy, and shipping culture.",
   "principles": [
     {
+      "name": "Embrace functional programming for reliability",
+      "description": "Pure functions with immutable data are easier to reason about, test, and parallelize. Side effects are where bugs hide. Make state explicit and minimal.",
+      "domain_tags": [
+        "functional-programming",
+        "immutability",
+        "testing",
+        "concurrency"
+      ],
+      "falsification": "When performance requires mutation, or when the team lacks functional programming experience"
+    },
+    {
       "name": "Focus is a force multiplier",
       "description": "Deep work on one problem beats scattered attention across many. Protect concentration ruthlessly. Context switching is expensive. The best work happens in flow state.",
-      "domain_tags": ["productivity", "focus", "engineering-culture", "deep-work"],
+      "domain_tags": [
+        "productivity",
+        "focus",
+        "engineering-culture",
+        "deep-work"
+      ],
       "falsification": "When breadth is required (learning new domains, early exploration) or when collaboration demands responsiveness over depth"
     },
     {
       "name": "If it doesn't have to run fast, it doesn't have to exist",
       "description": "Performance is a feature. Slow code wastes user time at scale. Optimize the critical path relentlessly. Know your bottlenecks from measurement, not intuition.",
-      "domain_tags": ["performance", "optimization", "games", "systems"],
+      "domain_tags": [
+        "performance",
+        "optimization",
+        "games",
+        "systems"
+      ],
       "falsification": "When developer time is more expensive than compute time, or when premature optimization obscures correctness"
     },
     {
-      "name": "Embrace functional programming for reliability",
-      "description": "Pure functions with immutable data are easier to reason about, test, and parallelize. Side effects are where bugs hide. Make state explicit and minimal.",
-      "domain_tags": ["functional-programming", "immutability", "testing", "concurrency"],
-      "falsification": "When performance requires mutation, or when the team lacks functional programming experience"
+      "name": "Performance Is a Feature",
+      "description": "If you can make something run 10x faster, you can change the way you use it. Performance isn't just about speed - it enables new use cases. When something is fast enough, you stop batching and do it interactively. When latency is low enough, workflows change. Invest in performance where it opens new possibilities, not just incremental improvement.",
+      "domain_tags": [
+        "performance",
+        "optimization",
+        "latency",
+        "user experience",
+        "feature"
+      ],
+      "falsification": "When performance is a feature leads to worse outcomes than alternatives"
     }
   ]
 }

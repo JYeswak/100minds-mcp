@@ -1,0 +1,40 @@
+{
+  "id": "ben-horowitz",
+  "name": "Ben Horowitz",
+  "domain": "business",
+  "background": "Ben Horowitz (born 1966) is an American businessman, venture capitalist, and author. Co-founder and general partner at Andreessen Horowitz (a16z). Former CEO of Opsware (Loudcloud), sold to HP for $1.6B. Authored NYT bestsellers 'The Hard Thing About Hard Things' (2014) and 'What You Do Is Who You Are' (2019). Background: BA CS Columbia, MS CS UCLA; roles at Netscape, AOL.",
+  "principles": [
+    {
+      "name": "Culture Defined by Actions Under Stress",
+      "description": "Culture is 'what you do when no one is watching' or under pressure, not posters. Shape via rituals, hiring, promotions, firings. Examples: Samurai (death meditations), pirates (mutiny prevention), prisons (gang loyalty).",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When culture defined by actions under stress leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Hire/Fire for Cultural Fit in Extremes",
+      "description": "Promote based on behavior under stress. 'If you want a samurai culture, promote samurai.' Fire misfits decisively.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When hire/fire for cultural fit in extremes leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "No Clear Playbook for Hard Things",
+      "description": "Business platitudes fail crises. Real leadership: Make painful calls, communicate politically incorrect truths.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When no clear playbook for hard things leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Peacetime vs Wartime CEO",
+      "description": "Peacetime CEO (market dominance): Focuses on expansion, broad input, process. Wartime CEO (existential threat): Focuses survival, strict alignment, paranoia, directness, violation of peacetime rules. 'One-size-fits-all management is dangerous.' Switch modes based on context.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When peacetime vs wartime ceo leads to worse outcomes than alternatives"
+    }
+  ]
+}

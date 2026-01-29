@@ -1,0 +1,40 @@
+{
+  "id": "james-womack",
+  "name": "James P. Womack",
+  "domain": "systems",
+  "background": "James P. Womack is a leading expert in lean production and management. He was the research director of MIT's International Motor Vehicle Program (IMVP) and founder/chairman of the Lean Enterprise Institute. Womack popularized 'lean production' through his seminal work 'The Machine That Changed the World' (1990), based on comparative studies of automotive industries. He holds degrees from University of Chicago, Harvard, and MIT. Key books: 'Lean Thinking' (1996), 'Lean Solutions' (2005). Co-founded Lean Global Network.",
+  "principles": [
+    {
+      "name": "Identify the value stream",
+      "description": "Identify the value stream for each product and eliminate waste (muda).",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When identify the value stream leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Let customers pull value",
+      "description": "Let customers pull value from the producer.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When let customers pull value leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Make value-creating steps flow",
+      "description": "Make value-creating steps flow continuously.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When make value-creating steps flow leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Pursue perfection through continuous",
+      "description": "Pursue perfection through continuous improvement (kaizen).",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When pursue perfection through continuous leads to worse outcomes than alternatives"
+    }
+  ]
+}

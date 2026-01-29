@@ -7,19 +7,34 @@
     {
       "name": "Monoculture is a systemic risk",
       "description": "When everyone runs the same software, a single vulnerability affects everyone simultaneously. Diversity provides resilience. Monocultures are efficient but fragile.",
-      "domain_tags": ["diversity", "resilience", "systemic-risk", "fragility"],
+      "domain_tags": [
+        "diversity",
+        "resilience",
+        "systemic-risk",
+        "fragility"
+      ],
       "falsification": "When monoculture enables coordinated patching faster than attackers can exploit"
     },
     {
       "name": "Security is a tax on the possible",
       "description": "Security constrains functionality. Every security measure has a cost in usability, performance, or capability. Make trade-offs explicit rather than pretending security is free.",
-      "domain_tags": ["trade-offs", "cost", "usability", "economics"],
+      "domain_tags": [
+        "trade-offs",
+        "cost",
+        "usability",
+        "economics"
+      ],
       "falsification": "When security measures genuinely improve usability (e.g., password managers)"
     },
     {
       "name": "You can have security, functionality, or freedom - pick two",
       "description": "These goals are in tension. More security means less functionality or less freedom. Societal choices about this trade-off are unavoidable. Make them consciously.",
-      "domain_tags": ["trade-offs", "policy", "freedom", "choice"],
+      "domain_tags": [
+        "trade-offs",
+        "policy",
+        "freedom",
+        "choice"
+      ],
       "falsification": "When innovations provide improvements on all dimensions simultaneously"
     }
   ]

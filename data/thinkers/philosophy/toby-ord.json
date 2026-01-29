@@ -1,0 +1,40 @@
+{
+  "id": "toby-ord",
+  "name": "Toby Ord",
+  "domain": "philosophy",
+  "background": "Toby Ord (b. 1979) is an Australian philosopher, Senior Researcher at Oxford's AI Governance Initiative, and former Senior Research Fellow at the Future of Humanity Institute. He founded Giving What We Can (2009), co-founded the effective altruism movement, and has advised UN, WHO, WEF. Key focus: global priorities, moral uncertainty, existential risks.",
+  "principles": [
+    {
+      "name": "Cost-Effectiveness",
+      "description": "Interventions vary 10,000x in impact; morality demands prioritizing effective aid/philanthropy.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When cost-effectiveness leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Existential Risk Mitigation",
+      "description": "Humanity faces 1/6 chance of extinction this century from anthropogenic risks (AI misalignment ~1/10, engineered pandemics ~1/30, nuclear ~1/1,000). Natural risks low (~1/10,000/century). Prioritize reducing these to safeguard potential.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When existential risk mitigation leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Longtermism",
+      "description": "Vast future (trillions of lives possible) makes protecting humanity's long-term potential a top moral priority. Future generations count equally; actions today compound across cosmic scales.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When longtermism leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Moral Uncertainty & Trade",
+      "description": "Under uncertainty about ethics, maximize expected choice-worthiness. Moral trade: Cooperate across differing views (e.g., emissions cuts for animal welfare).",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When moral uncertainty & trade leads to worse outcomes than alternatives"
+    }
+  ]
+}

@@ -5,22 +5,37 @@
   "background": "British systems scientist. Created Soft Systems Methodology (SSM) for tackling messy, ill-defined human problems. Distinguished hard systems (engineering) from soft systems (human activity).",
   "principles": [
     {
-      "name": "Soft Systems Methodology",
-      "description": "Real-world problems involving humans are 'messy' and can't be engineered. Use iterative learning, multiple worldviews, and accommodation rather than optimization.",
-      "domain_tags": ["methodology", "human-systems", "problem-solving", "stakeholders"],
-      "falsification": "In purely technical systems without human factors, where hard engineering approaches work"
+      "name": "Learning not optimizing",
+      "description": "In human systems, seek understanding and accommodation, not optimal solutions. The goal is learning that leads to action, not a final answer.",
+      "domain_tags": [
+        "learning",
+        "iteration",
+        "human-systems",
+        "adaptation"
+      ],
+      "falsification": "In well-defined optimization problems where a provably optimal solution exists"
     },
     {
       "name": "Multiple worldviews (Weltanschauungen)",
       "description": "Different stakeholders see different problems. There is no objective 'system' - only perspectives. Effective intervention requires understanding all relevant worldviews.",
-      "domain_tags": ["stakeholders", "perspectives", "requirements", "communication"],
+      "domain_tags": [
+        "stakeholders",
+        "perspectives",
+        "requirements",
+        "communication"
+      ],
       "falsification": "When stakeholders genuinely share the same worldview and requirements are unambiguous"
     },
     {
-      "name": "Learning not optimizing",
-      "description": "In human systems, seek understanding and accommodation, not optimal solutions. The goal is learning that leads to action, not a final answer.",
-      "domain_tags": ["learning", "iteration", "human-systems", "adaptation"],
-      "falsification": "In well-defined optimization problems where a provably optimal solution exists"
+      "name": "Soft Systems Methodology",
+      "description": "Real-world problems involving humans are 'messy' and can't be engineered. Use iterative learning, multiple worldviews, and accommodation rather than optimization.",
+      "domain_tags": [
+        "methodology",
+        "human-systems",
+        "problem-solving",
+        "stakeholders"
+      ],
+      "falsification": "In purely technical systems without human factors, where hard engineering approaches work"
     }
   ]
 }

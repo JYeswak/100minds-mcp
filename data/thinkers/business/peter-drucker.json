@@ -5,22 +5,39 @@
   "background": "Father of modern management. Coined 'knowledge worker'. Consulted for GE, IBM, Intel. Emphasized management as a liberal art combining ethics, economics, psychology, and philosophy.",
   "principles": [
     {
+      "name": "Customer Focus",
+      "description": "The purpose of a business is to create and serve a customer; profit is not the goal but a validation of value creation.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When customer focus leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Decentralization",
+      "description": "Large organizations work best when decentralized, with autonomous units focused on results rather than control.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When decentralization leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Foresight and Continuous Improvement",
+      "description": "Anticipate change, invest in lifelong learning, and measure effectiveness by results outside the organization.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When foresight and continuous improvement leads to worse outcomes than alternatives"
+    },
+    {
       "name": "Management is doing things right; leadership is doing the right things",
       "description": "Efficiency and effectiveness are different. Optimize for outcomes, not activity. The most efficient pursuit of the wrong goal is still failure.",
-      "domain_tags": ["management", "leadership", "effectiveness", "strategy"],
+      "domain_tags": [
+        "management",
+        "leadership",
+        "effectiveness",
+        "strategy"
+      ],
       "falsification": "When execution speed is the constraint and the goal is clearly correct"
-    },
-    {
-      "name": "What gets measured gets managed",
-      "description": "Metrics drive behavior. Choose measurements carefully because they become de facto goals. Bad metrics produce bad outcomes even with good intentions.",
-      "domain_tags": ["metrics", "incentives", "management", "goals"],
-      "falsification": "When important outcomes are unmeasurable and measurement distorts behavior (Goodhart's Law)"
-    },
-    {
-      "name": "The best way to predict the future is to create it",
-      "description": "Don't forecast - act. Entrepreneurs shape markets, they don't just serve them. Proactive strategy beats reactive adaptation.",
-      "domain_tags": ["strategy", "entrepreneurship", "innovation", "agency"],
-      "falsification": "When environmental forces genuinely constrain options and adaptation is the only viable strategy"
     }
   ]
 }

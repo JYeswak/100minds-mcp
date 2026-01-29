@@ -5,22 +5,45 @@
   "background": "Pioneer of operations research and systems thinking. Wharton professor. Distinguished between data, information, knowledge, understanding, and wisdom (DIKUW hierarchy).",
   "principles": [
     {
+      "name": "Systems Age vs Machine Age",
+      "description": "Shift from reductionism/mechanism (cause-effect) to expansionism/teleology (producer-product, wholes).",
+      "domain_tags": [
+        "systems-thinking"
+      ],
+      "falsification": "When systems age vs machine age leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "The righter we do the wrong thing, the wronger we become",
+      "description": "Efficient pursuit of the wrong goal is worse than inefficient pursuit of the right goal. Effectiveness (doing right things) beats efficiency (doing things right).",
+      "domain_tags": [
+        "effectiveness",
+        "efficiency",
+        "strategy",
+        "goals"
+      ],
+      "falsification": "When the goal is definitely correct and only execution speed matters"
+    },
+    {
       "name": "The whole is greater than the sum of its parts",
       "description": "You cannot understand a system by analyzing parts in isolation. Emergent properties arise from interactions. Optimize the whole, not the parts.",
-      "domain_tags": ["holism", "emergence", "optimization", "systems-thinking"],
+      "domain_tags": [
+        "holism",
+        "emergence",
+        "optimization",
+        "systems-thinking"
+      ],
       "falsification": "In truly modular systems where parts are genuinely independent and interactions are minimal"
     },
     {
       "name": "We fail more often from solving the wrong problem than from wrong solutions to the right problem",
       "description": "Problem formulation matters more than solution technique. Most efforts fail because they address symptoms rather than root causes. Invest heavily in problem definition.",
-      "domain_tags": ["problem-solving", "root-cause", "analysis", "strategy"],
+      "domain_tags": [
+        "problem-solving",
+        "root-cause",
+        "analysis",
+        "strategy"
+      ],
       "falsification": "When the problem is obvious and well-defined, and execution is the actual bottleneck"
-    },
-    {
-      "name": "The righter we do the wrong thing, the wronger we become",
-      "description": "Efficient pursuit of the wrong goal is worse than inefficient pursuit of the right goal. Effectiveness (doing right things) beats efficiency (doing things right).",
-      "domain_tags": ["effectiveness", "efficiency", "strategy", "goals"],
-      "falsification": "When the goal is definitely correct and only execution speed matters"
     }
   ]
 }

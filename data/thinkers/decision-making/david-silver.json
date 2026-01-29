@@ -1,0 +1,40 @@
+{
+  "id": "david-silver",
+  "name": "David Silver",
+  "domain": "decision-making",
+  "background": "Principal Research Scientist at Google DeepMind and Professor at University College London. PhD from University of Alberta (2009) on reinforcement learning in Go. Led AlphaGo (beat pro Go player 5-0), AlphaZero (mastered Go/chess/shogi via self-play). >200k citations, h-index 97. Co-founded Elixir Studios. Royal Society Fellow (2021), ACM Prize (2019).",
+  "principles": [
+    {
+      "name": "Exploration-Exploitation Tradeoff",
+      "description": "\u03b5-greedy, UCB, Thompson sampling to balance known strategies with novel actions.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When exploration-exploitation tradeoff leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Model-Free vs Model-Based RL",
+      "description": "Direct policy learning (free) vs world model planning (based) for sequential decisions.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When model-free vs model-based rl leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Monte Carlo Tree Search (MCTS) + Neural Networks",
+      "description": "Tree search with policy/value networks balances exploration/exploitation for long-term planning.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When monte carlo tree search (mcts) + neural networks leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Self-Play & Tabula Rasa Learning",
+      "description": "Agents improve by playing against themselves from scratch, no human data needed (AlphaZero).",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When self-play & tabula rasa learning leads to worse outcomes than alternatives"
+    }
+  ]
+}

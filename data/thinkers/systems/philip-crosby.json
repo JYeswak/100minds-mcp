@@ -1,0 +1,40 @@
+{
+  "id": "philip-crosby",
+  "name": "Philip Bayard Crosby",
+  "domain": "systems",
+  "background": "Born Wheeling WV. Navy WWII/Korea. Worked Crosley, Bendix, Martin Co (Pershing missile QC - invented Zero Defects reducing scrap 30%). ITT VP Quality. Founded Philip Crosby Associates 1979. Authored 14 books starting Quality is Free (1979).",
+  "principles": [
+    {
+      "name": "14 Steps to Quality Improvement",
+      "description": "Management commitment \u2192 team \u2192 measurement \u2192 awareness \u2192 zero defects day \u2192 recognition \u2192 repeat.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When 14 steps to quality improvement leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Prevention, Not Inspection",
+      "description": "Build quality in via process design; inspection only catches problems after creation.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When prevention, not inspection leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Quality Measured by Price of Nonconformance (PONC)",
+      "description": "Costs of defects/rework/scrap > prevention costs. 'Quality is Free' - savings exceed investment.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When quality measured by price of nonconformance (ponc) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Quality is Conformance to Requirements",
+      "description": "Quality = meeting specs/customer expectations exactly, not 'goodness' or elegance.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When quality is conformance to requirements leads to worse outcomes than alternatives"
+    }
+  ]
+}

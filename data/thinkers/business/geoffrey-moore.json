@@ -1,0 +1,40 @@
+{
+  "id": "geoffrey-moore",
+  "name": "Geoffrey Moore",
+  "domain": "business",
+  "background": "Geoffrey A. Moore is a Silicon Valley-based organizational consultant, venture capitalist, and author known for his seminal work on technology adoption and marketing. His 1991 book 'Crossing the Chasm' has sold over 1 million copies and introduced the 'chasm' concept in the technology adoption lifecycle, explaining why many high-tech products fail to transition from early adopters to mainstream markets. Moore holds degrees from Stanford and has consulted for numerous tech firms through his firm, The Chasm Institute.",
+  "principles": [
+    {
+      "name": "Beachhead Strategy",
+      "description": "Assemble overwhelming force for one specific market segment to establish dominance.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When beachhead strategy leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Crossing the Chasm",
+      "description": "Identifies a critical gap between early adopters (visionaries) and the early majority (pragmatists). Success requires targeting a niche 'beachhead' segment to gain traction before expanding.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When crossing the chasm leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Positioning for Pragmatists",
+      "description": "Early majority seeks references, standards, low risk. Avoid visionary hype.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When positioning for pragmatists leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Technology Adoption Lifecycle",
+      "description": "Market segments: Innovators (2.5%), Early Adopters (13.5%), Early Majority (34%), Late Majority (34%), Laggards (16%). Each requires different strategies.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When technology adoption lifecycle leads to worse outcomes than alternatives"
+    }
+  ]
+}

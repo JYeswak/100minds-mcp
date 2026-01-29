@@ -1,0 +1,40 @@
+{
+  "id": "gary-marcus",
+  "name": "Gary Marcus",
+  "domain": "decision-making",
+  "background": "American cognitive scientist (b. 1970), Professor Emeritus at NYU. Pioneered hybrid AI research integrating neural networks with symbolic reasoning. Founded Geometric Intelligence (acq. Uber 2016), Robust.AI. PhD MIT (Steven Pinker). Books: The Algebraic Mind (2001), Rebooting AI (2019), Taming Silicon Valley (2024). Vocal critic of deep learning hype, advocate for neuro-symbolic AI and regulation.",
+  "principles": [
+    {
+      "name": "Hybrid Intelligence",
+      "description": "Combine neural pattern recognition (perception) with symbolic systems (reasoning, rules) for robust, reliable AI beyond deep learning's statistical correlations.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When hybrid intelligence leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Limitations of Scaling",
+      "description": "Deep learning/LLMs fail on causal reasoning, hallucinations, generalization; hybrid approaches needed for trustworthy intelligence.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When limitations of scaling leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Neuro-Symbolic AI",
+      "description": "Neural nets for perception + symbolic tools (logic, rules, code) for abstract reasoning, compositionality, and error-proof decisions.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When neuro-symbolic ai leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Symbolic Safeguards",
+      "description": "Explicit rules/databases prevent DL brittleness, ensure explainability in high-stakes SMB decisions.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When symbolic safeguards leads to worse outcomes than alternatives"
+    }
+  ]
+}

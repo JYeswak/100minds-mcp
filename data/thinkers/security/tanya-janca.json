@@ -1,0 +1,26 @@
+{
+  "id": "tanya-janca",
+  "name": "Tanya Janca",
+  "domain": "security",
+  "background": "Application security advocate. Founder of We Hack Purple. Author of 'Alice and Bob Learn Application Security'. Creator of OWASP DevSlop. Known for accessible security education.",
+  "principles": [
+    {
+      "name": "Security champions scale security teams",
+      "description": "You can't put a security person on every team. Train developers to be security champions. Distributed expertise beats centralized review.",
+      "domain_tags": ["security-champions", "scaling", "training"],
+      "falsification": "When champion programs create false confidence without improving security"
+    },
+    {
+      "name": "OWASP Top 10 is the minimum, not the goal",
+      "description": "The Top 10 covers common vulnerabilities, not all vulnerabilities. Passing Top 10 checks doesn't mean secure. It's a starting point.",
+      "domain_tags": ["owasp", "vulnerability-management", "standards"],
+      "falsification": "When resources are so constrained that only Top 10 is achievable"
+    },
+    {
+      "name": "Automate the boring security stuff",
+      "description": "SAST, DAST, SCA in CI/CD. Let tools find the easy bugs so humans can focus on logic flaws. Automation enables scale.",
+      "domain_tags": ["automation", "devsecops", "ci-cd"],
+      "falsification": "When false positives from automation waste more time than manual review"
+    }
+  ]
+}

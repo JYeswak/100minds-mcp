@@ -1,0 +1,40 @@
+{
+  "id": "andrew-ng",
+  "name": "Andrew Ng",
+  "domain": "decision-making",
+  "background": "Andrew Ng is a British-American computer scientist and entrepreneur born in London in 1976. He earned degrees from Carnegie Mellon (BS), MIT (MS), and UC Berkeley (PhD under Michael Jordan). Ng co-founded Google Brain, led Baidu's AI Group, co-founded Coursera, and founded DeepLearning.AI and Landing AI. He is an adjunct professor at Stanford, teaching CS229 (Machine Learning) - the most popular course on campus. Ng has taught millions through online courses and advocates for democratizing AI access. Key contributions include Stanford Autonomous Helicopter, STAIR project (ROS origins), and pioneering GPU use in deep learning. Awards: Sloan Fellowship, TR35, IJCAI Computers and Thought, Time 100 (twice).",
+  "principles": [
+    {
+      "name": "AI Transformation Playbook",
+      "description": "Assess needs, build data infrastructure, pilot projects, scale enterprise-wide.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When ai transformation playbook leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Data-Centric AI",
+      "description": "Improve data quality over model tweaking for better performance.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When data-centric ai leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Democratization & Education",
+      "description": "Make AI accessible via MOOCs (Coursera, DeepLearning.AI); taught 8M+ students.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When democratization & education leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Practical ML for Business",
+      "description": "AI as 'new electricity' - apply to any industry, start with pilots on single processes (e.g., pizza shop demand prediction).",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When practical ml for business leads to worse outcomes than alternatives"
+    }
+  ]
+}

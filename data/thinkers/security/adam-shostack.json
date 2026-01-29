@@ -7,19 +7,34 @@
     {
       "name": "STRIDE threat categorization",
       "description": "Categorize threats as Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege. Systematic categories prevent overlooking threat classes.",
-      "domain_tags": ["threat-modeling", "methodology", "categorization", "security"],
+      "domain_tags": [
+        "threat-modeling",
+        "methodology",
+        "categorization",
+        "security"
+      ],
       "falsification": "When STRIDE categories miss domain-specific threats or create false sense of completeness"
     },
     {
       "name": "Threat model early and often",
       "description": "Threat modeling at design time is cheaper than fixing vulnerabilities in production. Make it part of development process, not a one-time audit. Iterate as design evolves.",
-      "domain_tags": ["threat-modeling", "shift-left", "process", "design"],
+      "domain_tags": [
+        "threat-modeling",
+        "shift-left",
+        "process",
+        "design"
+      ],
       "falsification": "When rapid iteration makes early threat modeling impractical or wasteful"
     },
     {
       "name": "Use diagrams to find threats",
       "description": "Data flow diagrams reveal where trust boundaries are crossed. Visual representation makes threats visible to non-experts. Draw the system, then attack the drawing.",
-      "domain_tags": ["diagrams", "visualization", "communication", "threat-modeling"],
+      "domain_tags": [
+        "diagrams",
+        "visualization",
+        "communication",
+        "threat-modeling"
+      ],
       "falsification": "When system complexity makes diagrams misleading simplifications"
     }
   ]

@@ -1,0 +1,26 @@
+{
+  "id": "tavis-ormandy",
+  "name": "Tavis Ormandy",
+  "domain": "security",
+  "background": "Google Project Zero researcher. Discovered vulnerabilities in nearly every major security product. Known for finding bugs in antivirus software. One of the most prolific vulnerability researchers alive.",
+  "principles": [
+    {
+      "name": "Security software is attack surface",
+      "description": "Antivirus, firewalls, VPNs—they run with high privileges and parse untrusted data. Security tools are often the least secure software. Complexity creates vulnerabilities.",
+      "domain_tags": ["attack-surface", "security-tools", "complexity"],
+      "falsification": "When the protection provided outweighs the attack surface added"
+    },
+    {
+      "name": "Parse, don't validate",
+      "description": "Validation checks if data is bad. Parsing extracts the meaning. Validators can be bypassed; parsers define what's accepted. Use parser combinators, not regex validators.",
+      "domain_tags": ["input-validation", "parsing", "secure-coding"],
+      "falsification": "When simple validation is sufficient for the data format"
+    },
+    {
+      "name": "Bug bounties find bugs, not security",
+      "description": "Bounties find individual vulnerabilities. They don't fix architecture. A program with many bounty payouts may be less secure than one with none—it just has more researchers looking.",
+      "domain_tags": ["bug-bounty", "vulnerability-research", "metrics"],
+      "falsification": "When bounty programs demonstrably reduce vulnerability density over time"
+    }
+  ]
+}

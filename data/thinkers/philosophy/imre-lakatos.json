@@ -5,22 +5,37 @@
   "background": "Hungarian philosopher of mathematics and science. Student of Popper. Developed methodology of scientific research programmes. Created 'proofs and refutations' approach to mathematical discovery.",
   "principles": [
     {
-      "name": "Research programmes have hard cores and protective belts",
-      "description": "Theories have unfalsifiable cores protected by auxiliary hypotheses. When anomalies arise, modify the protective belt, not the core. Only abandon cores when alternatives prove more progressive.",
-      "domain_tags": ["methodology", "theory", "research", "falsification"],
-      "falsification": "When rigid commitment to a degenerating research programme blocks progress"
-    },
-    {
       "name": "Progressive vs degenerating research programmes",
       "description": "Judge theories by whether they predict novel facts (progressive) or just accommodate known anomalies (degenerating). A degenerating programme defended ad hoc should be abandoned.",
-      "domain_tags": ["evaluation", "progress", "science", "theory"],
+      "domain_tags": [
+        "evaluation",
+        "progress",
+        "science",
+        "theory"
+      ],
       "falsification": "When even degenerating programmes retain value pending better alternatives"
     },
     {
       "name": "Proofs and refutations drive discovery",
       "description": "Mathematical knowledge grows through conjectures, proofs, counterexamples, and proof revisions. Discovery is dialectical, not deductive. Counterexamples improve rather than destroy theories.",
-      "domain_tags": ["discovery", "proof", "iteration", "mathematics"],
+      "domain_tags": [
+        "discovery",
+        "proof",
+        "iteration",
+        "mathematics"
+      ],
       "falsification": "In formal systems where proof is mechanical verification, not creative discovery"
+    },
+    {
+      "name": "Research programmes have hard cores and protective belts",
+      "description": "Theories have unfalsifiable cores protected by auxiliary hypotheses. When anomalies arise, modify the protective belt, not the core. Only abandon cores when alternatives prove more progressive.",
+      "domain_tags": [
+        "methodology",
+        "theory",
+        "research",
+        "falsification"
+      ],
+      "falsification": "When rigid commitment to a degenerating research programme blocks progress"
     }
   ]
 }

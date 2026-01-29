@@ -1,0 +1,40 @@
+{
+  "id": "dario-amodei",
+  "name": "Dario Amodei",
+  "domain": "decision-making",
+  "background": "CEO of Anthropic (co-founder 2021), ex-VP Research OpenAI (co-invented RLHF). PhD biophysics Princeton. Focus: safe, interpretable, steerable AI systems. Key contributions: Constitutional AI (CAI), Responsible Scaling Policy (RSP).",
+  "principles": [
+    {
+      "name": "Constitutional AI",
+      "description": "AI self-improves harmlessness via critique/revision against principle constitution (no human labels). Uses SL + RLAIF.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When constitutional ai leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Interpretability & Transparency",
+      "description": "Mechanistic interpretability urgent for safety. Basic transparency rules for frontier AI risks.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When interpretability & transparency leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Responsible Scaling Policy (RSP)",
+      "description": "Scale AI only with matching safety measures (ASL-1 to ASL-4). Activate protections like ASL-3 security before deployment.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When responsible scaling policy (rsp) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Scaling with Alignment",
+      "description": "Predictable scaling requires governance. Balance societal benefits vs. catastrophic risks.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When scaling with alignment leads to worse outcomes than alternatives"
+    }
+  ]
+}

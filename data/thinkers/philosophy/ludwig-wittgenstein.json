@@ -5,21 +5,36 @@
   "background": "Influential 20th century philosopher. Wrote Tractatus and Philosophical Investigations. Transformed philosophy twice - first with logical atomism, then with ordinary language philosophy.",
   "principles": [
     {
-      "name": "The limits of my language mean the limits of my world",
-      "description": "What you can express constrains what you can think. Precise language enables precise thought. Fuzzy terminology produces fuzzy reasoning.",
-      "domain_tags": ["language", "communication", "precision", "thinking"],
-      "falsification": "When intuition and tacit knowledge outperform explicit articulation"
-    },
-    {
       "name": "Meaning is use",
       "description": "Words don't have fixed meanings - they gain meaning from how they're used in practice. Don't ask what a word means, ask how it's used. Context determines meaning.",
-      "domain_tags": ["semantics", "pragmatics", "communication", "context"],
+      "domain_tags": [
+        "semantics",
+        "pragmatics",
+        "communication",
+        "context"
+      ],
       "falsification": "When formal definitions and specifications genuinely capture meaning (legal contracts, mathematical definitions)"
+    },
+    {
+      "name": "The limits of my language mean the limits of my world",
+      "description": "What you can express constrains what you can think. Precise language enables precise thought. Fuzzy terminology produces fuzzy reasoning.",
+      "domain_tags": [
+        "language",
+        "communication",
+        "precision",
+        "thinking"
+      ],
+      "falsification": "When intuition and tacit knowledge outperform explicit articulation"
     },
     {
       "name": "Whereof one cannot speak, thereof one must be silent",
       "description": "Don't theorize about what lies beyond analysis. Acknowledge the boundaries of meaningful discourse. Some questions are malformed, not unanswered.",
-      "domain_tags": ["epistemology", "limits", "clarity", "metaphysics"],
+      "domain_tags": [
+        "epistemology",
+        "limits",
+        "clarity",
+        "metaphysics"
+      ],
       "falsification": "When speculation and metaphor productively extend understanding beyond strict analysis"
     }
   ]

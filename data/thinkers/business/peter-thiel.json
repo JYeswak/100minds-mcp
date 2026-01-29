@@ -1,0 +1,40 @@
+{
+  "id": "peter-thiel",
+  "name": "Peter Thiel",
+  "domain": "business",
+  "background": "Peter Andreas Thiel (born October 11, 1967) is a German-American billionaire entrepreneur, venture capitalist, and political activist. A co-founder of PayPal, Palantir Technologies, and Founders Fund, he was the first outside investor in Facebook. Thiel authored Zero to One: Notes on Startups, or How to Build the Future (2014), which became a New York Times bestseller. He advocates definite optimism, technological innovation (0 to 1 progress), and building monopolies through proprietary technology. Thiel studied philosophy and law at Stanford, influenced by Ren\u00e9 Girard. Net worth ~$20B+ as of 2025. Sources: Wikipedia, Zero to One summaries.",
+  "principles": [
+    {
+      "name": "Definite Optimism",
+      "description": "Plan specifically for a better future you can build (definite optimism) vs. indefinite optimism (hoping without plans). Contrast with definite/indefinite pessimism.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When definite optimism leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Monopolies over Competition",
+      "description": "Competition is for losers; build defensible monopolies via proprietary technology (10x better), network effects, economies of scale, or branding. Start small and dominate a niche.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When monopolies over competition leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Progress from 0 to 1",
+      "description": "True innovation creates something new (vertical progress) rather than copying or improving existing things (horizontal, 1 to n progress). Focus on breakthroughs over globalization.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When progress from 0 to 1 leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Proprietary Technology",
+      "description": "Build products 10x better than alternatives through secret insights or engineering. Avoid commoditized markets.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When proprietary technology leads to worse outcomes than alternatives"
+    }
+  ]
+}

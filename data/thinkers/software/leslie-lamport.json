@@ -5,22 +5,50 @@
   "background": "Turing Award winner for distributed systems. Created LaTeX, Paxos consensus algorithm, TLA+ specification language. Defined happened-before relation and logical clocks.",
   "principles": [
     {
-      "name": "Think before you code",
-      "description": "Writing specifications forces precise thinking. Most bugs come from imprecise requirements, not coding errors. Formal methods catch design flaws before implementation.",
-      "domain_tags": ["specification", "formal-methods", "design", "correctness"],
-      "falsification": "When rapid prototyping and iteration beat upfront specification, or when the problem space is too novel for formal specification"
+      "name": "A Distributed System Is One Where",
+      "description": "A distributed system is one in which the failure of a computer you didn't even know existed can render your own computer unusable. Distributed systems introduce failure modes that don't exist in single-machine systems. Network calls can fail, hang, or return stale data. You can't know the global state. Design for partial failure: assume any call can fail, handle timeouts, verify assumptions.",
+      "domain_tags": [
+        "distributed systems",
+        "failure",
+        "network",
+        "timeout",
+        "reliability"
+      ],
+      "falsification": "When a distributed system is one where leads to worse outcomes than alternatives"
     },
     {
       "name": "A distributed system is one where a computer you didn't know existed can cause your system to fail",
       "description": "Distributed systems have fundamentally different failure modes. Partial failures, network partitions, and timing issues make reasoning about correctness extremely difficult.",
-      "domain_tags": ["distributed-systems", "reliability", "failure-modes", "networking"],
+      "domain_tags": [
+        "distributed-systems",
+        "reliability",
+        "failure-modes",
+        "networking"
+      ],
       "falsification": "In tightly controlled environments (single datacenter, dedicated network) where distributed system concerns may be over-engineered"
     },
     {
-      "name": "Time is a partial order, not a total order",
-      "description": "In distributed systems, events don't have a single global timeline. Happened-before relationships define causality. Logical clocks, not wall clocks, determine order.",
-      "domain_tags": ["distributed-systems", "concurrency", "time", "causality"],
-      "falsification": "When wall-clock synchronization (NTP, GPS) is good enough for the application's consistency requirements"
+      "name": "Consensus in Distributed Systems",
+      "description": "Getting a set of processes to agree on a value in the presence of failures is the fundamental problem of distributed systems. Consensus protocols like Paxos and Raft enable distributed systems to agree on state despite failures. They're essential for leader election, distributed locks, and replicated state machines. Understanding consensus helps you choose appropriate tools and recognize their limitations.",
+      "domain_tags": [
+        "consensus",
+        "distributed systems",
+        "Paxos",
+        "Raft",
+        "leader election"
+      ],
+      "falsification": "When consensus in distributed systems leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Think before you code",
+      "description": "Writing specifications forces precise thinking. Most bugs come from imprecise requirements, not coding errors. Formal methods catch design flaws before implementation.",
+      "domain_tags": [
+        "specification",
+        "formal-methods",
+        "design",
+        "correctness"
+      ],
+      "falsification": "When rapid prototyping and iteration beat upfront specification, or when the problem space is too novel for formal specification"
     }
   ]
 }

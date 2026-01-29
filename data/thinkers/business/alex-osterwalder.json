@@ -1,0 +1,40 @@
+{
+  "id": "alex-osterwalder",
+  "name": "Alexander Osterwalder",
+  "domain": "business",
+  "background": "Swiss business theorist, author, speaker, entrepreneur. Creator of Business Model Canvas (BMC) used by millions worldwide. Co-founder of Strategyzer. PhD from University of Lausanne. Key books: Business Model Generation (2010), Value Proposition Design (2014), Testing Business Ideas (2019), The Invincible Company (2020). Focuses on practical tools for strategy, innovation, and experimentation.",
+  "principles": [
+    {
+      "name": "Business Model Canvas",
+      "description": "Visual one-page template with 9 blocks to design, analyze, and pivot business models: Customer Segments, Value Propositions, Channels, Relationships, Revenue Streams, Key Resources/Activities/Partners, Cost Structure.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When business model canvas leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Dual Business Engine",
+      "description": "Separate core (steady profits) from transformation (innovation/experimentation).",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When dual business engine leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Evidence-Based Experimentation",
+      "description": "48 experiment types (interviews to A/B tests) to test assumptions systematically and de-risk ideas.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When evidence-based experimentation leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Value Innovation (Blue Ocean)",
+      "description": "Simultaneously pursue differentiation and low cost to create uncontested market space.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When value innovation (blue ocean) leads to worse outcomes than alternatives"
+    }
+  ]
+}

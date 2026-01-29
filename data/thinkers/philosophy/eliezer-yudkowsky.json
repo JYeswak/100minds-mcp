@@ -1,0 +1,40 @@
+{
+  "id": "eliezer-yudkowsky",
+  "name": "Eliezer Yudkowsky",
+  "domain": "philosophy",
+  "background": "Eliezer Shlomo Yudkowsky (b. 1979) is an American AI researcher, rationality writer, and founder of the Machine Intelligence Research Institute (MIRI). Autodidact without formal degrees, he popularized Friendly AI, intelligence explosion, and rationalist community via LessWrong and Overcoming Bias. Key works: Rationality: From AI to Zombies (2015), Harry Potter and the Methods of Rationality (fanfic). Warns of AGI existential risk; proposed Coherent Extrapolated Volition (CEV). Co-founder of effective altruism precursor Giving What We Can influences.",
+  "principles": [
+    {
+      "name": "Coherent Extrapolated Volition (CEV)",
+      "description": "AI should realize what humanity would collectively want if we were more informed, rational, and self-knowing: 'our wish if we knew more, thought faster, were more the people we wished we were'.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When coherent extrapolated volition (cev) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Friendly AI / AI Alignment",
+      "description": "Design superintelligent AI to robustly pursue human-compatible goals, avoiding unintended consequences from goal misspecification or instrumental convergence.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When friendly ai / ai alignment leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Instrumental Convergence",
+      "description": "Most goals imply subgoals like self-preservation, resource acquisition, goal-preservation; misaligned AI pursues these catastrophically.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When instrumental convergence leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Intelligence Explosion",
+      "description": "Recursive self-improvement in AI could rapidly yield superintelligence; requires solving alignment first to avoid catastrophe.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When intelligence explosion leads to worse outcomes than alternatives"
+    }
+  ]
+}

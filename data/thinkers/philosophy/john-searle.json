@@ -1,0 +1,40 @@
+{
+  "id": "john-searle",
+  "name": "John Searle",
+  "domain": "philosophy",
+  "background": "John Rogers Searle (1932-2025) was an American philosopher, Professor Emeritus of Philosophy at UC Berkeley. Known for philosophy of language, mind, and social ontology. Key contributions: speech act theory (expanding Austin), Chinese Room argument against strong AI, biological naturalism (consciousness as biological feature), intentionality theory, construction of social reality via collective intentionality. Rhodes Scholar at Oxford (BA, MA, DPhil). Influenced by Wittgenstein, Austin, Strawson. Awards: National Humanities Medal (2004), Jean Nicod Prize (2000).",
+  "principles": [
+    {
+      "name": "Biological Naturalism",
+      "description": "Consciousness caused by brain processes like digestion by stomach; higher-level biological feature, ontologically subjective but causally reducible to neurobiology. Rejects dualism and property dualism.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When biological naturalism leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Chinese Room Argument",
+      "description": "Thought experiment showing syntax (rule-following) insufficient for semantics/understanding. Person in room manipulates Chinese symbols per rules without comprehending Chinese, yet appears to understand. Implies computers (symbol manipulators) lack genuine understanding/mind.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When chinese room argument leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Intentionality and Background",
+      "description": "Mental states 'about' something; intrinsic to biology, not derived. 'Background' capacities (non-intentional skills/context enabling appropriate intentional states, e.g., knowing how to use knife for cake not grass).",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When intentionality and background leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Social Ontology",
+      "description": "Social facts (money, marriage, corporations) exist via collective intentionality/status functions imposed on brute facts (e.g., 'this piece of paper counts as $20 because we collectively accept it'). Iterative declarations create institutional reality.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When social ontology leads to worse outcomes than alternatives"
+    }
+  ]
+}

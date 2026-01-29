@@ -1,0 +1,40 @@
+{
+  "id": "terry-winograd",
+  "name": "Terry Winograd",
+  "domain": "philosophy",
+  "background": "Professor Emeritus of Computer Science at Stanford University. Creator of SHRDLU (1968-70), pioneering natural language understanding system. Co-author of *Understanding Computers and Cognition* (1986) with Fernando Flores, applying phenomenology to HCI. Pioneer in human-computer interaction, language/action perspective, and design thinking. Advised Google founders, founded Stanford HCI Group.",
+  "principles": [
+    {
+      "name": "Critique of Cognitivism",
+      "description": "Intelligence arises from situated, embodied interaction, not disembodied symbol manipulation. Influenced HCI, groupware, ethical computing.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When critique of cognitivism leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Human-Centered Design and HCI",
+      "description": "Shift from symbolic AI to phenomenological, embodied understanding. Design thinking emphasizes user context, ethics, social responsibility over pure computation.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When human-centered design and hci leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Language/Action Perspective",
+      "description": "Communication is a sequence of commitments and actions (with Flores). Software design for collaborative work should model conversation-for-action rather than information transfer.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When language/action perspective leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Situated Language Understanding (SHRDLU)",
+      "description": "Language comprehension requires grounding in physical or simulated context, integrating semantics, memory, physics simulation, and procedural knowledge. SHRDLU demonstrated natural language interaction in blocks world.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When situated language understanding (shrdlu) leads to worse outcomes than alternatives"
+    }
+  ]
+}

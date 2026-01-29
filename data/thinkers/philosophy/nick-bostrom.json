@@ -1,0 +1,40 @@
+{
+  "id": "nick-bostrom",
+  "name": "Nick Bostrom",
+  "domain": "philosophy",
+  "background": "Swedish philosopher and professor at the University of Oxford. Founding director of the Future of Humanity Institute (2005-2024). Now Principal Researcher at the Macrostrategy Research Initiative. Author of influential works on existential risks, superintelligence, and anthropic reasoning.",
+  "principles": [
+    {
+      "name": "Anthropic Bias",
+      "description": "Observation selection effects distort our inferences about the world. Critiques naive anthropic reasoning; introduces self-sampling assumption (SSA) and self-indication assumption (SIA). Applies to cosmology, doomsday arguments, and simulation hypotheses.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When anthropic bias leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Existential Risk",
+      "description": "Risks that could cause human extinction or permanently thwart humanity's potential, including nuclear war, engineered pandemics, misaligned superintelligence, and unrecoverable ecological collapse. Emphasizes proactive mitigation through global coordination and differential technological development.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When existential risk leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Simulation Argument",
+      "description": "At least one of: (1) civilizations rarely reach posthuman stage; (2) posthumans rarely run ancestor simulations; (3) we are almost certainly living in a simulation. Implies profound implications for probability, reality, and future trajectories.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When simulation argument leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Superintelligence",
+      "description": "Artificial intelligence vastly surpassing human cognitive abilities across all domains. Explores paths to superintelligence (AI, brain emulation, enhancement), control challenges (orthogonality thesis, instrumental convergence), and strategies for safe development to prevent existential catastrophe.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When superintelligence leads to worse outcomes than alternatives"
+    }
+  ]
+}

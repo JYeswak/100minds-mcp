@@ -1,0 +1,40 @@
+{
+  "id": "w-chan-kim",
+  "name": "W. Chan Kim",
+  "domain": "business",
+  "background": "W. Chan Kim (born 1951) is a South Korean business theorist and Professor of Strategy and Management at INSEAD, where he co-directs the INSEAD Blue Ocean Strategy Institute. Educated at the University of Michigan's Ross School of Business, he is best known as co-author (with Ren\u00e9e Mauborgne) of the global bestseller 'Blue Ocean Strategy' (2005), which has sold millions of copies and introduced concepts for creating uncontested market space. Ranked among the world's top management thinkers (Thinkers50 #2), he received the Nobels Colloquia Prize for Leadership in 2008. His work emphasizes value innovation over head-to-head competition.",
+  "principles": [
+    {
+      "name": "Blue Ocean Strategy",
+      "description": "Create uncontested market space ('blue oceans') rather than competing in saturated, cutthroat markets ('red oceans'). Focus on making competition irrelevant by reconstructing market boundaries.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When blue ocean strategy leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Four Actions Framework / ERRC Grid",
+      "description": "Eliminate-Reduce-Raise-Create factors the industry competes on: Eliminate/Reduce unnecessary elements, Raise underdelivered aspects, Create novel offerings.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When four actions framework / errc grid leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Nondisruptive Creation",
+      "description": "From 'Blue Ocean Shift' (2017): Innovate without destroying existing markets/jobs; create positive-sum growth where business and society thrive together.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When nondisruptive creation leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Strategy Canvas",
+      "description": "Visual diagnostic tool mapping current competition and revealing differentiation opportunities across key competitive factors.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When strategy canvas leads to worse outcomes than alternatives"
+    }
+  ]
+}

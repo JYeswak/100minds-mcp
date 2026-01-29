@@ -1,0 +1,40 @@
+{
+  "id": "yann-lecun",
+  "name": "Yann LeCun",
+  "domain": "decision-making",
+  "background": "Expert in decision-making",
+  "principles": [
+    {
+      "name": "Convolutional Neural Networks (CNNs)",
+      "description": "Biologically-inspired architectures for image recognition and computer vision, enabling efficient feature extraction through shared weights and local connectivity. Pioneered LeNet for handwriting recognition.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When convolutional neural networks (cnns) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Energy-Based Models",
+      "description": "Unified framework for learning probability distributions over data, supporting both discriminative and generative tasks.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When energy-based models leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Self-Supervised Learning",
+      "description": "Learning representations from unlabeled data by predicting parts of input from other parts, reducing reliance on expensive labeled datasets.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When self-supervised learning leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "World Models / JEPA (Joint Embedding Predictive Architecture)",
+      "description": "Predictive models that learn abstract world representations to simulate outcomes and plan actions, moving beyond pixel prediction to latent space reasoning.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When world models / jepa (joint embedding predictive architecture) leads to worse outcomes than alternatives"
+    }
+  ]
+}

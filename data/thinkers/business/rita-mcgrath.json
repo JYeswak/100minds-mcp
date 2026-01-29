@@ -1,0 +1,40 @@
+{
+  "id": "rita-mcgrath",
+  "name": "Rita McGrath",
+  "domain": "business",
+  "background": "Rita Gunther McGrath is a professor of management at Columbia Business School and a leading expert on strategy in uncertain environments. Ranked #1 in strategy by Thinkers50. Author of 'The End of Competitive Advantage' (2013), 'Seeing Around Corners' (2019), and 'Discovery-Driven Growth' (2009). Originated discovery-driven planning (HBR 1995). Focuses on transient competitive advantages, inflection points, and learning-based strategy.",
+  "principles": [
+    {
+      "name": "Arena-Based Strategy",
+      "description": "Dynamic competition in fluid 'arenas' rather than fixed industries; focus on capabilities for entry/exit.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When arena-based strategy leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Discovery-Driven Growth",
+      "description": "Planning framework for high-uncertainty ventures: reverse-engineer assumptions into testable milestones, plan to learn rather than forecast precisely.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When discovery-driven growth leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Seeing Around Corners",
+      "description": "Spot inflection points early via peripheral vision, weak signals, and systematic experimentation.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When seeing around corners leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Transient Advantage",
+      "description": "Competitive edges are temporary; succeed by rapidly exploiting opportunities then exiting to the next arena.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When transient advantage leads to worse outcomes than alternatives"
+    }
+  ]
+}

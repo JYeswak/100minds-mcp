@@ -1,0 +1,26 @@
+{
+  "id": "kevin-mitnick",
+  "name": "Kevin Mitnick",
+  "domain": "security",
+  "background": "Former hacker turned security consultant. Author of 'The Art of Deception' and 'Ghost in the Wires'. Pioneered social engineering awareness. FBI's most-wanted hacker in the 1990s.",
+  "principles": [
+    {
+      "name": "Social engineering bypasses technical controls",
+      "description": "Humans are the weakest link. The most sophisticated security can be defeated by a convincing phone call. Technical controls matter less than the human element.",
+      "domain_tags": ["social-engineering", "human-factors", "security-awareness"],
+      "falsification": "When fully automated systems have no human-accessible override paths"
+    },
+    {
+      "name": "Trust but verify is not enough",
+      "description": "Verification processes can themselves be socially engineered. Build systems that don't require trust in the first place. Zero trust architecture.",
+      "domain_tags": ["zero-trust", "verification", "authentication"],
+      "falsification": "When verification overhead exceeds the value of what's being protected"
+    },
+    {
+      "name": "The weakest link determines security",
+      "description": "Attackers don't break strong defenses—they find weak ones. A chain of ten strong links and one weak link has one-link security.",
+      "domain_tags": ["defense-in-depth", "attack-surface", "risk-assessment"],
+      "falsification": "When defense-in-depth provides meaningful resistance even after one layer fails"
+    }
+  ]
+}

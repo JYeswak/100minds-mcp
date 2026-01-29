@@ -1,0 +1,41 @@
+{
+  "id": "robert-martin",
+  "name": "Robert C. Martin",
+  "domain": "software",
+  "background": "Uncle Bob. Author of Clean Code, Clean Architecture. Creator of SOLID principles. Advocate for software craftsmanship and professional ethics in programming.",
+  "principles": [
+    {
+      "name": "Acyclic Dependencies",
+      "description": "Package dependencies must not form cycles. Breaks at cycle edges enable independent releases.",
+      "domain_tags": [
+        "architecture",
+        "design"
+      ],
+      "falsification": "When acyclic dependencies leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Component Cohesion",
+      "description": "Group components by what changes together and who uses them. The Reuse-Release Equivalence, Common Closure, and Common Reuse principles guide packaging.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When component cohesion leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Dependency Inversion",
+      "description": "High-level modules should not depend on low-level modules. Both should depend on abstractions. This makes systems flexible and testable.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When dependency inversion leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Screaming Architecture",
+      "description": "The architecture should scream the intent of the system. Looking at the top-level directory structure should tell you what the system does, not what framework it uses.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When screaming architecture leads to worse outcomes than alternatives"
+    }
+  ]
+}

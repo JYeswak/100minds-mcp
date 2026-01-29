@@ -1,0 +1,40 @@
+{
+  "id": "luciano-floridi",
+  "name": "Luciano Floridi",
+  "domain": "philosophy",
+  "background": "Italian-British philosopher (b. 1964, Rome). Founding Director of Yale Digital Ethics Center; Professor of Cognitive Science at Yale and Sociology of Culture/Communication at University of Bologna. Pioneer of Philosophy of Information (PI), treating information as ontological primitive. Key works: The Philosophy of Information (2011), The Ethics of Information (2013), The Fourth Revolution (2014), The Onlife Manifesto (2015). Most cited living philosopher (Scopus 2020). Focuses on digital ethics, infosphere, onlife.",
+  "principles": [
+    {
+      "name": "Information Quality",
+      "description": "Information must be well-formed, meaningful, truthful; curation essential in abundance.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When information quality leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Infosphere Integrity",
+      "description": "All information entities (data, systems) have moral standing; protect from entropy (corruption, scarcity) as ethical imperative.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When infosphere integrity leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Levels of Abstraction (LoA)",
+      "description": "Analyze phenomena at appropriate abstraction levels (syntactic, semantic, pragmatic) for ethical design.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When levels of abstraction (loa) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Onlife Ethics",
+      "description": "Hyperconnectivity blurs online/offline; holistic ethics for blended reality, privacy, agency.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When onlife ethics leads to worse outcomes than alternatives"
+    }
+  ]
+}

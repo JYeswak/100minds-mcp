@@ -7,20 +7,35 @@
     {
       "name": "It's easier to ask forgiveness than permission",
       "description": "Take calculated action rather than waiting for approval that may never come. Bureaucratic inertia kills innovation. Ship first, explain later.",
-      "domain_tags": ["leadership", "innovation", "bureaucracy", "shipping"],
+      "domain_tags": [
+        "leadership",
+        "innovation",
+        "bureaucracy",
+        "shipping"
+      ],
       "falsification": "When unauthorized action causes irreversible damage, violates safety/ethics, or destroys trust with stakeholders"
-    },
-    {
-      "name": "The most dangerous phrase is 'We've always done it this way'",
-      "description": "Challenge legacy practices relentlessly. Past success doesn't guarantee future relevance. Question every assumption, especially comfortable ones.",
-      "domain_tags": ["innovation", "culture", "technical-debt", "refactoring"],
-      "falsification": "When stability and predictability genuinely outweigh innovation needs, or when 'the old way' embodies hard-won safety lessons"
     },
     {
       "name": "One accurate measurement is worth a thousand expert opinions",
       "description": "Data beats intuition. Measure actual performance, don't assume. The compiler doesn't care about your feelings.",
-      "domain_tags": ["metrics", "testing", "performance", "debugging"],
+      "domain_tags": [
+        "metrics",
+        "testing",
+        "performance",
+        "debugging"
+      ],
       "falsification": "When measurements are misleading proxies, or when expert judgment captures nuances metrics miss"
+    },
+    {
+      "name": "The most dangerous phrase is 'We've always done it this way'",
+      "description": "Challenge legacy practices relentlessly. Past success doesn't guarantee future relevance. Question every assumption, especially comfortable ones.",
+      "domain_tags": [
+        "innovation",
+        "culture",
+        "technical-debt",
+        "refactoring"
+      ],
+      "falsification": "When stability and predictability genuinely outweigh innovation needs, or when 'the old way' embodies hard-won safety lessons"
     }
   ]
 }

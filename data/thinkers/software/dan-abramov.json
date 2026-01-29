@@ -1,0 +1,32 @@
+{
+  "id": "dan-abramov",
+  "name": "Dan Abramov",
+  "domain": "software",
+  "background": "Expert in software",
+  "principles": [
+    {
+      "name": "Avoid Premature Abstraction",
+      "description": "WET (Write Everything Twice) before you DRY. Don't abstract until you see the pattern clearly. The pressure to avoid duplication leads to premature abstraction. Copy-paste twice, then look for patterns. Wrong abstractions are harder to fix than duplication. When you do abstract, make it easy to inline back if the abstraction proves wrong.",
+      "domain_tags": [
+        "abstraction",
+        "DRY",
+        "WET",
+        "refactoring",
+        "patterns"
+      ],
+      "falsification": "When avoid premature abstraction leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Component-Based Architecture",
+      "description": "Build UIs from small, reusable components. Each component should have a single responsibility and clear props. Components are the building blocks of modern UIs. Good components are composable, testable, and reusable. Separate presentational components from logic. Lift state to the lowest common ancestor. Design props as your public API.",
+      "domain_tags": [
+        "components",
+        "React",
+        "UI",
+        "frontend",
+        "composition"
+      ],
+      "falsification": "When component-based architecture leads to worse outcomes than alternatives"
+    }
+  ]
+}

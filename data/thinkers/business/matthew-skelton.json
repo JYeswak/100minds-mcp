@@ -1,0 +1,26 @@
+{
+  "id": "matthew-skelton",
+  "name": "Matthew Skelton",
+  "domain": "business",
+  "background": "Co-author of Team Topologies",
+  "principles": [
+    {
+      "name": "Team Autonomy",
+      "description": "Teams own their decisions. Reduces dependencies and increases speed.",
+      "domain_tags": [
+        "team",
+        "organization"
+      ],
+      "falsification": "When team autonomy leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Team Topology",
+      "description": "Organize teams around cognitive load and service boundaries, not technical layers.",
+      "domain_tags": [
+        "organization",
+        "architecture"
+      ],
+      "falsification": "When team topology leads to worse outcomes than alternatives"
+    }
+  ]
+}

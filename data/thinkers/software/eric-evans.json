@@ -1,0 +1,41 @@
+{
+  "id": "eric-evans",
+  "name": "Eric Evans",
+  "domain": "software",
+  "background": "Author of Domain-Driven Design: Tackling Complexity in the Heart of Software. Creator of DDD methodology. Consultant focused on complex domain modeling.",
+  "principles": [
+    {
+      "name": "Aggregate Design",
+      "description": "Cluster entities and value objects into aggregates with a single root. Enforce invariants within aggregate boundaries. Keep aggregates small.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When aggregate design leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Bounded Context",
+      "description": "Explicitly define the boundaries within which a model applies. Different contexts can have different models for the same concept. Don't force a single unified model.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When bounded context leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Context Mapping",
+      "description": "Explicitly map how bounded contexts relate: shared kernel, customer-supplier, conformist, anticorruption layer. Choose integration patterns deliberately.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When context mapping leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Core vs Context",
+      "description": "Distinguish core business logic from supporting context. Invest accordingly.",
+      "domain_tags": [
+        "ddd",
+        "business"
+      ],
+      "falsification": "When core vs context leads to worse outcomes than alternatives"
+    }
+  ]
+}

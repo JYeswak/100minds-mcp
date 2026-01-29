@@ -1,0 +1,40 @@
+{
+  "id": "paul-graham",
+  "name": "Paul Graham",
+  "domain": "business",
+  "background": "Paul Graham (born 1964) is an English-American programmer, entrepreneur, and essayist. Co-founder of Viaweb (sold to Yahoo for $49.6M), Y Combinator, and Hacker News. Author of 'Hackers & Painters', 'ANSI Common Lisp'. Known for essays on startups, programming (Lisp advocacy, Blub paradox), and founder philosophy. BA Philosophy Cornell, PhD CS Harvard. Lives in England.",
+  "principles": [
+    {
+      "name": "Blub Paradox",
+      "description": "Programmers undervalue better languages/tools; power continuum hard to see from middle.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When blub paradox leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Do Things That Don't Scale",
+      "description": "Manually recruit first users, delight them personally, focus narrow markets initially for explosive growth.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When do things that don't scale leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Founder Mode",
+      "description": "Founders must stay hands-on, skip levels, make key decisions directly; reject pure manager mode delegation.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When founder mode leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Great Work Habits",
+      "description": "Work on ambitious personal projects, follow curiosity, aim for frontiers, embrace strangeness.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When great work habits leads to worse outcomes than alternatives"
+    }
+  ]
+}

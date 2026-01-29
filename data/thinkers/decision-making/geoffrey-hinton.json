@@ -1,0 +1,40 @@
+{
+  "id": "geoffrey-hinton",
+  "name": "Geoffrey Everest Hinton",
+  "domain": "decision-making",
+  "background": "Born December 6, 1947 in London. BA from King's College Cambridge in experimental psychology (1970), PhD from University of Edinburgh in AI (1978). University Professor Emeritus at University of Toronto. Worked at Google Brain 2013-2023, resigned to speak freely on AI risks. Co-founded Vector Institute. Notable students: Ilya Sutskever, Alex Krizhevsky, Yann LeCun.",
+  "principles": [
+    {
+      "name": "Backpropagation for Efficient Training",
+      "description": "Efficient algorithm to compute gradients in multi-layer networks using chain rule, allowing training of deep networks by propagating errors backward.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When backpropagation for efficient training leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Deep Learning through Layered Representations",
+      "description": "Neural networks with many layers learn hierarchical feature representations from raw data, enabling complex pattern recognition without hand-crafted features. Revolutionized computer vision, speech recognition, NLP.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When deep learning through layered representations leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Distributed Representations",
+      "description": "Knowledge encoded in patterns across many neurons, enabling graceful degradation, generalization, and handling uncertainty better than symbolic AI.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When distributed representations leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Forward-Forward Algorithm",
+      "description": "Alternative to backpropagation using two forward passes (positive/negative data) for biologically plausible learning, suitable for neuromorphic hardware.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When forward-forward algorithm leads to worse outcomes than alternatives"
+    }
+  ]
+}

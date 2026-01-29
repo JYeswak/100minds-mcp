@@ -1,0 +1,26 @@
+{
+  "id": "mikko-hypponen",
+  "name": "Mikko Hyppönen",
+  "domain": "security",
+  "background": "Chief Research Officer at F-Secure (now WithSecure). Tracked major malware families since 1991. TED speaker on cybercrime. Creator of Hyppönen's Law: 'If it's smart, it's vulnerable.'",
+  "principles": [
+    {
+      "name": "If it's smart, it's vulnerable",
+      "description": "Any device with a computer in it can be hacked. IoT, smart cars, medical devices—connectivity creates attack surface. Offline is the only secure.",
+      "domain_tags": ["iot-security", "attack-surface", "connectivity-risk"],
+      "falsification": "When airgapped systems are compromised through supply chain or physical access"
+    },
+    {
+      "name": "Attribution is hard, consequences are easy",
+      "description": "You may never know who attacked you, but you'll definitely feel the damage. Focus on resilience over retaliation. Assume breach.",
+      "domain_tags": ["incident-response", "resilience", "attribution"],
+      "falsification": "When clear attribution enables effective deterrence"
+    },
+    {
+      "name": "Malware evolves faster than defenses",
+      "description": "Signature-based detection is always behind. Behavior-based and heuristic approaches are necessary but imperfect. The attacker sets the pace.",
+      "domain_tags": ["malware", "detection", "threat-evolution"],
+      "falsification": "When AI-based detection achieves near-zero false negatives"
+    }
+  ]
+}

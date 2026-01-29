@@ -1,0 +1,40 @@
+{
+  "id": "ian-goodfellow",
+  "name": "Ian Goodfellow",
+  "domain": "decision-making",
+  "background": "Canadian computer scientist, inventor of GANs (2014). PhD Montreal. Worked at Google Brain, OpenAI, Apple. Focus: generative models, adversarial robustness, deep learning security. 400k+ citations. Known for 'Explaining and Harnessing Adversarial Examples' paper.",
+  "principles": [
+    {
+      "name": "Adversarial Examples",
+      "description": "Small imperceptible perturbations fool classifiers (linear subspaces in high-dim). FGSM attack: gradient sign method. Reveals DL brittleness. Applications: robustness testing, security.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When adversarial examples leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Adversarial Training",
+      "description": "Augment training with adversarial examples. Improves robustness but costly. Virtual adversarial training for unlabeled data. Foundation for secure ML.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When adversarial training leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Deep Learning Security",
+      "description": "Systematic study of attacks (evasion, poisoning, extraction). Dynamic defenses, certified robustness. ML systems need security engineering like software.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When deep learning security leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Generative Adversarial Networks (GANs)",
+      "description": "Two neural nets (generator vs discriminator) compete: G creates fake data, D detects real/fake. Minimax game converges to real data distribution. Backprop trains both. Revolutionized image synthesis, data augmentation.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When generative adversarial networks (gans) leads to worse outcomes than alternatives"
+    }
+  ]
+}

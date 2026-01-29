@@ -1,0 +1,32 @@
+{
+  "id": "addy-osmani",
+  "name": "Addy Osmani",
+  "domain": "software",
+  "background": "Expert in software",
+  "principles": [
+    {
+      "name": "Loading Performance",
+      "description": "The fastest request is one not made. Lazy load, code split, and defer everything that isn't immediately needed. Load only what's above the fold initially. Use code splitting to load routes on demand. Lazy load images below the fold. Preload critical resources, prefetch likely next pages. The waterfall matters - critical path first.",
+      "domain_tags": [
+        "loading",
+        "lazy loading",
+        "code splitting",
+        "performance",
+        "web"
+      ],
+      "falsification": "When loading performance leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Web Performance Budget",
+      "description": "Performance is a feature. Set budgets for load time, bundle size, and core web vitals, then enforce them. Every byte matters on mobile networks. Set explicit budgets: JavaScript < 200KB, LCP < 2.5s. Measure real user metrics, not just lab data. Performance degrades gradually - without budgets, death by a thousand cuts. Make performance part of CI.",
+      "domain_tags": [
+        "web performance",
+        "budgets",
+        "core web vitals",
+        "frontend",
+        "optimization"
+      ],
+      "falsification": "When web performance budget leads to worse outcomes than alternatives"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "daniel-dennett",
+  "name": "Daniel Dennett",
+  "domain": "philosophy",
+  "background": "Daniel Clement Dennett III (1942\u20132024) was an American philosopher, cognitive scientist, and author. Co-director of Tufts University's Center for Cognitive Studies and Austin B. Fletcher Professor of Philosophy. Renowned for philosophy of mind, consciousness, intentional stance, free will compatibilism, evolutionary explanation of culture/mind. Key works: Consciousness Explained (1991), Darwin's Dangerous Idea (1995), Breaking the Spell (2006), Intuition Pumps and Other Tools for Thinking (2013). 'Four Horsemen' of New Atheism.",
+  "principles": [
+    {
+      "name": "Compatibilist Free Will",
+      "description": "Free will = evolved capacity for rational deliberation, evitability (could have done otherwise via better reasons), avoidance of coercion; compatible with determinism.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When compatibilist free will leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Darwin's Dangerous Idea",
+      "description": "Natural selection as 'universal acid' explaining design (mind, morality, meaning) without designer; greedy reductionism via bottom-up processes.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When darwin's dangerous idea leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Heterophenomenology",
+      "description": "Neutral scientific method: describe subjects' beliefs/phenomenology as data ('intentional inexistents'), bracket existence questions.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When heterophenomenology leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Intentional Stance",
+      "description": "Strategy of interpreting/predicting behavior by attributing beliefs, desires, rationality to systems (humans, animals, AIs, thermostats) at abstraction level yielding best predictions.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When intentional stance leads to worse outcomes than alternatives"
+    }
+  ]
+}

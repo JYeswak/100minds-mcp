@@ -1,0 +1,40 @@
+{
+  "id": "stuart-russell",
+  "name": "Stuart Russell",
+  "domain": "decision-making",
+  "background": "Distinguished Professor of Computer Science at UC Berkeley, co-author of Artificial Intelligence: A Modern Approach (standard AI textbook used in 1500+ universities), founder of Center for Human-Compatible AI (CHAI). Pioneered AI alignment research, inverse reinforcement learning, probabilistic reasoning. Key book: Human Compatible: AI and the Problem of Control (2019), warning of superintelligence risks if AI optimizes wrong objectives.",
+  "principles": [
+    {
+      "name": "AI Alignment Problem",
+      "description": "Standard AI maximizes fixed goals, risking unintended consequences (e.g., paperclip maximizer). AI must learn true human preferences/values with uncertainty.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When ai alignment problem leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Human Oversight",
+      "description": "Defer to humans on values; use scalable methods like assistance games for superintelligent oversight.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When human oversight leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Provably Beneficial AI",
+      "description": "Build AI uncertain about objectives, learning via human feedback (inverse RL). Principles: avoid misgeneralizing goals, corrigibility (accepts correction), no power-seeking.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When provably beneficial ai leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Uncertainty in Objectives",
+      "description": "Model human preferences probabilistically; AI clarifies ambiguities, maximizes expected utility over preference distribution.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When uncertainty in objectives leads to worse outcomes than alternatives"
+    }
+  ]
+}

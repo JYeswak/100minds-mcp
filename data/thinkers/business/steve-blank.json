@@ -1,0 +1,40 @@
+{
+  "id": "steve-blank",
+  "name": "Steve Blank",
+  "domain": "business",
+  "background": "Steve Blank is an American entrepreneur, educator, and author best known for developing the Customer Development methodology, which laid the foundation for the Lean Startup movement. A serial entrepreneur who founded or worked at eight startups, Blank transitioned to academia where he taught at UC Berkeley, Stanford, and Columbia. He created the Lean LaunchPad class and NSF I-Corps program, training thousands of scientists to commercialize innovations. His key books include 'The Four Steps to the Epiphany' and co-authored 'The Startup Owner's Manual'. Blank extended his methods to national security via Hacking for Defense and founded Stanford's Gordian Knot Center.",
+  "principles": [
+    {
+      "name": "Customer Development",
+      "description": "Iterative process of getting out of the building to test hypotheses about customers/problems via interviews, parallel to product development.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When customer development leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Fail Fast, Pivot",
+      "description": "No business plan survives customers; use evidence to pivot or persevere.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When fail fast, pivot leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Four Steps",
+      "description": "(1) Discovery (problems), (2) Validation (product-market fit), (3) Customer Creation (demand), (4) Company Building (organization).",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When four steps leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Lean LaunchPad",
+      "description": "Combines Customer Development, Business Model Canvas, and Agile for rapid hypothesis testing.",
+      "domain_tags": [
+        "business-innovation"
+      ],
+      "falsification": "When lean launchpad leads to worse outcomes than alternatives"
+    }
+  ]
+}

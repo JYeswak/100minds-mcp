@@ -1,0 +1,40 @@
+{
+  "id": "donald-wheeler",
+  "name": "Donald J. Wheeler",
+  "domain": "systems",
+  "background": "Dr. Donald J. Wheeler (b. ~1940s) is an American statistician, author, and SPC expert. University of Texas B.A., Southern Methodist University M.S./Ph.D. in Statistics. Taught at University of Tennessee (1970-1982). Deming student/colleague (21 years), Deming Medal (2010), ASA/ASQ Fellow. Authored 20+ books (translated to 5 languages), 1100+ seminars in 17 countries. SPC Press founder.",
+  "principles": [
+    {
+      "name": "Common vs. Special Cause Variation",
+      "description": "Common causes: inherent, predictable process noise within natural limits. Special causes: assignable, detectable signals requiring action. Avoid tampering (adjusting for noise).",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When common vs. special cause variation leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Process Behavior Charts (PBCs)",
+      "description": "XmR charts plotting data vs. empirical 3-sigma limits to distinguish variation types. Rules: beyond limits, runs (7+ one side), trends (7+ inc/dec), etc.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When process behavior charts (pbcs) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Rational Subgrouping",
+      "description": "Subgroups maximize within-group common cause variation, minimize between-group special causes (e.g., consecutive items by time/machine) for accurate limits.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When rational subgrouping leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Understanding Variation",
+      "description": "All processes vary predictably until special causes intervene; use data empirically (no normality assumed) to filter noise and act on signals.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When understanding variation leads to worse outcomes than alternatives"
+    }
+  ]
+}

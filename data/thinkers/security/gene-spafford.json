@@ -5,22 +5,37 @@
   "background": "Purdue professor, computer security pioneer. Analyzed Morris Worm. Founded CERIAS. Known for Spaf's Laws of security and advocacy for security education and ethics.",
   "principles": [
     {
+      "name": "Security education beats security products",
+      "description": "Human factors cause most security failures. Training and awareness reduce risk more than tools. Invest in people, not just technology.",
+      "domain_tags": [
+        "education",
+        "human-factors",
+        "training",
+        "culture"
+      ],
+      "falsification": "When automated controls can genuinely remove human error from the equation"
+    },
+    {
       "name": "The only truly secure system is one that is powered off",
       "description": "Perfect security is impossible for functioning systems. Every operational system has attack surface. Security is risk management, not risk elimination.",
-      "domain_tags": ["risk", "pragmatism", "trade-offs", "operations"],
+      "domain_tags": [
+        "risk",
+        "pragmatism",
+        "trade-offs",
+        "operations"
+      ],
       "falsification": "When specific threat models can be fully addressed with acceptable operational constraints"
     },
     {
       "name": "Using encryption on the Internet is the equivalent of arranging an armored car to deliver credit card information from someone living in a cardboard box",
       "description": "Endpoint security matters more than transport security. Encrypting communication doesn't help if endpoints are compromised. Secure the whole chain, not just visible links.",
-      "domain_tags": ["endpoints", "holistic-security", "encryption", "weak-links"],
+      "domain_tags": [
+        "endpoints",
+        "holistic-security",
+        "encryption",
+        "weak-links"
+      ],
       "falsification": "When transport security addresses the actual threat model (e.g., network-level attackers)"
-    },
-    {
-      "name": "Security education beats security products",
-      "description": "Human factors cause most security failures. Training and awareness reduce risk more than tools. Invest in people, not just technology.",
-      "domain_tags": ["education", "human-factors", "training", "culture"],
-      "falsification": "When automated controls can genuinely remove human error from the equation"
     }
   ]
 }

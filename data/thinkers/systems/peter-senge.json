@@ -1,0 +1,40 @@
+{
+  "id": "peter-senge",
+  "name": "Peter Senge",
+  "domain": "systems",
+  "background": "American systems scientist (born 1947), senior lecturer at MIT Sloan, founder of Society for Organizational Learning. Author of 'The Fifth Discipline' (1990). Background in aerospace engineering (Stanford BS), social systems modeling (MIT MS), management PhD (MIT). Key focus: learning organizations, systems thinking.",
+  "principles": [
+    {
+      "name": "Mental Models",
+      "description": "Deeply ingrained assumptions/generalizations shaping worldview; surface, test, improve them.",
+      "domain_tags": [
+        "systems-thinking"
+      ],
+      "falsification": "When mental models leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Personal Mastery",
+      "description": "Continual clarification of personal vision, focus energies, patience, objective reality.",
+      "domain_tags": [
+        "systems-thinking"
+      ],
+      "falsification": "When personal mastery leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Shared Vision",
+      "description": "Collectively held genuine picture of future fostering commitment.",
+      "domain_tags": [
+        "systems-thinking"
+      ],
+      "falsification": "When shared vision leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Systems Thinking",
+      "description": "The Fifth Discipline - seeing wholes, interrelationships, patterns over time, feedback loops.",
+      "domain_tags": [
+        "systems-thinking"
+      ],
+      "falsification": "When systems thinking leads to worse outcomes than alternatives"
+    }
+  ]
+}

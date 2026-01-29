@@ -1,0 +1,26 @@
+{
+  "id": "window-snyder",
+  "name": "Window Snyder",
+  "domain": "security",
+  "background": "Security executive at Apple, Fastly, Square, Mozilla, and Microsoft. Architect of Mozilla's security program. Board member at multiple security companies. Pioneer in product security.",
+  "principles": [
+    {
+      "name": "Security is a product feature, not a department",
+      "description": "Security teams don't secure products—product teams do. Security should be embedded in engineering, not siloed. Everyone owns security.",
+      "domain_tags": ["product-security", "devsecops", "culture"],
+      "falsification": "When specialized security teams provide better outcomes than embedded security"
+    },
+    {
+      "name": "Make the secure choice the easy choice",
+      "description": "Developers will take the path of least resistance. If secure coding is harder, they'll code insecurely. Build secure defaults, safe frameworks, guardrails.",
+      "domain_tags": ["secure-defaults", "developer-experience", "guardrails"],
+      "falsification": "When security requirements fundamentally conflict with usability"
+    },
+    {
+      "name": "Transparency builds trust after incidents",
+      "description": "Cover-ups destroy reputation worse than breaches. Disclose honestly, fix quickly, explain what you're doing to prevent recurrence. Transparency is a competitive advantage.",
+      "domain_tags": ["incident-response", "disclosure", "trust"],
+      "falsification": "When disclosure creates liability that outweighs reputational benefits"
+    }
+  ]
+}

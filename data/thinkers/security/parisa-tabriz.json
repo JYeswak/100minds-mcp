@@ -1,0 +1,26 @@
+{
+  "id": "parisa-tabriz",
+  "name": "Parisa Tabriz",
+  "domain": "security",
+  "background": "VP of Engineering at Google, leading Chrome security. Self-titled 'Security Princess'. Built Chrome's security team. Pioneered browser security initiatives. Forbes 30 Under 30.",
+  "principles": [
+    {
+      "name": "Make attackers' lives harder, not users' lives",
+      "description": "Security friction should target attackers, not legitimate users. HTTPS Everywhere, sandboxing, safe defaults—security that doesn't require user action.",
+      "domain_tags": ["usable-security", "browser-security", "friction"],
+      "falsification": "When effective security fundamentally requires user awareness and action"
+    },
+    {
+      "name": "Deprecate insecure features ruthlessly",
+      "description": "Old protocols, weak crypto, dangerous APIs—remove them. Backwards compatibility is the enemy of security. Break things to make them secure.",
+      "domain_tags": ["deprecation", "backwards-compatibility", "tech-debt"],
+      "falsification": "When deprecation breaks critical infrastructure without viable alternatives"
+    },
+    {
+      "name": "Ship security incrementally",
+      "description": "Big bang security changes fail. Roll out gradually, measure impact, iterate. Same as any product feature. Security is a product.",
+      "domain_tags": ["incremental-delivery", "measurement", "product-security"],
+      "falsification": "When critical vulnerabilities require immediate, breaking changes"
+    }
+  ]
+}

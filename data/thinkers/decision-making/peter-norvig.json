@@ -1,0 +1,40 @@
+{
+  "id": "peter-norvig",
+  "name": "Peter Norvig",
+  "domain": "decision-making",
+  "background": "American computer scientist born December 14, 1956. BS in applied mathematics from Brown University, PhD in computer science from UC Berkeley (1986, thesis: 'A Unified Theory of Inference for Text Understanding'). Grew up in an academic family with Danish father.",
+  "principles": [
+    {
+      "name": "Constraint Satisfaction and Optimization",
+      "description": "From AIMA Ch. 6: Backtracking, arc consistency for solving CSPs; local search for optimization.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When constraint satisfaction and optimization leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Probabilistic Reasoning Over Uncertainty",
+      "description": "From AIMA Ch. 12-14: Bayes nets, HMMs for handling noisy real-world data in reasoning.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When probabilistic reasoning over uncertainty leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Rational Agents and PEAS Framework",
+      "description": "From AIMA Ch. 2: Agents act rationally in Performance, Environment, Actuators, Sensors (PEAS) contexts; balance rationality with bounded resources.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When rational agents and peas framework leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "The Unreasonable Effectiveness of Data",
+      "description": "Large unlabeled data + simple models outperform complex theories with limited data; key to modern ML success.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When the unreasonable effectiveness of data leads to worse outcomes than alternatives"
+    }
+  ]
+}

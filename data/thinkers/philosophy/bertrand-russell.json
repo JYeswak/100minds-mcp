@@ -5,22 +5,37 @@
   "background": "Nobel laureate, logician, philosopher. Co-authored Principia Mathematica. Champion of logical analysis, skepticism, and clear thinking. Influenced analytic philosophy and foundations of mathematics.",
   "principles": [
     {
-      "name": "The value of philosophy is in its uncertainty",
-      "description": "Philosophy's purpose isn't to provide answers but to expand what we consider possible. Certainty is often the enemy of truth. Embrace productive doubt.",
-      "domain_tags": ["epistemology", "skepticism", "thinking", "uncertainty"],
-      "falsification": "When practical decisions require commitment and sustained doubt becomes paralyzing"
-    },
-    {
       "name": "Never let yourself be diverted by what you wish to believe",
       "description": "Wishful thinking corrupts reasoning. Examine beliefs you want to be true with extra scrutiny. The comfortable conclusion is often the wrong one.",
-      "domain_tags": ["rationality", "bias", "critical-thinking", "truth"],
+      "domain_tags": [
+        "rationality",
+        "bias",
+        "critical-thinking",
+        "truth"
+      ],
       "falsification": "When optimism and belief in success are necessary for motivation and achievement"
     },
     {
       "name": "The fundamental cause of trouble is that the stupid are cocksure while the intelligent are full of doubt",
       "description": "Confidence and competence are often inversely related (Dunning-Kruger). Beware the certain expert. Value those who acknowledge limits of knowledge.",
-      "domain_tags": ["confidence", "expertise", "humility", "decision-making"],
+      "domain_tags": [
+        "confidence",
+        "expertise",
+        "humility",
+        "decision-making"
+      ],
       "falsification": "When genuine expertise does produce justified confidence, or when doubt signals actual incompetence"
+    },
+    {
+      "name": "The value of philosophy is in its uncertainty",
+      "description": "Philosophy's purpose isn't to provide answers but to expand what we consider possible. Certainty is often the enemy of truth. Embrace productive doubt.",
+      "domain_tags": [
+        "epistemology",
+        "skepticism",
+        "thinking",
+        "uncertainty"
+      ],
+      "falsification": "When practical decisions require commitment and sustained doubt becomes paralyzing"
     }
   ]
 }

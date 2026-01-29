@@ -1,0 +1,43 @@
+{
+  "id": "martin-fowler",
+  "name": "Martin Fowler",
+  "domain": "software",
+  "background": "Chief Scientist at Thoughtworks. Author of Patterns of Enterprise Application Architecture, Refactoring. Leading voice on microservices architecture decisions.",
+  "principles": [
+    {
+      "name": "Asynchronous Work",
+      "description": "Decouple producers and consumers. Use queues, events, or async patterns for scalability.",
+      "domain_tags": [
+        "architecture",
+        "scaling"
+      ],
+      "falsification": "When asynchronous work leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Backwards Compatibility",
+      "description": "New versions should not break existing clients. Enable gradual migration.",
+      "domain_tags": [
+        "api",
+        "architecture"
+      ],
+      "falsification": "When backwards compatibility leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Build vs Buy",
+      "description": "Evaluate whether to build custom solutions or buy/use existing ones. Focus resources on core differentiators.",
+      "domain_tags": [
+        "architecture",
+        "business"
+      ],
+      "falsification": "When build vs buy leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "CQRS (Command Query Responsibility Segregation)",
+      "description": "Separate read and write models when read and write patterns differ significantly. Don't use CQRS everywhere - it adds complexity. Use it when read scaling, different data shapes, or event sourcing justify it.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When cqrs (command query responsibility segregation) leads to worse outcomes than alternatives"
+    }
+  ]
+}

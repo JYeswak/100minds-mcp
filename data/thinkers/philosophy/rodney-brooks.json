@@ -1,0 +1,40 @@
+{
+  "id": "rodney-brooks",
+  "name": "Rodney Brooks",
+  "domain": "philosophy",
+  "background": "Australian roboticist (b. 1954). PhD Stanford (1981). MIT professor (1984\u20132010s), ex-CSAIL director. Co-founded iRobot (Roomba), Rethink Robotics (Baxter), Robust.AI. Pioneered behavior-based robotics rejecting symbolic AI for reactive systems. (Wikipedia, rodneybrooks.com)",
+  "principles": [
+    {
+      "name": "Embodied/Behavior-Based Intelligence",
+      "description": "Intelligence emerges from physical interaction and sensorimotor loops, not abstract cognition.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When embodied/behavior-based intelligence leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Emergent Behaviors",
+      "description": "Complex capabilities arise from simple layered rules.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When emergent behaviors leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "No Explicit Representations",
+      "description": "Avoid complex world models; react directly to environment.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When no explicit representations leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Subsumption Architecture",
+      "description": "Layered hierarchical behaviors where higher layers subsume lower ones without central control. Enables robust operation in dynamic environments.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When subsumption architecture leads to worse outcomes than alternatives"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "andy-hunt",
+  "name": "Andy Hunt",
+  "domain": "software",
+  "background": "Expert in software",
+  "principles": [
+    {
+      "name": "Don't Repeat Yourself (DRY)",
+      "description": "Every piece of knowledge must have a single, unambiguous, authoritative representation within a system. DRY is about knowledge, not just code. When knowledge changes, it should only need updating in one place. This applies to database schemas, documentation, build scripts, and business rules. Violations lead to inconsistency and maintenance burden.",
+      "domain_tags": [
+        "DRY",
+        "duplication",
+        "refactoring",
+        "maintainability",
+        "knowledge"
+      ],
+      "falsification": "When don't repeat yourself (dry) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Tracer Bullets",
+      "description": "Use tracer bullets to find the target. Build an end-to-end skeleton of your system early to validate architecture and reduce risk. Like tracer bullets that show where shots are going, tracer code is a working skeleton that connects all the pieces of your architecture. It's not a prototype - it's real code that grows. This gives immediate feedback and visible progress while validating the architecture.",
+      "domain_tags": [
+        "architecture",
+        "prototype",
+        "risk",
+        "skeleton",
+        "integration"
+      ],
+      "falsification": "When tracer bullets leads to worse outcomes than alternatives"
+    }
+  ]
+}

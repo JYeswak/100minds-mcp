@@ -1,0 +1,32 @@
+{
+  "id": "bjarne-stroustrup",
+  "name": "Bjarne Stroustrup",
+  "domain": "software",
+  "background": "Expert in software",
+  "principles": [
+    {
+      "name": "RAII - Resource Acquisition Is Initialization",
+      "description": "Tie resource lifetime to object lifetime. Acquire in constructor, release in destructor. No leaks, no manual cleanup. RAII eliminates entire classes of bugs: memory leaks, file handle leaks, lock leaks. Resources are released automatically when objects go out of scope, even during exceptions. This pattern is fundamental to safe resource management in any language with destructors.",
+      "domain_tags": [
+        "RAII",
+        "resource management",
+        "memory",
+        "cleanup",
+        "exceptions"
+      ],
+      "falsification": "When raii - resource acquisition is initialization leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Zero Overhead Principle",
+      "description": "What you don't use, you don't pay for. What you do use, you couldn't hand-code any better. Good language and library design imposes no overhead for unused features. Abstractions should be zero-cost - as efficient as the best hand-written code. This principle guides C++ design and applies broadly: don't pay for what you don't use.",
+      "domain_tags": [
+        "performance",
+        "abstraction",
+        "zero-cost",
+        "efficiency",
+        "design"
+      ],
+      "falsification": "When zero overhead principle leads to worse outcomes than alternatives"
+    }
+  ]
+}

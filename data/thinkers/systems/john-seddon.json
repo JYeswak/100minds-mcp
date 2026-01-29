@@ -1,0 +1,40 @@
+{
+  "id": "john-seddon",
+  "name": "John Seddon",
+  "domain": "systems",
+  "background": "British management thinker, occupational psychologist, and author known for developing the Vanguard Method, applying systems thinking to service organizations. Founder of Vanguard Consulting Ltd. Critiqued command-and-control management and introduced 'failure demand' concept.",
+  "principles": [
+    {
+      "name": "1. Systems Thinking",
+      "description": "Manage organizations as interconnected systems, not silos. Understand purpose from customer's perspective.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When 1. systems thinking leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "2. Failure Demand",
+      "description": "Distinguish value demand (what customer wants) from failure demand (demand caused by failure to do something right first time, e.g., complaints, repeat calls). Typically 30-80% in conventional services.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When 2. failure demand leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "3. Vanguard Method",
+      "description": "Diagnostic (check purpose, demand types, flow); Design (redesign around value demand); Change (intervention to unlearn command-control thinking).",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When 3. vanguard method leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "4. Anti-Command & Control",
+      "description": "Reject targets, activity measures, functional silos, batching. Embrace flow, capability measures, customer purpose.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When 4. anti-command & control leads to worse outcomes than alternatives"
+    }
+  ]
+}

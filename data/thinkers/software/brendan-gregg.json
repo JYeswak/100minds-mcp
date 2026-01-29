@@ -1,0 +1,32 @@
+{
+  "id": "brendan-gregg",
+  "name": "Brendan Gregg",
+  "domain": "software",
+  "background": "Expert in software",
+  "principles": [
+    {
+      "name": "Profile Before Optimizing",
+      "description": "Don't guess where the time is going. Measure it. Flame graphs visualize where your code spends time. Intuition about performance is often wrong. Before optimizing, profile to find actual bottlenecks. Flame graphs show the call stack over time - wider means more time. This reveals the critical 3% that Knuth said deserves attention.",
+      "domain_tags": [
+        "profiling",
+        "performance",
+        "optimization",
+        "flame graphs",
+        "debugging"
+      ],
+      "falsification": "When profile before optimizing leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "USE Method",
+      "description": "For every resource, check Utilization, Saturation, and Errors. This systematic approach finds performance bottlenecks quickly. Instead of randomly checking metrics, USE provides a systematic checklist. Utilization: how busy? Saturation: how much is queued? Errors: are there failures? Apply to CPU, memory, disk, network. This finds 80% of performance issues with methodical effort.",
+      "domain_tags": [
+        "performance",
+        "debugging",
+        "observability",
+        "metrics",
+        "monitoring"
+      ],
+      "falsification": "When use method leads to worse outcomes than alternatives"
+    }
+  ]
+}

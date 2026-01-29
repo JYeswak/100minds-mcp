@@ -5,22 +5,37 @@
   "background": "Harvard Business School professor. Created theory of disruptive innovation. Wrote 'The Innovator's Dilemma'. Explained why great companies fail when facing disruptive technologies.",
   "principles": [
     {
-      "name": "The Innovator's Dilemma",
-      "description": "Good management practices cause great companies to fail. Listening to customers, investing in profitable products, and targeting high margins all make you vulnerable to disruption from below.",
-      "domain_tags": ["disruption", "innovation", "strategy", "competition"],
-      "falsification": "When customer focus and continuous improvement successfully defend against disruption"
-    },
-    {
       "name": "Disruptive innovations start worse but get better",
       "description": "Disruptions initially underperform on traditional metrics but excel on new dimensions (cheaper, simpler, more convenient). Incumbents dismiss them until it's too late.",
-      "domain_tags": ["disruption", "competition", "markets", "strategy"],
+      "domain_tags": [
+        "disruption",
+        "competition",
+        "markets",
+        "strategy"
+      ],
       "falsification": "When 'disruptions' fail to improve fast enough to threaten incumbents"
     },
     {
       "name": "Jobs to be done",
       "description": "Customers don't buy products - they hire them to do jobs. Understand the job, not the customer segment. Successful innovation solves jobs better than alternatives.",
-      "domain_tags": ["product", "customers", "innovation", "marketing"],
+      "domain_tags": [
+        "product",
+        "customers",
+        "innovation",
+        "marketing"
+      ],
       "falsification": "When customer demographics and preferences genuinely predict purchasing behavior"
+    },
+    {
+      "name": "The Innovator's Dilemma",
+      "description": "Good management practices cause great companies to fail. Listening to customers, investing in profitable products, and targeting high margins all make you vulnerable to disruption from below.",
+      "domain_tags": [
+        "disruption",
+        "innovation",
+        "strategy",
+        "competition"
+      ],
+      "falsification": "When customer focus and continuous improvement successfully defend against disruption"
     }
   ]
 }

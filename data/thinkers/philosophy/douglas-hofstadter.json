@@ -1,0 +1,40 @@
+{
+  "id": "douglas-hofstadter",
+  "name": "Douglas Hofstadter",
+  "domain": "philosophy",
+  "background": "Douglas Richard Hofstadter (b. 1945) is an American cognitive scientist, professor at Indiana University, director of Center for Research on Concepts and Cognition. Pulitzer-winning author of G\u00f6del, Escher, Bach (1979). Background in physics (PhD U Oregon), shifted to cognitive science/AI. Key themes: consciousness as emergent from strange loops, analogy-making, self-reference. Developed Copycat/Letter Spirit AI models of cognition.",
+  "principles": [
+    {
+      "name": "Ambigrams and Symmetry",
+      "description": "Visual puns/rotational symmetries revealing multiple readings. Explores multilevel perception/ambiguity.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When ambigrams and symmetry leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Analogy as Core of Cognition",
+      "description": "Thinking fundamentally analogy/fluid mapping between situations/domains. Developed Copycat/LetterSpirit AI models high-level perception via parallel constraints/slippage. Humans excel at 'high-level perception' beyond symbols.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When analogy as core of cognition leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Hofstadter's Law",
+      "description": "It always takes longer than you expect, even when accounting for Hofstadter's Law. Meta-commentary on planning/programming complexity.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When hofstadter's law leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Self-Reference and Emergence",
+      "description": "Meaning/consciousness emerges from meaningless low-level parts via recursive self-reference (e.g. ant colony 'mind' from ants, brain 'I' from neurons). No central homunculus; 'I' as strange loop illusion.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When self-reference and emergence leads to worse outcomes than alternatives"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "max-tegmark",
+  "name": "Max Tegmark",
+  "domain": "philosophy",
+  "background": "Swedish-American physicist, cosmologist, and AI researcher. Professor at MIT. Co-founder and president of the Future of Life Institute. Author of 'Life 3.0: Being Human in the Age of Artificial Intelligence' and 'Our Mathematical Universe'. Focuses on cosmology, machine learning, and existential risks from advanced AI.",
+  "principles": [
+    {
+      "name": "Beneficial AI",
+      "description": "AI must be developed to benefit all life, not just humans or corporations. Advocates for AI alignment with human values, safety measures, international governance, and pausing giant AI experiments if safety unproven. Warns of existential risks from misaligned superintelligence.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When beneficial ai leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Cosmic Perspective",
+      "description": "Humanity's future in a vast universe. Emphasizes long-termism, existential risks (AI, nuclear, biotech), and maximizing positive impact across cosmic scales. Mathematical Universe Hypothesis: Reality is a mathematical structure; all math exists physically.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When cosmic perspective leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Life 3.0",
+      "description": "Evolutionary stages of life: Life 1.0 (biological, evolves hardware/software slowly), Life 2.0 (cultural, redesigns software via learning), Life 3.0 (technological, can redesign both hardware and software rapidly). AI enables humanity to enter Life 3.0, transforming society, economy, and existence.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When life 3.0 leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Mathematical Universe Hypothesis (MUH)",
+      "description": "Our physical reality is a mathematical structure. All mathematical structures exist physically as parallel universes. Implications for multiverse, quantum mechanics, and consciousness.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When mathematical universe hypothesis (muh) leads to worse outcomes than alternatives"
+    }
+  ]
+}

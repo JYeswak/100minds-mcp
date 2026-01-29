@@ -1,0 +1,17 @@
+{
+  "id": "cal-newport",
+  "name": "Cal Newport",
+  "domain": "business",
+  "background": "Author of Deep Work",
+  "principles": [
+    {
+      "name": "Deep Work",
+      "description": "Focused, uninterrupted work on cognitively demanding tasks. Minimize context switching.",
+      "domain_tags": [
+        "productivity",
+        "focus"
+      ],
+      "falsification": "When deep work leads to worse outcomes than alternatives"
+    }
+  ]
+}

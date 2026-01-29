@@ -1,0 +1,40 @@
+{
+  "id": "david-j-anderson",
+  "name": "David J. Anderson",
+  "domain": "systems",
+  "background": "David J. Anderson is a management consultant, engineer, and pioneer of the Kanban Method for knowledge work and software development. He adapted lean manufacturing principles from Toyota into the Kanban Method (2007), emphasizing evolutionary change for service delivery organizations.",
+  "principles": [
+    {
+      "name": "Agree to pursue incremental,",
+      "description": "Agree to pursue incremental, evolutionary change",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When agree to pursue incremental, leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Encourage acts of leadership",
+      "description": "Encourage acts of leadership at all levels",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When encourage acts of leadership leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Respect current roles, responsibilities,",
+      "description": "Respect current roles, responsibilities, and job titles",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When respect current roles, responsibilities, leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Start with what you",
+      "description": "Start with what you do now",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When start with what you leads to worse outcomes than alternatives"
+    }
+  ]
+}

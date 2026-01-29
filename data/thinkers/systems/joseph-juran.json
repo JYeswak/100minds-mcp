@@ -1,0 +1,40 @@
+{
+  "id": "joseph-juran",
+  "name": "Joseph Moses Juran",
+  "domain": "systems",
+  "background": "Born in Br\u0103ila, Romania; emigrated to US 1912. Electrical engineering degree U Minnesota. Worked Western Electric/Bell Labs 1924-1941 developing statistical quality control. Post-WWII consultant; visited Japan 1954 influencing Toyota etc. Founded Juran Institute 1979. Lived to 103.",
+  "principles": [
+    {
+      "name": "Breakthrough Concept",
+      "description": "Shift from chronic (tolerated) waste to acute (targeted) defects via systematic management.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When breakthrough concept leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Cost of Poor Quality",
+      "description": "Quantify waste from defects/rework to justify improvements.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When cost of poor quality leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Managerial Responsibility",
+      "description": "Quality is management's job, not just inspectors. Train leaders; address human resistance to change.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When managerial responsibility leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Pareto Principle (80/20 Rule)",
+      "description": "80% problems from 20% causes ('vital few/useful many'). Focus on high-impact defects.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When pareto principle (80/20 rule) leads to worse outcomes than alternatives"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "donald-knuth",
+  "name": "Donald Knuth",
+  "domain": "software",
+  "background": "Expert in software",
+  "principles": [
+    {
+      "name": "Literate Programming",
+      "description": "Programs should be written for humans to read, and only incidentally for machines to execute. Code is read more often than it's written. Treat programming as creating literature - explain your thoughts alongside the code. Documentation and code should be interwoven. This improves maintainability and knowledge transfer.",
+      "domain_tags": [
+        "documentation",
+        "readability",
+        "maintainability",
+        "code style",
+        "comments"
+      ],
+      "falsification": "When literate programming leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Premature Optimization Is the Root of All Evil",
+      "description": "We should forget about small efficiencies, say about 97% of the time: premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%. This famous quote emphasizes that optimizing code before it's necessary often leads to complexity without benefit. Focus on correctness and clarity first. Profile to find actual bottlenecks before optimizing. The 97/3 rule suggests most code doesn't need optimization, but the critical 3% deserves attention. slow Python rewrite Rust performance language choice",
+      "domain_tags": [
+        "performance",
+        "optimization",
+        "refactoring",
+        "profiling",
+        "bottleneck"
+      ],
+      "falsification": "When premature optimization is the root of all evil leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Profile Before Optimize",
+      "description": "Measure performance before optimizing. Don't guess where bottlenecks are - measure.",
+      "domain_tags": [
+        "performance",
+        "optimization"
+      ],
+      "falsification": "When profile before optimize leads to worse outcomes than alternatives"
+    }
+  ]
+}

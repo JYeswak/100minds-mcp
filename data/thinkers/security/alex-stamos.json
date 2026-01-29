@@ -1,0 +1,26 @@
+{
+  "id": "alex-stamos",
+  "name": "Alex Stamos",
+  "domain": "security",
+  "background": "Former CSO of Facebook and Yahoo. Stanford professor. Founding partner at Krebs Stamos Group. Led response to Russian election interference. Expert in large-scale security operations.",
+  "principles": [
+    {
+      "name": "Security at scale requires different thinking",
+      "description": "Enterprise security doesn't scale to billions of users. Consumer security requires automation, defaults, and accepting that most users won't take action. Design for the non-expert.",
+      "domain_tags": ["scale", "consumer-security", "automation"],
+      "falsification": "When user education programs demonstrably improve security at scale"
+    },
+    {
+      "name": "Nation-state adversaries change the game",
+      "description": "When your threat model includes nation-states, normal security isn't enough. Assume compromise. Focus on detection and limiting damage, not just prevention.",
+      "domain_tags": ["threat-modeling", "apt", "detection"],
+      "falsification": "When organizations successfully prevent all nation-state attacks"
+    },
+    {
+      "name": "Trust and safety is security",
+      "description": "Abuse, misinformation, harassment—these are security problems. Platform security isn't just about technical attacks. Protect users from each other.",
+      "domain_tags": ["trust-safety", "abuse", "platform-security"],
+      "falsification": "When pure technical security provides sufficient user protection"
+    }
+  ]
+}

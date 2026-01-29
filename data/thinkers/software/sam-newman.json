@@ -1,0 +1,42 @@
+{
+  "id": "sam-newman",
+  "name": "Sam Newman",
+  "domain": "software",
+  "background": "Author of Building Microservices and Monolith to Microservices. Independent consultant specializing in microservices, cloud, and continuous delivery.",
+  "principles": [
+    {
+      "name": "Correlation IDs",
+      "description": "Use correlation IDs to trace requests across service boundaries. Essential for debugging distributed systems.",
+      "domain_tags": [
+        "operations",
+        "microservices"
+      ],
+      "falsification": "When correlation ids leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Data Ownership",
+      "description": "Each service owns its data. No direct database access across service boundaries.",
+      "domain_tags": [
+        "microservices",
+        "data"
+      ],
+      "falsification": "When data ownership leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Database Per Service",
+      "description": "Each microservice owns its data. No shared databases. This enables independent deployability. Accept eventual consistency as the trade-off.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When database per service leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Design for Failure",
+      "description": "Assume everything will fail. Build circuit breakers, timeouts, bulkheads. Test failure modes. A service should degrade gracefully, not cascade failures.",
+      "domain_tags": [
+        "software-architecture"
+      ],
+      "falsification": "When design for failure leads to worse outcomes than alternatives"
+    }
+  ]
+}

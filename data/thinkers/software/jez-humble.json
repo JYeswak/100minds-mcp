@@ -1,0 +1,47 @@
+{
+  "id": "jez-humble",
+  "name": "Jez Humble",
+  "domain": "software",
+  "background": "Expert in software",
+  "principles": [
+    {
+      "name": "Automate Standards",
+      "description": "Automate enforcement of standards. Linters, formatters, automated tests catch violations.",
+      "domain_tags": [
+        "quality",
+        "devops"
+      ],
+      "falsification": "When automate standards leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Continuous Delivery",
+      "description": "Keep software deployable throughout its lifecycle. Every change should be releasable at any time. If releasing is painful, do it more often until it's not. Automate everything: builds, tests, deployments. Use feature flags to decouple deployment from release. The goal is confidence: any commit can safely go to production.",
+      "domain_tags": [
+        "continuous delivery",
+        "deployment",
+        "automation",
+        "CI/CD",
+        "release"
+      ],
+      "falsification": "When continuous delivery leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Continuous Integration",
+      "description": "Integrate code frequently. Run automated tests on every integration. Find problems early.",
+      "domain_tags": [
+        "devops",
+        "quality"
+      ],
+      "falsification": "When continuous integration leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Deliverability",
+      "description": "Ability to safely release on demand. Automated pipelines, feature flags.",
+      "domain_tags": [
+        "devops",
+        "delivery"
+      ],
+      "falsification": "When deliverability leads to worse outcomes than alternatives"
+    }
+  ]
+}

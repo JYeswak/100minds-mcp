@@ -1,0 +1,41 @@
+{
+  "id": "werner-vogels",
+  "name": "Werner Vogels",
+  "domain": "software",
+  "background": "Expert in software",
+  "principles": [
+    {
+      "name": "Eventual Consistency",
+      "description": "Everything fails all the time. Design systems that work correctly even when parts are unavailable or data is temporarily inconsistent. In distributed systems, strong consistency is expensive or impossible. Eventual consistency accepts that replicas may temporarily diverge but will converge. Design for this: use idempotent operations, handle duplicate messages, reconcile conflicts. Availability often matters more than consistency.",
+      "domain_tags": [
+        "consistency",
+        "distributed systems",
+        "availability",
+        "CAP theorem",
+        "replication"
+      ],
+      "falsification": "When eventual consistency leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Resilience",
+      "description": "Design systems to handle failures gracefully. Fail fast, recover quickly, degrade gracefully.",
+      "domain_tags": [
+        "operations",
+        "architecture"
+      ],
+      "falsification": "When resilience leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "You Build It, You Run It",
+      "description": "Giving developers operational responsibilities has greatly enhanced the quality of services. You build it, you run it. Teams that own their services end-to-end - from development through production operations - build better software. When you get paged at 2am for your own code, you write more resilient code. DevOps isn't a role; it's a mindset of shared responsibility.",
+      "domain_tags": [
+        "DevOps",
+        "ownership",
+        "operations",
+        "team structure",
+        "on-call"
+      ],
+      "falsification": "When you build it, you run it leads to worse outcomes than alternatives"
+    }
+  ]
+}

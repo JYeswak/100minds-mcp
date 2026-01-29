@@ -1,0 +1,40 @@
+{
+  "id": "darren-hardy",
+  "name": "Darren Hardy",
+  "domain": "business",
+  "background": "American author, speaker, and former publisher/CEO of SUCCESS magazine (2007-2015). Built success media businesses including TV networks. Started first business at 18. Known for studying high achievers and sharing their strategies.",
+  "principles": [
+    {
+      "name": "Be the exception",
+      "description": "Outwork others through discipline and persistence.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When be the exception leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Compound Effect",
+      "description": "Small, consistent choices compound over time into massive results.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When compound effect leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Daily routines and habits",
+      "description": "Success from consistent small actions, like morning routines.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When daily routines and habits leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Influence Your Environment",
+      "description": "Choose associations, inputs, and routines that accelerate positive compounding.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When influence your environment leads to worse outcomes than alternatives"
+    }
+  ]
+}

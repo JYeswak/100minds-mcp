@@ -1,0 +1,44 @@
+{
+  "id": "tim-ferriss",
+  "name": "Tim Ferriss",
+  "domain": "business",
+  "background": "Timothy Ferriss (born July 20, 1977) is an American entrepreneur, investor, author, podcaster, and lifestyle guru. He is best known for his '4-Hour' book series, including The 4-Hour Workweek, which advocates for lifestyle design, escaping the 9-5 grind, automation, outsourcing, and achieving more with less work. Key principles include DEAL framework (Definition, Elimination, Automation, Liberation), fear-setting exercise, 80/20 Pareto principle application, mini-retirements, and DEALing with the 'New Rich' (NR) mindset focused on time and mobility over money.",
+  "principles": [
+    {
+      "name": "4-Hour Workweek (DEAL",
+      "description": "Definition of ideal lifestyle, Elimination of time-wasters via 80/20 and Parkinson's Law, Automation via outsourcing/muses, Liberation via mini-retirements and geoarbitrage)",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When 4-hour workweek (deal leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "80/20 Analysis",
+      "description": "Focus on high-impact activities; eliminate 80% low-value tasks",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When 80/20 analysis leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Fear-Setting",
+      "description": "Define the worst case scenario in detail, then realize it's rarely as bad as the vague fear suggests. Quantify downside, identify prevention, and plan recovery. Inspired by Stoic premeditatio malorum (premeditation of evils). Instead of goal-setting, do fear-setting: explicitly define what you're afraid of, calculate the actual cost, and realize the worst case is usually survivable and recoverable. The vague fear is always worse than the defined fear.",
+      "domain_tags": [
+        "afraid",
+        "scared",
+        "risky",
+        "what if",
+        "worst case"
+      ],
+      "falsification": "When fear-setting leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Lifestyle Design",
+      "description": "Prioritize time/location freedom over income accumulation; work to live, not live to work",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When lifestyle design leads to worse outcomes than alternatives"
+    }
+  ]
+}

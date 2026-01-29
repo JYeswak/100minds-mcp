@@ -1,0 +1,56 @@
+{
+  "id": "taiichi-ohno",
+  "name": "Taiichi Ohno",
+  "domain": "systems",
+  "background": "Taiichi Ohno (1912-1990) was a Japanese industrial engineer and businessman, widely regarded as the father of the Toyota Production System (TPS), which inspired global Lean Manufacturing. Born in Dalian, China, he joined Toyoda Spinning in 1932 and moved to Toyota Motor in 1943, rising to executive ranks. Influenced by Sakichi Toyoda's jidoka (automation with human touch) and Kiichiro Toyoda's just-in-time ideas, Ohno developed TPS between 1948-1975 through shop-floor kaizen. Key works: 'Toyota Production System: Beyond Large-Scale Production' (1978/1988), 'Workplace Management' (1982/2007). TPS pillars: Just-in-Time (produce only what's needed, when needed) and Jidoka. He identified 7 wastes (muda): overproduction, waiting, transport, overprocessing, inventory, motion, defects. TPS emphasizes eliminating muda/mura/muri via continuous improvement (kaizen), respect for people, genchi genbutsu (go-see), and standardized work. Ohno's philosophy transformed manufacturing, extending to services, sales, and SMB operations worldwide.",
+  "principles": [
+    {
+      "name": "Elimination of 7 Wastes (Muda)",
+      "description": "Identify/remove: 1.Overproduction, 2.Waiting, 3.Transport, 4.Overprocessing, 5.Excess Inventory, 6.Unnecessary Motion, 7.Defects. Later added 8th: Unused Talent.",
+      "domain_tags": [
+        "elimination",
+        "wastes",
+        "muda",
+        "identify",
+        "remove"
+      ],
+      "falsification": "When elimination of 7 wastes (muda) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Five Whys",
+      "description": "Ask 'why' five times to drill past symptoms to root cause. Stop treating symptoms; find and fix the underlying system failure. Developed at Toyota as part of the Toyota Production System. When a problem occurs, asking 'why' repeatedly (typically five times) reveals the causal chain from symptom to root cause. The true root cause is usually a process or system failure, not a person or event. Ohno: 'By repeating why five times, the nature of the problem as well as its solution becomes clear.'",
+      "domain_tags": [
+        "why",
+        "root cause",
+        "keeps happening",
+        "recurring",
+        "symptom"
+      ],
+      "falsification": "When five whys leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Jidoka (Autonomation)",
+      "description": "Automation with human intelligence: machines stop on abnormality (andon cords), build quality in by preventing defects outflow. Roots in Sakichi Toyoda's looms. Enables workers focus on value-add, not monitoring.",
+      "domain_tags": [
+        "jidoka",
+        "autonomation",
+        "automation",
+        "human",
+        "intelligence"
+      ],
+      "falsification": "When jidoka (autonomation) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Just-in-Time (JIT)",
+      "description": "Produce only what is needed, when needed, in the amount needed; pull-based flow via kanban to synchronize supply-demand, minimize inventory. Supermarket-inspired: downstream pulls from upstream stockpoints. Quote: 'Just In Time should be interpreted to mean that it is a problem when parts are delivered too early.' (Workplace Management)",
+      "domain_tags": [
+        "just",
+        "time",
+        "produce",
+        "only",
+        "what"
+      ],
+      "falsification": "When just-in-time (jit) leads to worse outcomes than alternatives"
+    }
+  ]
+}

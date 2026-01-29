@@ -1,0 +1,50 @@
+{
+  "id": "michael-feathers",
+  "name": "Michael Feathers",
+  "domain": "software",
+  "background": "Expert in software",
+  "principles": [
+    {
+      "name": "Coverage Is Not Quality",
+      "description": "High test coverage doesn't guarantee quality. Focus on meaningful tests that catch real bugs.",
+      "domain_tags": [
+        "testing",
+        "quality"
+      ],
+      "falsification": "When coverage is not quality leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Mock vs Fake",
+      "description": "Mocks verify behavior, fakes provide implementation. Choose based on what you test.",
+      "domain_tags": [
+        "testing",
+        "design"
+      ],
+      "falsification": "When mock vs fake leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Seams",
+      "description": "A seam is a place where you can alter behavior without editing the code. Find seams to make untestable code testable. Types of seams: object seams (polymorphism), link seams (different libraries), preprocessor seams (conditional compilation). Use seams to inject test doubles, intercept calls, and isolate code for testing. The key is finding places to change behavior without modifying production code.",
+      "domain_tags": [
+        "testing",
+        "seams",
+        "dependency injection",
+        "mocking",
+        "legacy code"
+      ],
+      "falsification": "When seams leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Working Effectively with Legacy Code",
+      "description": "Legacy code is code without tests. To safely change old, aging codebases, first add tests around the code you need to change. Use seams - places where you can alter behavior without editing code. Essential for working with 10+ year old systems that need modernization without full rewrite. original developers left team nobody understands knowledge transfer documentation",
+      "domain_tags": [
+        "legacy code",
+        "refactoring",
+        "testing",
+        "technical debt",
+        "maintainability"
+      ],
+      "falsification": "When working effectively with legacy code leads to worse outcomes than alternatives"
+    }
+  ]
+}

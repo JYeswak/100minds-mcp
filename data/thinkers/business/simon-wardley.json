@@ -1,0 +1,32 @@
+{
+  "id": "simon-wardley",
+  "name": "Simon Wardley",
+  "domain": "business",
+  "background": "Expert in business",
+  "principles": [
+    {
+      "name": "Component Evolution",
+      "description": "Everything evolves: from custom solutions to products to commodities. Strategic decisions must account for where things are in this evolution. Early stage: hire pioneers, tolerate failure, experiment. Growth stage: product thinking, features, differentiation. Commodity stage: operational efficiency, cost reduction. Using wrong practices for the stage leads to failure. Build for genesis, buy commodities.",
+      "domain_tags": [
+        "evolution",
+        "strategy",
+        "build vs buy",
+        "commoditization",
+        "innovation"
+      ],
+      "falsification": "When component evolution leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Wardley Mapping",
+      "description": "Map the landscape before making strategic decisions. Understand what you have, where it came from, and where it's going. Wardley Maps visualize value chains and their evolution from genesis to commodity. Components evolve predictably: custom-built becomes products becomes utilities. Build in pioneering spaces, buy or outsource commodities. Maps reveal strategic options invisible in org charts.",
+      "domain_tags": [
+        "strategy",
+        "mapping",
+        "build vs buy",
+        "evolution",
+        "commoditization"
+      ],
+      "falsification": "When wardley mapping leads to worse outcomes than alternatives"
+    }
+  ]
+}

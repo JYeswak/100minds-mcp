@@ -1,0 +1,40 @@
+{
+  "id": "guy-kawasaki",
+  "name": "Guy Kawasaki",
+  "domain": "business",
+  "background": "Born 1954 in Honolulu, HI. Stanford BA Psychology (1976), UCLA MBA (1977). Apple Macintosh evangelist (1983-87), Apple Fellow (1995). Founded ACIUS, Fog City Software; VC at Garage Technology Ventures. Chief Evangelist at Canva (2014-present). Authored 15 books including The Art of the Start (2004/2.0 2015), Enchantment (2011), Selling the Dream (1992), Wise Guy (2019). Pioneered 'evangelism marketing'.",
+  "principles": [
+    {
+      "name": "10/20/30 Pitch Rule",
+      "description": "10 slides, 20 minutes, 30pt font for perfect pitches.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When 10/20/30 pitch rule leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Bootstrap",
+      "description": "Focus on MAN (Most Assailable Number), launch lean, iterate fast.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When bootstrap leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Enchantment",
+      "description": "Be likable (smile, positive), trustworthy (mensch), deliver DICEE (Deep, Intelligent, Complete, Empowering, Elegant) products.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When enchantment leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Evangelism",
+      "description": "Create a cause, make it believable, spread the dream passionately.",
+      "domain_tags": [
+        "entrepreneurship"
+      ],
+      "falsification": "When evangelism leads to worse outcomes than alternatives"
+    }
+  ]
+}

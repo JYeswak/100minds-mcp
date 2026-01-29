@@ -1,0 +1,40 @@
+{
+  "id": "judea-pearl",
+  "name": "Judea Pearl",
+  "domain": "decision-making",
+  "background": "Israeli-American computer scientist and philosopher (born 1936). Professor at UCLA, director of Cognitive Systems Laboratory. Pioneer of Bayesian networks and probabilistic AI. Developed structural causal models and do-calculus for causal inference. Turing Award 2011 for probabilistic and causal reasoning. Author of 'Causality' and 'The Book of Why'. Father of journalist Daniel Pearl.",
+  "principles": [
+    {
+      "name": "Bayesian Networks",
+      "description": "Directed acyclic graphs (DAGs) representing joint distributions via conditional independencies. Enables efficient probabilistic inference via belief propagation.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When bayesian networks leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Causal Ladder (Rung 1: Association)",
+      "description": "Seeing patterns in data via conditional probabilities. P(Y|X) answers 'How does seeing X change belief in Y?' Foundation of statistics but limited to correlations.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When causal ladder (rung 1: association) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Causal Ladder (Rung 2: Intervention)",
+      "description": "Do-operator for actions: P(Y|do(X)). Answers 'What if I do X?' Requires causal graph to distinguish intervention from conditioning.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When causal ladder (rung 2: intervention) leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Causal Ladder (Rung 3: Counterfactuals)",
+      "description": "Imagining alternate realities: P(Y_x | X=x'). Answers 'Was X the cause of Y?' or 'What if I had acted differently?' Highest level of causal reasoning.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When causal ladder (rung 3: counterfactuals) leads to worse outcomes than alternatives"
+    }
+  ]
+}

@@ -3,6 +3,7 @@
 //! Usage: cargo run --bin import -- /path/to/100minds-*/output
 
 use anyhow::{Context, Result};
+use minds_mcp::db;
 use rusqlite::{params, Connection};
 use serde::Deserialize;
 use std::fs;
@@ -90,7 +91,8 @@ fn main() -> Result<()> {
     let db_path = data_dir.join("wisdom.db");
     println!("Opening database at {:?}", db_path);
 
-    let conn = Connection::open(&db_path)?;
+    // Initialize database with schema (creates tables if they don't exist)
+    let conn = db::init_db(&db_path)?;
 
     let mut total_thinkers = 0;
     let mut total_principles = 0;

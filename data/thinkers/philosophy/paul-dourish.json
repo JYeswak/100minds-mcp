@@ -1,0 +1,40 @@
+{
+  "id": "paul-dourish",
+  "name": "Paul Dourish",
+  "domain": "philosophy",
+  "background": "British-American computer scientist (b. 1966, Glasgow, Scotland). B.Sc. Artificial Intelligence & Computer Science, University of Edinburgh (1989). Ph.D. Computer Science, University College London. Worked at Rank Xerox EuroPARC, Apple Computer, Xerox PARC. Since 2000, Steckler Endowed Chair of Information & Computer Science, UC Irvine; directs Steckler Center for Responsible, Ethical, and Accessible Technology. Fellow AAAS, ACM, BCS. Two-time ACM CSCW Lasting Impact Award (2016,2021); ACM SIGCHI Lifetime Achievement (2025). Author of 3 books, 100+ papers, 19 US patents. h-index 87 (Google Scholar).",
+  "principles": [
+    {
+      "name": "Context-Aware Computing Critique",
+      "description": "Context is not a fixed property but dynamically constituted through social interaction; traditional representations fail to capture this fluidity.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When context-aware computing critique leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Embodied Interaction",
+      "description": "Interaction design must account for people's embodied, physical presence in the world, not just abstract cognition. Tangible and social computing share foundations in viewing users as situated, social actors.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When embodied interaction leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Postcolonial Computing",
+      "description": "HCI must decenter Western assumptions; technology design reflects cultural power dynamics and requires global perspectives.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When postcolonial computing leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Social Computing & Appropriation",
+      "description": "Users appropriate technologies in unexpected ways; design must support flexible, emergent use rather than rigid prescriptions.",
+      "domain_tags": [
+        "philosophy-ethics"
+      ],
+      "falsification": "When social computing & appropriation leads to worse outcomes than alternatives"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "marcus-ranum",
+  "name": "Marcus Ranum",
+  "domain": "security",
+  "background": "Firewall inventor. Created the first commercial firewall (DEC SEAL) and TIS Firewall Toolkit. CSO at Tenable. Known for contrarian security views and 'Six Dumbest Ideas in Computer Security'.",
+  "principles": [
+    {
+      "name": "Default permit is the original sin",
+      "description": "Allow by default, block bad things = endless patching. Deny by default, allow good things = manageable security. Whitelisting beats blacklisting.",
+      "domain_tags": ["access-control", "default-deny", "whitelisting"],
+      "falsification": "When the cost of maintaining whitelists exceeds the security benefit"
+    },
+    {
+      "name": "Enumerating badness doesn't work",
+      "description": "There are infinite ways to attack, finite ways to do things right. Antivirus signatures, IDS rules, firewall blacklists—all enumerate badness. Instead, define and enforce what's allowed.",
+      "domain_tags": ["detection", "policy", "allowlisting"],
+      "falsification": "When threat intelligence provides comprehensive coverage of relevant attacks"
+    },
+    {
+      "name": "Penetrate and patch is security theater",
+      "description": "Finding and fixing individual bugs doesn't improve architecture. You patch one hole, there are a thousand more. Fix the design that allows the bugs.",
+      "domain_tags": ["vulnerability-management", "architecture", "technical-debt"],
+      "falsification": "When comprehensive testing achieves sufficient coverage of attack surface"
+    }
+  ]
+}

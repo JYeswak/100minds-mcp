@@ -1,0 +1,40 @@
+{
+  "id": "walter-shewhart",
+  "name": "Walter A. Shewhart",
+  "domain": "systems",
+  "background": "American physicist, engineer, and statistician known as the 'grandfather of statistical quality control'. Worked at Western Electric and Bell Labs from 1918-1956. Developed control charts in 1924 to distinguish between common cause (random) and special cause (assignable) variation. Authored 'Economic Control of Quality of Manufactured Product' (1931). Influenced W. Edwards Deming and modern quality management.",
+  "principles": [
+    {
+      "name": "Control Charts",
+      "description": "Graphical tools to monitor process variables over time, with upper/lower control limits (typically 3 sigma) to detect when a process goes out of statistical control due to special causes.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When control charts leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Distinction Between Common and Special Cause Variation",
+      "description": "Common cause: inherent random variation natural to the process (stable). Special cause: unusual, assignable variation signaling a need for investigation/correction.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When distinction between common and special cause variation leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Rational Subgrouping",
+      "description": "Sampling method to ensure variation within subgroups reflects common cause only, between subgroups shows special causes.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When rational subgrouping leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Specification Limits vs. Control Limits",
+      "description": "Control limits based on process data (capability); specification limits set by customer/design requirements. Process can be in control but out of spec.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When specification limits vs. control limits leads to worse outcomes than alternatives"
+    }
+  ]
+}

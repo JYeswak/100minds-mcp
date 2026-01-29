@@ -1,0 +1,40 @@
+{
+  "id": "peter-scholtes",
+  "name": "Peter Scholtes",
+  "domain": "systems",
+  "background": "Peter R. Scholtes (1938-2009) was an American management consultant, author, priest, and hymn writer. He is best known for his book 'The Leader's Handbook: Making Things Happen, Getting Things Done' (1998), which applies W. Edwards Deming's philosophy to leadership and team management. Scholtes emphasized systems thinking, understanding variation, and team effectiveness without traditional performance appraisals. He received the Deming Distinguished Service Award in 2006. His work focuses on creating high-performing teams through profound knowledge, respect for people, and data-driven improvement.",
+  "principles": [
+    {
+      "name": "7 Steps for Breakthrough Improvement",
+      "description": "SIPOC mapping, ideal state, plan-do-study-act cycles, data collection with 8 steps for measurement.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When 7 steps for breakthrough improvement leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Profound Knowledge",
+      "description": "Deming's four pillars: appreciation for a system, knowledge of variation, theory of knowledge, psychology of change. Leaders need this foundation.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When profound knowledge leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Respect for People",
+      "description": "Workers are not the problem; bad systems are. Leaders change systems, train teams, foster psychological safety.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When respect for people leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Systems Thinking",
+      "description": "Leaders must understand the organization as an interconnected system rather than silos. Changes in one part affect the whole, requiring holistic management.",
+      "domain_tags": [
+        "management-theory"
+      ],
+      "falsification": "When systems thinking leads to worse outcomes than alternatives"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "ilya-sutskever",
+  "name": "Ilya Sutskever",
+  "domain": "decision-making",
+  "background": "Ilya Sutskever (born 1986) is an Israeli-Canadian computer scientist renowned for pioneering deep learning advancements. Co-inventor of AlexNet (2012) with Geoffrey Hinton and Alex Krizhevsky, which revolutionized computer vision via convolutional neural networks. Key contributor to sequence-to-sequence learning, enabling modern translation and NLP models. Co-founder and former Chief Scientist at OpenAI, instrumental in GPT series and ChatGPT development. Founded Safe Superintelligence Inc. (SSI) in 2024 to prioritize safe superintelligent AI. PhD from University of Toronto under Hinton. FRS Fellow.",
+  "principles": [
+    {
+      "name": "AI Safety through Alignment",
+      "description": "Superintelligent systems must be aligned with human values via techniques like deliberative alignment and superalignment.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When ai safety through alignment leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Predictive Power from Vast Data",
+      "description": "Large-scale training on diverse data yields robust generalization and zero-shot capabilities.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When predictive power from vast data leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Scaling Laws Govern Intelligence",
+      "description": "Performance predictably improves with more compute, data, and model size; bigger models unlock emergent capabilities.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When scaling laws govern intelligence leads to worse outcomes than alternatives"
+    },
+    {
+      "name": "Sequence Modeling Mastery",
+      "description": "RNNs, LSTMs, and Transformers excel at predicting future states from sequential data, foundational to language models and time-series forecasting.",
+      "domain_tags": [
+        "ai-ml"
+      ],
+      "falsification": "When sequence modeling mastery leads to worse outcomes than alternatives"
+    }
+  ]
+}
