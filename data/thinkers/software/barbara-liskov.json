@@ -1,0 +1,26 @@
+{
+  "id": "barbara-liskov",
+  "name": "Barbara Liskov",
+  "domain": "software",
+  "background": "Turing Award winner, MIT professor. Created CLU language, developed Liskov Substitution Principle (the L in SOLID). Pioneer of data abstraction and object-oriented programming foundations.",
+  "principles": [
+    {
+      "name": "Liskov Substitution Principle",
+      "description": "Subtypes must be substitutable for their base types without altering program correctness. If S is a subtype of T, objects of type T may be replaced with objects of type S without breaking behavior.",
+      "domain_tags": ["oop", "inheritance", "design", "solid", "types"],
+      "falsification": "When strict LSP compliance creates excessive complexity or when duck typing in dynamic languages makes formal substitutability impractical"
+    },
+    {
+      "name": "Data abstraction hides implementation",
+      "description": "Separate what something does from how it does it. Users depend on interface contracts, not internal details. This enables independent evolution of implementations.",
+      "domain_tags": ["abstraction", "encapsulation", "api-design", "modularity"],
+      "falsification": "When abstraction layers add latency/complexity without value, or when leaky abstractions are unavoidable (networked systems, performance-critical code)"
+    },
+    {
+      "name": "Design for change",
+      "description": "Anticipate that requirements will evolve. Structure code so changes are localized. The cost of change should be proportional to the scope of change.",
+      "domain_tags": ["architecture", "maintainability", "modularity", "refactoring"],
+      "falsification": "When over-engineering for hypothetical changes delays shipping, or when the system is truly throwaway"
+    }
+  ]
+}

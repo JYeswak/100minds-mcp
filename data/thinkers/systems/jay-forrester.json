@@ -1,0 +1,26 @@
+{
+  "id": "jay-forrester",
+  "name": "Jay Forrester",
+  "domain": "systems",
+  "background": "MIT professor, founder of system dynamics. Created the first real-time computer (Whirlwind). Pioneered computer simulation of complex systems, influencing everything from urban planning to climate modeling.",
+  "principles": [
+    {
+      "name": "Counterintuitive behavior of social systems",
+      "description": "Complex systems often respond opposite to intuition. Obvious solutions frequently make problems worse. Feedback loops create unexpected dynamics. Simulate before intervening.",
+      "domain_tags": ["systems-thinking", "feedback-loops", "complexity", "simulation"],
+      "falsification": "In simple, linear systems where cause-effect is direct and intuition is reliable"
+    },
+    {
+      "name": "Policy resistance",
+      "description": "Systems actively resist change through compensating feedback. Pushing harder on one lever often activates opposing forces. Sustainable change requires understanding the whole system.",
+      "domain_tags": ["change-management", "feedback-loops", "organizations", "policy"],
+      "falsification": "When systems are loosely coupled enough that local interventions don't trigger systemic responses"
+    },
+    {
+      "name": "Delays cause oscillation",
+      "description": "Time delays between action and effect cause systems to overshoot and oscillate. The longer the delay, the more violent the oscillation. Account for delays in all control systems.",
+      "domain_tags": ["control-systems", "delays", "stability", "feedback"],
+      "falsification": "In systems with rapid feedback where delays are negligible relative to response time"
+    }
+  ]
+}

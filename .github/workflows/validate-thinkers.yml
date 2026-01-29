@@ -1,0 +1,103 @@
+name: Validate Thinkers
+
+on:
+  push:
+    paths:
+      - 'data/thinkers/**'
+  pull_request:
+    paths:
+      - 'data/thinkers/**'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  validate:
+    name: Validate 100 Thinkers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Count thinkers
+        run: |
+          COUNT=$(find data/thinkers -name "*.json" | wc -l)
+          echo "Found $COUNT thinker files"
+          if [ "$COUNT" -lt 30 ]; then
+            echo "::error::Expected at least 30 thinkers, found $COUNT"
+            exit 1
+          fi
+          echo "✓ Found $COUNT thinkers (minimum: 30)"
+
+      - name: Validate JSON syntax
+        run: |
+          ERRORS=0
+          for file in data/thinkers/**/*.json; do
+            if ! jq empty "$file" 2>/dev/null; then
+              echo "::error file=$file::Invalid JSON syntax"
+              ERRORS=$((ERRORS + 1))
+            fi
+          done
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "::error::Found $ERRORS JSON syntax errors"
+            exit 1
+          fi
+          echo "✓ All JSON files are valid"
+
+      - name: Validate thinker schema
+        run: |
+          ERRORS=0
+          for file in data/thinkers/**/*.json; do
+            # Check required fields
+            ID=$(jq -r '.id // empty' "$file")
+            NAME=$(jq -r '.name // empty' "$file")
+            DOMAIN=$(jq -r '.domain // empty' "$file")
+            PRINCIPLES=$(jq -r '.principles | length' "$file")
+
+            if [ -z "$ID" ]; then
+              echo "::error file=$file::Missing 'id' field"
+              ERRORS=$((ERRORS + 1))
+            fi
+            if [ -z "$NAME" ]; then
+              echo "::error file=$file::Missing 'name' field"
+              ERRORS=$((ERRORS + 1))
+            fi
+            if [ -z "$DOMAIN" ]; then
+              echo "::error file=$file::Missing 'domain' field"
+              ERRORS=$((ERRORS + 1))
+            fi
+            if [ "$PRINCIPLES" -lt 2 ]; then
+              echo "::error file=$file::Must have at least 2 principles, found $PRINCIPLES"
+              ERRORS=$((ERRORS + 1))
+            fi
+            if [ "$PRINCIPLES" -gt 6 ]; then
+              echo "::warning file=$file::Has $PRINCIPLES principles (recommended max: 6)"
+            fi
+          done
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "::error::Found $ERRORS schema validation errors"
+            exit 1
+          fi
+          echo "✓ All thinkers pass schema validation"
+
+      - name: Check for duplicate IDs
+        run: |
+          DUPLICATES=$(find data/thinkers -name "*.json" -exec jq -r '.id' {} \; | sort | uniq -d)
+          if [ -n "$DUPLICATES" ]; then
+            echo "::error::Duplicate thinker IDs found: $DUPLICATES"
+            exit 1
+          fi
+          echo "✓ No duplicate thinker IDs"
+
+      - name: Summary
+        run: |
+          echo "## Thinker Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Domain | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          for domain in data/thinkers/*/; do
+            DOMAIN_NAME=$(basename "$domain")
+            COUNT=$(find "$domain" -name "*.json" | wc -l)
+            echo "| $DOMAIN_NAME | $COUNT |" >> $GITHUB_STEP_SUMMARY
+          done
+          TOTAL=$(find data/thinkers -name "*.json" | wc -l)
+          echo "| **Total** | **$TOTAL** |" >> $GITHUB_STEP_SUMMARY

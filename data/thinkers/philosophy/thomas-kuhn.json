@@ -1,0 +1,26 @@
+{
+  "id": "thomas-kuhn",
+  "name": "Thomas Kuhn",
+  "domain": "philosophy",
+  "background": "Philosopher and historian of science. Wrote 'The Structure of Scientific Revolutions'. Introduced paradigm shifts, normal science vs revolutionary science, incommensurability.",
+  "principles": [
+    {
+      "name": "Paradigm shifts are discontinuous",
+      "description": "Scientific progress isn't cumulative - it proceeds through revolutions that overthrow existing frameworks. Normal science operates within paradigms; revolutionary science replaces them.",
+      "domain_tags": ["innovation", "change-management", "science", "frameworks"],
+      "falsification": "When change is genuinely incremental and paradigms evolve smoothly rather than being replaced"
+    },
+    {
+      "name": "Anomalies accumulate before revolution",
+      "description": "Paradigm shifts don't happen immediately when problems appear. Anomalies build up, get explained away, until critical mass triggers crisis and revolution.",
+      "domain_tags": ["change", "crisis", "patterns", "technical-debt"],
+      "falsification": "When single decisive experiments or discoveries immediately overturn existing views"
+    },
+    {
+      "name": "Different paradigms are incommensurable",
+      "description": "People in different paradigms literally see different things. Direct comparison is impossible because the standards of comparison are paradigm-dependent. Communication across paradigms is partial at best.",
+      "domain_tags": ["communication", "worldviews", "translation", "stakeholders"],
+      "falsification": "When paradigms share enough common ground for productive dialogue and gradual convergence"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "bruce-schneier",
+  "name": "Bruce Schneier",
+  "domain": "security",
+  "background": "Cryptographer, security technologist, author. Created Blowfish cipher. Writes influential 'Schneier on Security' blog. Focuses on security as systems problem, not just technical one.",
+  "principles": [
+    {
+      "name": "Security is a process, not a product",
+      "description": "You can't buy security - you maintain it. Security requires continuous monitoring, updating, and adapting. Products help but process determines outcomes.",
+      "domain_tags": ["security", "process", "maintenance", "operations"],
+      "falsification": "When a security product genuinely provides strong guarantees with minimal operational burden"
+    },
+    {
+      "name": "Attack trees reveal vulnerabilities",
+      "description": "Model attacks as trees with goals at root and methods as branches. Systematic threat modeling finds weaknesses intuition misses. Think like an attacker to defend effectively.",
+      "domain_tags": ["threat-modeling", "analysis", "risk", "attacks"],
+      "falsification": "When attackers use unexpected methods not captured in pre-built attack trees"
+    },
+    {
+      "name": "Security theater versus actual security",
+      "description": "Many security measures make us feel safer without making us safer. Distinguish real risk reduction from visible but ineffective countermeasures. Measure actual impact, not perceived impact.",
+      "domain_tags": ["security", "perception", "effectiveness", "risk"],
+      "falsification": "When perceived security genuinely deters attacks even without technical effectiveness"
+    }
+  ]
+}

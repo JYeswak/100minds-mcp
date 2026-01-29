@@ -1,0 +1,26 @@
+{
+  "id": "gary-klein",
+  "name": "Gary Klein",
+  "domain": "decision-making",
+  "background": "Cognitive psychologist, pioneer of naturalistic decision-making. Studied firefighters, nurses, military commanders making decisions under pressure. Created Recognition-Primed Decision model.",
+  "principles": [
+    {
+      "name": "Recognition-Primed Decision Making",
+      "description": "Experts don't compare options - they recognize patterns and act. The first option they consider is usually good enough. Analysis paralysis is more dangerous than imperfect action.",
+      "domain_tags": ["expertise", "intuition", "decision-making", "patterns"],
+      "falsification": "In novel situations where pattern recognition fails and systematic analysis is required"
+    },
+    {
+      "name": "Premortem analysis",
+      "description": "Before starting a project, imagine it has failed spectacularly. Ask: what went wrong? This surfaces risks that optimism bias hides. Easier to imagine past failure than future problems.",
+      "domain_tags": ["risk", "planning", "failure", "bias"],
+      "falsification": "When pessimistic thinking demotivates teams and creates self-fulfilling prophecies"
+    },
+    {
+      "name": "Naturalistic decision making beats rational choice",
+      "description": "Real decisions under time pressure and uncertainty don't follow textbook rationality. Study how experts actually decide, not how theories say they should. Context matters.",
+      "domain_tags": ["decision-making", "expertise", "context", "rationality"],
+      "falsification": "In structured environments with clear information where analytical methods outperform intuition"
+    }
+  ]
+}

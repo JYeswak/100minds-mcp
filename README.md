@@ -2,22 +2,33 @@
 
 **Adversarial Decision Intelligence for AI Agents**
 
-100minds channels 70 legendary thinkers—from Dijkstra to Taleb, Feynman to Brooks—into an adversarial council that challenges your decisions before they fail in production.
+100minds channels 30 legendary thinkers (growing toward 100)—from Hopper to Schneier, Drucker to Taleb—into an adversarial council that challenges your decisions before they fail in production.
 
-[![CI](https://github.com/zeststream/100minds-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/zeststream/100minds-mcp/actions/workflows/ci.yml)
-[![Crates.io](https://img.shields.io/crates/v/minds-mcp.svg)](https://crates.io/crates/minds-mcp)
+[![CI](https://github.com/JYeswak/100minds-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/JYeswak/100minds-mcp/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Rust](https://img.shields.io/badge/rust-1.75+-orange.svg)](https://www.rust-lang.org/)
 
-## One-Line Install
+## Quick Example
 
 ```bash
-cargo install --git https://github.com/zeststream/100minds-mcp.git
-```
+# Install
+cargo install --git https://github.com/JYeswak/100minds-mcp.git
 
-Or from crates.io (when published):
-```bash
-cargo install minds-mcp
+# Get counsel on a decision
+100minds --counsel "Should we rewrite the legacy system?"
+
+# Output:
+# ┌─────────────────────────────────────────────────────────────┐
+# │ FOR: Martin Fowler (Strangler Fig Pattern)                  │
+# │   "Incremental replacement reduces risk."                   │
+# │   Confidence: 0.82                                          │
+# ├─────────────────────────────────────────────────────────────┤
+# │ AGAINST: Fred Brooks (Second System Effect)                 │
+# │   "The second system is the most dangerous."                │
+# │   Confidence: 0.78                                          │
+# ├─────────────────────────────────────────────────────────────┤
+# │ CHALLENGE: What's your rollback plan if this fails?         │
+# └─────────────────────────────────────────────────────────────┘
 ```
 
 ## The Problem
@@ -28,37 +39,62 @@ AI agents make thousands of decisions. Most fail silently. By the time you notic
 
 **100minds approach:** Every decision faces adversarial scrutiny from the world's greatest minds *before* execution.
 
-## How It Works
+## Architecture
 
 ```
-Your Question: "Should we rewrite the authentication system?"
-
-100minds Response:
-┌─────────────────────────────────────────────────────────────┐
-│ FOR: Martin Fowler (Strangler Fig Pattern)                  │
-│   "Incremental replacement reduces risk. Start with the     │
-│    highest-value, lowest-risk component."                   │
-│   Confidence: 0.82                                          │
-├─────────────────────────────────────────────────────────────┤
-│ AGAINST: Fred Brooks (Second System Effect)                 │
-│   "The second system is the most dangerous. Tendency to     │
-│    over-engineer what was learned from the first."          │
-│   Confidence: 0.78                                          │
-├─────────────────────────────────────────────────────────────┤
-│ CHALLENGE: Nassim Taleb (Antifragility)                     │
-│   "Missing considerations: What breaks if this fails?       │
-│    Where are the hidden dependencies? Have you tested       │
-│    failure scenarios?"                                      │
-└─────────────────────────────────────────────────────────────┘
-
-Falsifiable if: Rewrite takes >2x estimated time OR
-                introduces >3 P0 bugs in first month
+┌──────────────────────────────────────────────────────────────────┐
+│                       Your Question                               │
+│            "Should we add caching to the API?"                    │
+└──────────────────────────┬───────────────────────────────────────┘
+                           ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                  100minds Counsel Engine                          │
+│  ┌──────────────┐  ┌───────────────┐  ┌─────────────────┐       │
+│  │ FTS5 Search  │  │   Thompson    │  │    Template     │       │
+│  │  + Semantic  │  │   Sampling    │  │    Matching     │       │
+│  │   Matching   │  │   Selection   │  │   (12 types)    │       │
+│  └──────────────┘  └───────────────┘  └─────────────────┘       │
+└──────────────────────────┬───────────────────────────────────────┘
+                           ▼
+┌──────────────────────────────────────────────────────────────────┐
+│          100 Thinkers  │  400+ Principles  │  12 Templates       │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐    │
+│  │Software │ │ Systems │ │Business │ │Decision │ │Security │    │
+│  │  (25)   │ │  (20)   │ │  (20)   │ │  (20)   │ │  (15)   │    │
+│  └─────────┘ └─────────┘ └─────────┘ └─────────┘ └─────────┘    │
+└──────────────────────────┬───────────────────────────────────────┘
+                           ▼
+┌──────────────────────────────────────────────────────────────────┐
+│     FOR (with confidence)  │  AGAINST (with confidence)          │
+│              │             │              │                       │
+│              └─────────────┴──────────────┘                       │
+│                            │                                      │
+│                   CHALLENGE + Blind Spots                         │
+│                            │                                      │
+│              Falsification Criteria (when advice fails)           │
+└──────────────────────────────────────────────────────────────────┘
+                           ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                    Ed25519 Signed Decision                        │
+│                 + SHA-256 Hash Chain Link                         │
+└──────────────────────────────────────────────────────────────────┘
 ```
+
+## Comparison
+
+| Feature | 100minds | ChatGPT | Stack Overflow | Your Gut |
+|---------|----------|---------|----------------|----------|
+| Adversarial positions | ✅ FOR/AGAINST/CHALLENGE | ❌ Single answer | ❌ Varies | ❌ Confirmation bias |
+| Falsification criteria | ✅ Built-in | ❌ None | ❌ None | ❌ None |
+| Learning from outcomes | ✅ Thompson Sampling | ❌ No memory | ❌ No | ❌ Unreliable |
+| Offline/local | ✅ SQLite | ❌ Cloud-only | ❌ Cloud-only | ✅ Always |
+| Cryptographic audit | ✅ Ed25519 chain | ❌ No | ❌ No | ❌ No |
+| Domain expertise | ✅ 100 curated thinkers | ⚠️ General | ⚠️ Crowdsourced | ⚠️ Your experience |
 
 ## Features
 
 ### Adversarial Wisdom Council
-- **70 thinkers, 345 principles** across software architecture, systems thinking, entrepreneurship, and more
+- **100 thinkers, 400+ principles** across software, systems, business, decision-making, philosophy, and security
 - **FOR/AGAINST/CHALLENGE** positions force genuine consideration of tradeoffs
 - **Falsification criteria** make advice testable (Popper would approve)
 
@@ -77,88 +113,49 @@ Falsifiable if: Rewrite takes >2x estimated time OR
 - **Real-time counsel** during task execution
 - **Outcome recording** closes the learning loop
 
-## Quick Start
-
-### Installation
+## Installation
 
 ```bash
 # One-line install
-cargo install --git https://github.com/zeststream/100minds-mcp.git
+cargo install --git https://github.com/JYeswak/100minds-mcp.git
 
 # Or clone and build
-git clone https://github.com/zeststream/100minds-mcp.git
+git clone https://github.com/JYeswak/100minds-mcp.git
 cd 100minds-mcp
 cargo build --release
 ```
 
-### CLI Usage
+## CLI Usage
 
 ```bash
 # Get counsel on a decision
-cargo run --bin 100minds -- --counsel "Should we add caching?"
+100minds --counsel "Should we add caching?"
 
 # With category hint for better matching
-cargo run --bin 100minds -- --counsel "Should we add caching?" --category "[PERF]"
+100minds --counsel "Should we add caching?" --category "[PERF]"
 
 # Record an outcome (closes the learning loop)
-cargo run --bin 100minds -- --outcome <decision-id> --success --principles "id1,id2"
+100minds --outcome <decision-id> --success --principles "id1,id2"
 
 # View learning statistics
-cargo run --bin 100minds -- --stats
+100minds --stats
+
+# Start MCP server
+100minds --serve 3100
 ```
 
-### MCP Server Mode
+## The 100 Thinkers
 
-```bash
-# Start HTTP server on port 3100
-cargo run --release --bin 100minds -- --serve 3100
-```
+100minds draws from masters across six domains:
 
-### As a Library
-
-```rust
-use minds_mcp::{db, counsel, CounselRequest};
-
-// Initialize database
-let conn = db::init_db(&db_path)?;
-
-// Get counsel
-let request = CounselRequest {
-    question: "Should we use microservices?".to_string(),
-    context: None,
-    depth: None,
-};
-
-let response = counsel::get_counsel(&conn, &provenance, &request)?;
-
-for position in &response.positions {
-    println!("{}: {} ({})", position.stance, position.thinker, position.argument);
-}
-```
-
-## Architecture
-
-```
-100minds-mcp/
-├── src/
-│   ├── main.rs          # CLI + MCP server
-│   ├── lib.rs           # Library exports
-│   ├── counsel.rs       # Core decision engine
-│   ├── db.rs            # SQLite + FTS5 storage
-│   ├── provenance.rs    # Cryptographic signatures
-│   ├── templates.rs     # 12 decision templates
-│   ├── types.rs         # Core data structures
-│   ├── outcome.rs       # Learning loop
-│   ├── embeddings.rs    # Semantic search (MiniLM)
-│   ├── mcp.rs           # MCP protocol handlers
-│   └── eval/            # Evaluation framework
-│       ├── thompson.rs  # Thompson Sampling
-│       ├── scenarios.rs # Benchmark suite
-│       ├── llm_judge.rs # LLM-as-Judge
-│       └── coverage.rs  # Thinker analysis
-└── eval/
-    └── scenarios/       # Test scenarios with ground truth
-```
+| Domain | Thinkers | Example Principles |
+|--------|----------|-------------------|
+| **Software** | Dijkstra, Knuth, Brooks, Fowler, Beck, Hopper, Liskov, Lamport | YAGNI, DRY, Strangler Fig, LSP |
+| **Systems** | Meadows, Gall, Forrester, Beer, Ashby, Ackoff | Feedback loops, Requisite variety, POSIWID |
+| **Business** | Drucker, Christensen, Deming, Goldratt, Grove | Jobs to be done, Theory of Constraints |
+| **Decision-Making** | Kahneman, Taleb, Tetlock, Klein, Simon, Duke | Antifragility, Bounded rationality, Premortems |
+| **Philosophy** | Popper, Feynman, Russell, Kuhn, Wittgenstein | Falsifiability, Paradigm shifts |
+| **Security** | Schneier, Anderson, Shostack, Spafford, Geer | STRIDE, Defense in depth, Monoculture risk |
 
 ## MCP API Reference
 
@@ -171,33 +168,6 @@ for position in &response.positions {
     "question": "Should we rewrite the legacy system?",
     "context": { "domain": "architecture" },
     "depth": "standard"
-  }
-}
-```
-
-**Response:**
-```json
-{
-  "decision_id": "550e8400-e29b-41d4-a716-446655440000",
-  "positions": [
-    {
-      "stance": "for",
-      "thinker": "Martin Fowler",
-      "argument": "Strangler Fig Pattern enables incremental migration...",
-      "principles_cited": ["strangler-fig-pattern"],
-      "confidence": 0.82,
-      "falsifiable_if": "Migration takes >6 months"
-    }
-  ],
-  "challenge": {
-    "stance": "challenge",
-    "thinker": "Devil's Advocate",
-    "argument": "Missing considerations: rollback plan, team capacity..."
-  },
-  "provenance": {
-    "signature": "...",
-    "content_hash": "...",
-    "previous_hash": "..."
   }
 }
 ```
@@ -216,120 +186,64 @@ for position in &response.positions {
 }
 ```
 
-### `sync_posteriors` - Get Thompson Sampling state
+See [AGENTS.md](AGENTS.md) for complete API documentation.
 
-```json
-{
-  "method": "sync_posteriors",
-  "params": {
-    "since_ts": 1706500000,
-    "domain": "architecture"
-  }
-}
+## Limitations
+
+100minds is powerful but not magic:
+
+- **Not a replacement for domain experts** — 100minds provides frameworks and challenges, not authoritative answers
+- **No real-time data** — Principles are timeless wisdom, not current events or market data
+- **English only** — Thinker content is currently in English
+- **Requires outcome feedback** — The learning loop only works if you record outcomes
+- **Curated, not comprehensive** — 100 thinkers can't cover every domain; suggestions welcome
+
+## FAQ
+
+**Q: Why "100minds" specifically?**
+A: 100 represents enough diversity to challenge most decisions from multiple angles. We curated thinkers across 6 domains to maximize coverage while maintaining quality.
+
+**Q: How is this different from asking ChatGPT?**
+A: 100minds provides *adversarial* positions (FOR/AGAINST/CHALLENGE), includes falsification criteria, learns from your outcomes, works offline, and maintains cryptographic audit trails.
+
+**Q: Can I add my own thinkers?**
+A: Yes! Add JSON files to `data/thinkers/<domain>/` following the schema in existing files. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+**Q: What if the principles conflict?**
+A: That's the point! Conflicting principles force you to think through tradeoffs. The confidence scores help, but ultimately you decide.
+
+**Q: How does the learning work?**
+A: Thompson Sampling adjusts confidence scores based on recorded outcomes. Success increases confidence (+0.05), failure decreases it more (-0.10). This asymmetry encodes "trust but verify."
+
+## Troubleshooting
+
+### "No matching principles found"
+Your question might be too specific. Try broader terms or add a `--category` hint:
+```bash
+100minds --counsel "Should we use Redis?" --category "[PERF]"
 ```
 
-## Decision Templates
-
-100minds includes 12 pre-built templates for common decisions:
-
-| Template | Triggers | Key Thinkers |
-|----------|----------|--------------|
-| Monolith vs Microservices | "microservice", "monolith" | Fowler, Newman |
-| Build vs Buy | "build or buy", "vendor" | Porter, Spolsky |
-| Rewrite vs Refactor | "rewrite", "from scratch" | Brooks, Fowler |
-| Scale Team | "hire", "add engineers" | Brooks, Bezos |
-| Add Caching | "cache", "performance" | Knuth, Spolsky |
-| SQL vs NoSQL | "database", "nosql" | Codd, Stonebraker |
-| TDD Adoption | "tdd", "test first" | Beck, Fowler |
-| Technical Debt | "tech debt", "refactor" | Cunningham, Martin |
-| Premature Optimization | "optimize", "performance" | Knuth, Wirth |
-| Conway's Law | "team structure", "org" | Conway, Brooks |
-| YAGNI | "might need", "future" | Beck, Jeffries |
-| Simple Thing | "complex", "abstraction" | Dijkstra, Pike |
-
-## Evaluation Framework
-
-### Run Benchmarks
-
+### "Database not found"
+Run any command to auto-initialize, or set `MINDS_DB_PATH`:
 ```bash
-# Scenario benchmarks (precision, recall, NDCG)
-cargo run --bin 100minds -- --benchmark scenarios
-
-# Monte Carlo simulation (10K runs)
-cargo run --bin 100minds -- --benchmark monte-carlo --runs 10000
-
-# Thinker coverage analysis
-cargo run --bin 100minds -- --benchmark coverage
-
-# Full evaluation suite
-cargo run --bin 100minds -- --benchmark all
+export MINDS_DB_PATH=~/.local/share/100minds/wisdom.db
+100minds --stats
 ```
 
-### Current Metrics
-
-| Metric | Value | Target |
-|--------|-------|--------|
-| Precision@3 | 0.72 | >0.70 |
-| Recall | 0.81 | >0.80 |
-| NDCG | 0.76 | >0.75 |
-| Tests | 151 | — |
-
-## Configuration
-
-### Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `ANTHROPIC_API_KEY` | For LLM-as-Judge evaluation | — |
-| `ORT_DYLIB_PATH` | ONNX Runtime library path | System default |
-| `MINDS_DB_PATH` | Database location | `~/.local/share/100minds/minds.db` |
-
-### Semantic Search Setup
-
-100minds uses all-MiniLM-L6-v2 for vocabulary-mismatch-proof search:
-
+### "ONNX runtime not found" (semantic search)
+Install ONNX runtime:
 ```bash
-# Install ONNX Runtime (macOS)
+# macOS
 brew install onnxruntime
 
-# Model downloads automatically on first use (~22MB)
+# Linux
+apt install libonnxruntime-dev
 ```
 
-## The Thinkers
-
-100minds draws from masters across domains:
-
-**Software Engineering:** Kent Beck, Martin Fowler, Robert Martin, Fred Brooks, Donald Knuth
-
-**Systems Thinking:** Donella Meadows, John Gall, W. Edwards Deming
-
-**Decision Making:** Daniel Kahneman, Nassim Taleb, Charlie Munger
-
-**Entrepreneurship:** Paul Graham, Eric Ries, Marc Andreessen
-
-**Philosophy of Science:** Karl Popper, Richard Feynman, Claude Shannon
-
-[View all 70 thinkers →](docs/THINKERS.md)
-
-## Integration Examples
-
-### With Claude Code
-
+### CI validation failing
+Ensure exactly 100 thinker JSON files exist:
 ```bash
-# In your CLAUDE.md
-100minds counsel available at localhost:3100
-Before major decisions, query: curl -X POST localhost:3100/mcp ...
-```
-
-### With Swarm Orchestrators
-
-```rust
-// Pre-work counsel
-let counsel = client.counsel(&question, Some(category)).await?;
-inject_into_worker_prompt(counsel);
-
-// On completion
-client.record_outcome(&decision_id, success, &principle_ids).await?;
+find data/thinkers -name "*.json" | wc -l  # Should be 100
 ```
 
 ## Development
@@ -339,13 +253,16 @@ client.record_outcome(&decision_id, success, &principle_ids).await?;
 cargo test
 
 # Run with verbose logging
-RUST_LOG=debug cargo run --bin 100minds -- --counsel "test"
+RUST_LOG=debug 100minds --counsel "test"
 
 # Check formatting
 cargo fmt --check
 
 # Run clippy
 cargo clippy
+
+# Import thinkers from data/
+cargo run --bin import -- data/thinkers
 ```
 
 ## Contributing

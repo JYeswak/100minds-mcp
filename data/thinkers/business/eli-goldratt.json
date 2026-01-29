@@ -1,0 +1,26 @@
+{
+  "id": "eli-goldratt",
+  "name": "Eli Goldratt",
+  "domain": "business",
+  "background": "Israeli physicist turned business consultant. Created Theory of Constraints (TOC). Wrote 'The Goal'. Revolutionized operations management with constraint-focused thinking.",
+  "principles": [
+    {
+      "name": "Theory of Constraints",
+      "description": "Every system has exactly one constraint limiting throughput. Optimizing non-constraints wastes resources. Find the bottleneck, exploit it, subordinate everything else to it, then elevate it.",
+      "domain_tags": ["operations", "optimization", "bottlenecks", "throughput"],
+      "falsification": "When multiple constraints interact such that focusing on one shifts the bottleneck unpredictably"
+    },
+    {
+      "name": "Local optima are global pessima",
+      "description": "Optimizing each part separately sub-optimizes the whole. Departments maximizing their own metrics often harm system throughput. Global optimization requires subordination of local goals.",
+      "domain_tags": ["optimization", "systems-thinking", "metrics", "silos"],
+      "falsification": "In loosely coupled systems where local optimization genuinely improves global performance"
+    },
+    {
+      "name": "The goal is to make money (throughput accounting)",
+      "description": "Measure throughput, inventory, and operating expense - not cost allocations. Throughput (revenue minus truly variable costs) is what matters. Cost-cutting without throughput increase is a race to zero.",
+      "domain_tags": ["accounting", "metrics", "throughput", "finance"],
+      "falsification": "When cost reduction genuinely improves profitability without sacrificing throughput"
+    }
+  ]
+}

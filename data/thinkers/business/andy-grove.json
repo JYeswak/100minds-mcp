@@ -1,0 +1,26 @@
+{
+  "id": "andy-grove",
+  "name": "Andy Grove",
+  "domain": "business",
+  "background": "Intel CEO who transformed it from memory to microprocessors. Hungarian refugee, engineer, management thinker. Wrote 'High Output Management' and 'Only the Paranoid Survive'.",
+  "principles": [
+    {
+      "name": "Only the paranoid survive",
+      "description": "Strategic inflection points can make or break companies overnight. Constant vigilance for 10X changes is required. By the time a threat is obvious, it's too late to respond.",
+      "domain_tags": ["strategy", "change", "competition", "risk"],
+      "falsification": "When paranoia causes over-reaction to false threats and premature abandonment of working strategies"
+    },
+    {
+      "name": "Let chaos reign, then rein in chaos",
+      "description": "In times of strategic uncertainty, encourage experimentation and debate. But once direction is clear, demand unified execution. Endless debate is as bad as premature commitment.",
+      "domain_tags": ["strategy", "execution", "leadership", "decision-making"],
+      "falsification": "When early commitment and consistent execution beat delayed but unified action"
+    },
+    {
+      "name": "A manager's output is the output of their organization",
+      "description": "You're not measured by your individual work but by your team's results. Leverage your time by improving team effectiveness. High-leverage activities multiply your impact.",
+      "domain_tags": ["management", "leverage", "productivity", "leadership"],
+      "falsification": "When individual contributor work genuinely has higher impact than management activities"
+    }
+  ]
+}

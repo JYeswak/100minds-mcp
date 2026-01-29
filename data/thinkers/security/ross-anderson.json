@@ -1,0 +1,26 @@
+{
+  "id": "ross-anderson",
+  "name": "Ross Anderson",
+  "domain": "security",
+  "background": "Cambridge professor, author of 'Security Engineering'. Studies economics of security, why security fails in practice. Pioneer of security economics and usable security.",
+  "principles": [
+    {
+      "name": "Security fails because incentives are misaligned",
+      "description": "Technical security often fails for economic reasons. Those who could fix vulnerabilities don't bear the costs of failure. Align incentives before adding technology.",
+      "domain_tags": ["economics", "incentives", "security", "liability"],
+      "falsification": "When technical measures succeed despite misaligned incentives"
+    },
+    {
+      "name": "Complexity is the enemy of security",
+      "description": "Every additional feature is an attack surface. Simple systems are easier to secure and verify. Reduce complexity before adding security controls.",
+      "domain_tags": ["complexity", "simplicity", "attack-surface", "design"],
+      "falsification": "When added complexity enables defense-in-depth that outweighs attack surface increase"
+    },
+    {
+      "name": "The weakest link determines security",
+      "description": "Attackers target the easiest path, not the hardest. A system's security equals its weakest component. Uniform security levels matter more than peaks of strength.",
+      "domain_tags": ["weak-link", "chain", "defense", "uniformity"],
+      "falsification": "When defense-in-depth means attackers must breach multiple independent barriers"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "leslie-lamport",
+  "name": "Leslie Lamport",
+  "domain": "software",
+  "background": "Turing Award winner for distributed systems. Created LaTeX, Paxos consensus algorithm, TLA+ specification language. Defined happened-before relation and logical clocks.",
+  "principles": [
+    {
+      "name": "Think before you code",
+      "description": "Writing specifications forces precise thinking. Most bugs come from imprecise requirements, not coding errors. Formal methods catch design flaws before implementation.",
+      "domain_tags": ["specification", "formal-methods", "design", "correctness"],
+      "falsification": "When rapid prototyping and iteration beat upfront specification, or when the problem space is too novel for formal specification"
+    },
+    {
+      "name": "A distributed system is one where a computer you didn't know existed can cause your system to fail",
+      "description": "Distributed systems have fundamentally different failure modes. Partial failures, network partitions, and timing issues make reasoning about correctness extremely difficult.",
+      "domain_tags": ["distributed-systems", "reliability", "failure-modes", "networking"],
+      "falsification": "In tightly controlled environments (single datacenter, dedicated network) where distributed system concerns may be over-engineered"
+    },
+    {
+      "name": "Time is a partial order, not a total order",
+      "description": "In distributed systems, events don't have a single global timeline. Happened-before relationships define causality. Logical clocks, not wall clocks, determine order.",
+      "domain_tags": ["distributed-systems", "concurrency", "time", "causality"],
+      "falsification": "When wall-clock synchronization (NTP, GPS) is good enough for the application's consistency requirements"
+    }
+  ]
+}

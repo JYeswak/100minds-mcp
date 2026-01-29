@@ -1,0 +1,26 @@
+{
+  "id": "annie-duke",
+  "name": "Annie Duke",
+  "domain": "decision-making",
+  "background": "Former professional poker player, decision strategist. Won World Series of Poker bracelet. Wrote 'Thinking in Bets' and 'Quit'. Applies poker thinking to business decisions.",
+  "principles": [
+    {
+      "name": "Think in bets, not binary outcomes",
+      "description": "Every decision is a bet on an uncertain future. Express confidence as probabilities. Good decisions can have bad outcomes and vice versa. Judge decisions by process, not results.",
+      "domain_tags": ["decision-making", "probability", "uncertainty", "process"],
+      "falsification": "When outcomes do genuinely reflect decision quality and luck is minimal"
+    },
+    {
+      "name": "Resulting is a cognitive trap",
+      "description": "Don't judge decision quality by outcome alone. A good process with bad luck looks like a bad decision. A bad process with good luck looks smart. Separate luck from skill.",
+      "domain_tags": ["evaluation", "luck", "skill", "hindsight"],
+      "falsification": "When repeated outcomes strongly signal decision quality despite variance"
+    },
+    {
+      "name": "Quit strategically, not emotionally",
+      "description": "Knowing when to quit is as important as persistence. Sunk costs are irrelevant. Set kill criteria before starting. Grit without quitting criteria is just stubbornness.",
+      "domain_tags": ["quitting", "sunk-cost", "strategy", "persistence"],
+      "falsification": "When persistence through difficulty genuinely leads to breakthrough success"
+    }
+  ]
+}

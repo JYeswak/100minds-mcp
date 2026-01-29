@@ -1,0 +1,26 @@
+{
+  "id": "james-gosling",
+  "name": "James Gosling",
+  "domain": "software",
+  "background": "Creator of Java programming language. Designed with 'write once, run anywhere' portability. Pioneered garbage collection in mainstream languages and bytecode virtual machines.",
+  "principles": [
+    {
+      "name": "Write once, run anywhere",
+      "description": "Platform independence reduces friction. Abstract away environment differences. The same code should work regardless of underlying hardware or OS.",
+      "domain_tags": ["portability", "abstraction", "jvm", "cross-platform"],
+      "falsification": "When platform-specific optimization is essential, or when abstraction layers add unacceptable overhead"
+    },
+    {
+      "name": "Memory safety through managed runtime",
+      "description": "Garbage collection eliminates entire classes of bugs (memory leaks, use-after-free, double-free). Trade some performance for safety and developer productivity.",
+      "domain_tags": ["memory-safety", "gc", "reliability", "productivity"],
+      "falsification": "In real-time systems where GC pauses are unacceptable, or in resource-constrained environments"
+    },
+    {
+      "name": "Simplicity over cleverness",
+      "description": "Java deliberately omits 'powerful' features (operator overloading, multiple inheritance) that cause confusion. Readable, obvious code beats clever code.",
+      "domain_tags": ["simplicity", "readability", "language-design", "maintainability"],
+      "falsification": "When expressiveness genuinely improves code clarity, or when missing features force verbose workarounds"
+    }
+  ]
+}

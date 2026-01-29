@@ -1,0 +1,26 @@
+{
+  "id": "philip-tetlock",
+  "name": "Philip Tetlock",
+  "domain": "decision-making",
+  "background": "Political psychologist at University of Pennsylvania. Ran forecasting tournaments proving 'superforecasters' beat experts. Wrote 'Expert Political Judgment' and 'Superforecasting'.",
+  "principles": [
+    {
+      "name": "Foxes beat hedgehogs at forecasting",
+      "description": "Thinkers who know many things (foxes) forecast better than those who know one big thing (hedgehogs). Eclecticism and humility beat ideological certainty. Aggregating perspectives improves accuracy.",
+      "domain_tags": ["forecasting", "expertise", "humility", "diversity"],
+      "falsification": "In specialized domains where deep expertise genuinely outperforms breadth"
+    },
+    {
+      "name": "Calibration matters more than resolution",
+      "description": "Being right about what you're uncertain about matters more than bold predictions. Say '70% confident' and be right 70% of the time. Overconfidence is the most common forecasting flaw.",
+      "domain_tags": ["calibration", "confidence", "forecasting", "uncertainty"],
+      "falsification": "When stakes require decisive action and hedged probabilities cause paralysis"
+    },
+    {
+      "name": "Update incrementally on new evidence",
+      "description": "Superforecasters constantly revise beliefs with new information. Small, frequent updates beat infrequent large revisions. Track record and learn from misses. Beliefs are hypotheses to be tested.",
+      "domain_tags": ["updating", "evidence", "learning", "bayesian"],
+      "falsification": "When too-frequent updating causes thrashing and prevents coherent strategy"
+    }
+  ]
+}

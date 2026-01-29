@@ -1,0 +1,26 @@
+{
+  "id": "paul-feyerabend",
+  "name": "Paul Feyerabend",
+  "domain": "philosophy",
+  "background": "Philosopher of science, epistemological anarchist. Wrote 'Against Method'. Argued there is no universal scientific method - successful science violates every proposed methodological rule.",
+  "principles": [
+    {
+      "name": "Anything goes (methodological anarchism)",
+      "description": "There is no single scientific method. Every methodological rule has been productively violated. Progress comes from proliferation of theories, not adherence to method.",
+      "domain_tags": ["methodology", "innovation", "pluralism", "creativity"],
+      "falsification": "When methodological discipline prevents wasted effort and ensures reproducibility"
+    },
+    {
+      "name": "Proliferate theories, don't eliminate them",
+      "description": "Maintain multiple competing theories even when one dominates. Alternative perspectives reveal hidden assumptions in the dominant view. Theoretical pluralism beats theoretical monopoly.",
+      "domain_tags": ["diversity", "alternatives", "theory", "competition"],
+      "falsification": "When theoretical consensus enables coordination and cumulative progress"
+    },
+    {
+      "name": "Science is not special",
+      "description": "Science has no privileged epistemological status over other ways of knowing. Its authority comes from politics and success, not from special methods. Beware scientism.",
+      "domain_tags": ["epistemology", "authority", "pluralism", "skepticism"],
+      "falsification": "When scientific methods demonstrably produce more reliable knowledge than alternatives"
+    }
+  ]
+}

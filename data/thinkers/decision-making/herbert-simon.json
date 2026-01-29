@@ -1,0 +1,26 @@
+{
+  "id": "herbert-simon",
+  "name": "Herbert Simon",
+  "domain": "decision-making",
+  "background": "Nobel laureate in economics, polymath. Created bounded rationality and satisficing. Pioneer of AI, cognitive science, and organizational behavior. One of most influential social scientists.",
+  "principles": [
+    {
+      "name": "Bounded rationality",
+      "description": "Human rationality is limited by information, cognitive capacity, and time. We can't optimize - we satisfice. Decision theory must account for realistic cognitive constraints, not assume perfect rationality.",
+      "domain_tags": ["rationality", "cognition", "constraints", "decision-making"],
+      "falsification": "When computational tools genuinely enable optimal decisions within practical time limits"
+    },
+    {
+      "name": "Satisficing beats optimizing",
+      "description": "Search for 'good enough' solutions, not optimal ones. Set aspiration levels and accept first option that meets them. Optimization is often impossible and unnecessary.",
+      "domain_tags": ["satisficing", "optimization", "efficiency", "pragmatism"],
+      "falsification": "When optimal solutions are computationally tractable and stakes justify the effort"
+    },
+    {
+      "name": "Administrative behavior shapes decisions",
+      "description": "Organizational structure, routines, and information channels determine decisions more than individual rationality. Change the organization to change the decisions. Structure is strategy.",
+      "domain_tags": ["organizations", "structure", "administration", "behavior"],
+      "falsification": "When individual agency and leadership genuinely override organizational constraints"
+    }
+  ]
+}

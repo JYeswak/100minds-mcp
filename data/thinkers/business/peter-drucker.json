@@ -1,0 +1,26 @@
+{
+  "id": "peter-drucker",
+  "name": "Peter Drucker",
+  "domain": "business",
+  "background": "Father of modern management. Coined 'knowledge worker'. Consulted for GE, IBM, Intel. Emphasized management as a liberal art combining ethics, economics, psychology, and philosophy.",
+  "principles": [
+    {
+      "name": "Management is doing things right; leadership is doing the right things",
+      "description": "Efficiency and effectiveness are different. Optimize for outcomes, not activity. The most efficient pursuit of the wrong goal is still failure.",
+      "domain_tags": ["management", "leadership", "effectiveness", "strategy"],
+      "falsification": "When execution speed is the constraint and the goal is clearly correct"
+    },
+    {
+      "name": "What gets measured gets managed",
+      "description": "Metrics drive behavior. Choose measurements carefully because they become de facto goals. Bad metrics produce bad outcomes even with good intentions.",
+      "domain_tags": ["metrics", "incentives", "management", "goals"],
+      "falsification": "When important outcomes are unmeasurable and measurement distorts behavior (Goodhart's Law)"
+    },
+    {
+      "name": "The best way to predict the future is to create it",
+      "description": "Don't forecast - act. Entrepreneurs shape markets, they don't just serve them. Proactive strategy beats reactive adaptation.",
+      "domain_tags": ["strategy", "entrepreneurship", "innovation", "agency"],
+      "falsification": "When environmental forces genuinely constrain options and adaptation is the only viable strategy"
+    }
+  ]
+}
