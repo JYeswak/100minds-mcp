@@ -562,6 +562,7 @@ pub fn init_thompson_schema(conn: &Connection) -> Result<()> {
             principle_id TEXT PRIMARY KEY REFERENCES principles(id),
             alpha REAL NOT NULL DEFAULT 1.0,
             beta REAL NOT NULL DEFAULT 1.0,
+            pulls INTEGER NOT NULL DEFAULT 0,
             updated_at TEXT DEFAULT CURRENT_TIMESTAMP
         );
 
