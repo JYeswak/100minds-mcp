@@ -46,7 +46,7 @@ walkdir = "2"
 glob = "0.3"
 
 # Evaluation framework
-statrs = "0.17"                  # Statistical distributions (Beta for Thompson Sampling)
+statrs = "0.18"                  # Statistical distributions (Beta for Thompson Sampling)
 reqwest = { version = "0.12", features = ["json"] }  # HTTP client for LLM API calls
 
 # Semantic embeddings (100x improvement)
