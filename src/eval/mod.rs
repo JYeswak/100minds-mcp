@@ -19,7 +19,9 @@ pub mod data_driven;
 pub mod judge;
 pub mod llm_judge;
 pub mod monte_carlo;
+pub mod neural_training;
 pub mod scenarios;
+pub mod swarm_posterior;  // V4: Multi-agent shared fine-tuning
 pub mod synthetic;
 pub mod thompson;
 

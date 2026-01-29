@@ -62,6 +62,7 @@ pub mod db;
 pub mod embeddings;
 pub mod eval;
 pub mod mcp;
+pub mod neural_posterior;
 pub mod outcome;
 pub mod prd;
 pub mod provenance;
@@ -98,3 +99,6 @@ pub use templates::{
 pub use convenience::ZestyEngine; // Full mode with provenance
 pub use convenience::{get_counsel, get_learning_summary, record_bead_completion}; // Simple mode
 pub use convenience::{CounselPrinciple, LearningSummary, PrincipleProgress, SimpleCounsel};
+
+// Neural posterior (2026 SOTA principle selector)
+pub use neural_posterior::{NeuralPosterior, NeuralVocab, PosteriorResult, ScoringContext};

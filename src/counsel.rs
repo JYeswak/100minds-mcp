@@ -38,12 +38,13 @@ impl<'a> CounselEngine<'a> {
         // 4. Create provenance for this decision
         let provenance_info = self.create_provenance(request, &positions, &challenge)?;
 
-        // 5. Build the response
+        // 5. Build the response (pass through explicit decision_id if provided)
         let mut response = CounselResponse::new(
             request.question.clone(),
             positions,
             challenge,
             provenance_info,
+            request.decision_id.clone(),
         );
 
         // 6. Detect urgency for swarm integration
@@ -1704,6 +1705,7 @@ mod tests {
         let request = CounselRequest {
             question: "Should we use microservices?".to_string(),
             context: CounselContext::default(),
+            decision_id: None,
         };
         let positions: Vec<CounselPosition> = vec![];
 
@@ -1723,6 +1725,7 @@ mod tests {
         let request = CounselRequest {
             question: "Should we refactor the codebase?".to_string(),
             context: CounselContext::default(),
+            decision_id: None,
         };
         let positions: Vec<CounselPosition> = vec![];
 
@@ -1746,6 +1749,7 @@ mod tests {
                 constraints: vec!["Budget: $100k".to_string()],
                 ..Default::default()
             },
+            decision_id: None,
         };
         let positions: Vec<CounselPosition> = vec![];
 
@@ -1784,6 +1788,7 @@ mod tests {
         let request = CounselRequest {
             question: "There's a critical security vulnerability in production".to_string(),
             context: CounselContext::default(),
+            decision_id: None,
         };
         let positions = vec![mock_position_with_confidence(Stance::For, 0.8)];
 
@@ -1800,6 +1805,7 @@ mod tests {
         let request = CounselRequest {
             question: "Eventually we should maybe consider exploring this for phase 2".to_string(),
             context: CounselContext::default(),
+            decision_id: None,
         };
         let positions = vec![mock_position_with_confidence(Stance::For, 0.8)];
 
@@ -1816,6 +1822,7 @@ mod tests {
         let request = CounselRequest {
             question: "Is there a security issue here?".to_string(),
             context: CounselContext::default(),
+            decision_id: None,
         };
         // Low confidence positions on a security question
         let positions = vec![mock_position_with_confidence(Stance::For, 0.3)];
@@ -1833,6 +1840,7 @@ mod tests {
         let request = CounselRequest {
             question: "Should we use approach A or B?".to_string(),
             context: CounselContext::default(),
+            decision_id: None,
         };
         // Similar confidence FOR and AGAINST = contentious
         let positions = vec![
@@ -1853,6 +1861,7 @@ mod tests {
         let request = CounselRequest {
             question: "What naming convention should we use?".to_string(),
             context: CounselContext::default(),
+            decision_id: None,
         };
         let positions = vec![mock_position_with_confidence(Stance::For, 0.8)];
 
@@ -1873,6 +1882,7 @@ mod tests {
         let request = CounselRequest {
             question: "Test".to_string(),
             context: CounselContext::default(),
+            decision_id: None,
         };
         let principle = db::PrincipleMatch {
             id: "test".to_string(),
@@ -1903,6 +1913,7 @@ mod tests {
         let request = CounselRequest {
             question: "Test".to_string(),
             context: CounselContext::default(),
+            decision_id: None,
         };
         let principle = db::PrincipleMatch {
             id: "test".to_string(),

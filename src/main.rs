@@ -585,6 +585,7 @@ fn run_oneshot(question: &str) -> Result<()> {
     let request = CounselRequest {
         question: question.to_string(),
         context: CounselContext::default(),
+        decision_id: None,  // Auto-generate UUID
     };
 
     match engine.counsel(&request) {
@@ -617,6 +618,7 @@ fn run_counsel_cmd(question: &str, domain: Option<&str>, json_output: bool) -> R
             domain: domain.map(String::from),
             ..Default::default()
         },
+        decision_id: None,  // Auto-generate UUID
     };
 
     match engine.counsel(&request) {
@@ -790,6 +792,9 @@ fn handle_counsel_tool(
     let question = args.get("question").and_then(|q| q.as_str()).unwrap_or("");
     let domain = args.get("domain").and_then(|d| d.as_str());
 
+    // Allow client to specify decision_id (e.g., bead ID for swarm tracking)
+    let decision_id = args.get("decision_id").and_then(|d| d.as_str()).map(String::from);
+
     let engine = CounselEngine::new(conn, provenance);
     let request = CounselRequest {
         question: question.to_string(),
@@ -797,6 +802,7 @@ fn handle_counsel_tool(
             domain: domain.map(String::from),
             ..Default::default()
         },
+        decision_id,  // Pass through explicit ID or None for auto-generate
     };
 
     let response = engine.counsel(&request)?;
@@ -882,6 +888,7 @@ fn handle_counterfactual_sim_tool(
             domain: domain.map(String::from),
             ..Default::default()
         },
+        decision_id: None,  // Counterfactual doesn't need ID linkage
     };
 
     let response = engine.counterfactual_counsel(&request, &excluded_principles)?;
@@ -1053,6 +1060,7 @@ async fn run_cli_mode(conn: &rusqlite::Connection, provenance: &Provenance) -> R
             let request = CounselRequest {
                 question: line.to_string(),
                 context: CounselContext::default(),
+                decision_id: None,  // Interactive mode - auto-generate UUID
             };
 
             match engine.counsel(&request) {
@@ -1491,6 +1499,7 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
                         domain: Some(q.domain.clone()),
                         ..Default::default()
                     },
+                    decision_id: None,  // Eval mode - auto-generate UUID
                 };
 
                 if let Ok(response) = engine.counsel(&request) {
@@ -1539,6 +1548,165 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             }
         }
 
+        "neural-training" | "training" => {
+            // Generate training data for neural bandits
+            let count = args.first().and_then(|s| s.parse().ok()).unwrap_or(10_000);
+            let output_format = args.get(1).map(|s| s.as_str()).unwrap_or("jsonl");
+
+            println!(
+                "🧠 Generating neural bandit training data ({} questions)...\n",
+                count
+            );
+
+            let config = eval::neural_training::TrainingConfig {
+                num_questions: count,
+                seed: std::time::SystemTime::now()
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map(|d| d.as_secs())
+                    .unwrap_or(42),
+                ..Default::default()
+            };
+
+            let batch = eval::neural_training::generate_training_data(&conn, &provenance, &config)?;
+            eval::neural_training::print_batch_summary(&batch);
+
+            // Save training data
+            let base_path = data_dir.join("training_data");
+            std::fs::create_dir_all(&base_path)?;
+
+            match output_format {
+                "csv" => {
+                    let csv_path = base_path.join("neural_training.csv");
+                    eval::neural_training::export_to_csv(&batch, &csv_path)?;
+                    println!("\n📄 CSV saved to: {:?}", csv_path);
+                }
+                "json" => {
+                    let json_path = base_path.join("neural_training.json");
+                    let json = serde_json::to_string_pretty(&batch)?;
+                    std::fs::write(&json_path, json)?;
+                    println!("\n📄 JSON saved to: {:?}", json_path);
+                }
+                _ => {
+                    // Default: JSONL (one example per line, best for streaming)
+                    let jsonl_path = base_path.join("neural_training.jsonl");
+                    eval::neural_training::export_to_jsonl(&batch, &jsonl_path)?;
+                    println!("\n📄 JSONL saved to: {:?}", jsonl_path);
+                }
+            }
+
+            println!("\n💡 Next steps:");
+            println!("   1. Train neural posterior: python scripts/train_neural_bandit.py");
+            println!("   2. Deploy: 100minds --benchmark neural-score <question>");
+        }
+
+        "neural-score" => {
+            // Test neural posterior scoring on a question
+            use minds_mcp::neural_posterior::{NeuralPosterior, ScoringContext};
+
+            let question = args.join(" ");
+            if question.is_empty() {
+                println!("Usage: 100minds --benchmark neural-score <question>");
+                println!("\nExample: 100minds --benchmark neural-score Should we rewrite our monolith?");
+                return Ok(());
+            }
+
+            // Load model from project models/ directory or data dir
+            let model_dir = std::env::current_dir()?.join("models");
+            let model_dir = if model_dir.join("neural_bandit.onnx").exists() {
+                model_dir
+            } else {
+                data_dir.join("models")
+            };
+
+            if !model_dir.join("neural_bandit.onnx").exists() {
+                println!("❌ Neural model not found at {:?}", model_dir);
+                println!("\n💡 Train the model first:");
+                println!("   1. 100minds --benchmark neural-training 10000");
+                println!("   2. python scripts/train_neural_bandit.py --data <path> --export models/neural_bandit.onnx");
+                return Ok(());
+            }
+
+            println!("🧠 Loading neural posterior from {:?}...", model_dir);
+            let mut neural = NeuralPosterior::new(&model_dir)?;
+
+            // Get counsel response to get candidate principles
+            let engine = CounselEngine::new(&conn, &provenance);
+            let request = CounselRequest {
+                question: question.clone(),
+                context: CounselContext::default(),
+                decision_id: None,  // Neural inference - auto-generate UUID
+            };
+            let response = engine.counsel(&request)?;
+
+            // Detect domain from question (simple heuristic)
+            let domain = if question.to_lowercase().contains("microservice")
+                || question.to_lowercase().contains("monolith")
+                || question.to_lowercase().contains("architect") {
+                "architecture"
+            } else if question.to_lowercase().contains("scale")
+                || question.to_lowercase().contains("traffic") {
+                "scaling"
+            } else if question.to_lowercase().contains("test") {
+                "testing"
+            } else if question.to_lowercase().contains("team")
+                || question.to_lowercase().contains("hire") {
+                "management"
+            } else {
+                "architecture" // default
+            };
+
+            // Build scoring context
+            let ctx = ScoringContext {
+                domain: domain.to_string(),
+                stakeholder: "Tech Lead".to_string(),
+                company_stage: "growth".to_string(),
+                urgency: "normal".to_string(),
+                difficulty: 3,
+                position_rank: 0,
+                confidence: 0.5,
+                domain_match: true,
+                total_principles_selected: response.positions.len(),
+                is_for_position: true,
+            };
+
+            println!("\n┌─────────────────────────────────────────────────────────────┐");
+            println!("│ 🧠 NEURAL POSTERIOR SCORING                                 │");
+            println!("└─────────────────────────────────────────────────────────────┘\n");
+            println!("Question: {}", question);
+            println!("Domain: {}", domain);
+            println!();
+
+            // Score each principle
+            println!("PRINCIPLE RANKINGS (by UCB score):\n");
+            let mut all_results = Vec::new();
+
+            for position in &response.positions {
+                for principle_id in &position.principles_cited {
+                    let result = neural.score(&ctx, principle_id, &position.thinker)?;
+                    all_results.push((position.thinker.clone(), result));
+                }
+            }
+
+            // Sort by UCB score
+            all_results.sort_by(|a, b| b.1.ucb_score.partial_cmp(&a.1.ucb_score).unwrap());
+
+            for (i, (thinker, result)) in all_results.iter().enumerate().take(10) {
+                let known = if neural.knows_principle(&result.principle_id) { "✓" } else { "?" };
+                println!(
+                    "{:2}. [{known}] {:.2} (p={:.2}, u={:.2}) - {} [{}]",
+                    i + 1,
+                    result.ucb_score,
+                    result.success_prob,
+                    result.uncertainty,
+                    result.principle_id,
+                    thinker
+                );
+            }
+
+            println!("\nLegend: [✓] known to model  [?] unknown (uses default embedding)");
+            println!("UCB = success_prob + exploration_weight * uncertainty");
+        }
+
         _ => {
             println!("Unknown benchmark command: {}", subcommand);
             println!("\nUsage: 100minds --benchmark <command>");
@@ -1547,6 +1715,8 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             println!("  monte-carlo [n]     Run n Monte Carlo simulations (default 1000)");
             println!("  coverage            Analyze thinker/principle coverage");
             println!("  synthetic [n] [out] Generate n synthetic questions");
+            println!("  neural-training [n] [format] Generate n training examples for neural bandits");
+            println!("  neural-score <q>    Score principles for a question using neural posterior");
             println!("  eval-synthetic [n]  Generate + evaluate synthetic questions");
             println!("  data-driven [n]     DATA-DRIVEN evaluation (no hardcoded expectations)");
             println!("  all                 Run full benchmark suite");

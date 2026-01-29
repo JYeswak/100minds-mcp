@@ -97,6 +97,10 @@ pub struct CounselRequest {
     pub question: String,
     #[serde(default)]
     pub context: CounselContext,
+    /// Optional explicit decision ID (for bead tracking)
+    /// If not provided, a UUID will be generated
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub decision_id: Option<String>,
 }
 
 /// Context for counsel request
@@ -257,11 +261,13 @@ pub struct SynthesizeResponse {
 
 impl CounselResponse {
     /// Create a new counsel response
+    /// If decision_id is provided, use it; otherwise generate a UUID
     pub fn new(
         question: String,
         positions: Vec<CounselPosition>,
         challenge: CounselPosition,
         provenance: ProvenanceInfo,
+        decision_id: Option<String>,
     ) -> Self {
         let summary = Self::generate_summary(&positions, &challenge);
 
@@ -288,8 +294,11 @@ impl CounselResponse {
             })
             .collect();
 
+        // Use provided decision_id or generate UUID
+        let resolved_id = decision_id.unwrap_or_else(|| Uuid::new_v4().to_string());
+
         Self {
-            decision_id: Uuid::new_v4().to_string(),
+            decision_id: resolved_id,
             question,
             positions,
             challenge,
@@ -422,6 +431,7 @@ mod tests {
             positions,
             challenge,
             mock_provenance(),
+            None,  // Auto-generate UUID
         );
 
         assert!(!response.decision_id.is_empty());
@@ -446,6 +456,7 @@ mod tests {
             positions,
             challenge,
             mock_provenance(),
+            None,  // Auto-generate UUID
         );
 
         assert!(response.principle_ids.contains(&"tdd".to_string()));
@@ -459,7 +470,7 @@ mod tests {
         let challenge = mock_position(Stance::Challenge, "Taleb", vec![]);
 
         let response =
-            CounselResponse::new("Test".to_string(), positions, challenge, mock_provenance());
+            CounselResponse::new("Test".to_string(), positions, challenge, mock_provenance(), None);
 
         assert!(!response.causal_hints.is_empty());
         assert!(response.causal_hints[0].contains("Kent Beck"));
@@ -477,7 +488,7 @@ mod tests {
         let challenge = mock_position(Stance::Challenge, "D", vec![]);
 
         let response =
-            CounselResponse::new("Test".to_string(), positions, challenge, mock_provenance());
+            CounselResponse::new("Test".to_string(), positions, challenge, mock_provenance(), None);
 
         assert!(response.summary.contains("2 position(s) FOR"));
         assert!(response.summary.contains("1 AGAINST"));

@@ -192,6 +192,7 @@ fn run_single_scenario(
             prefer_thinkers: vec![],
             depth: CounselDepth::Standard,
         },
+        decision_id: None,  // Auto-generate UUID (scenario eval)
     };
 
     // Get counsel
