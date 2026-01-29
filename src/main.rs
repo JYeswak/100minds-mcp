@@ -79,8 +79,33 @@ async fn main() -> Result<()> {
                 let query = args[2..].join(" ");
                 return run_hybrid_search(&query);
             }
+            "counsel" => {
+                // counsel <question> [--json] [--domain=X]
+                let json_output = args.iter().any(|a| a == "--json");
+                let domain = args.iter()
+                    .find(|a| a.starts_with("--domain="))
+                    .map(|a| a.strip_prefix("--domain=").unwrap().to_string());
+                let question: String = args[2..].iter()
+                    .filter(|a| !a.starts_with("--"))
+                    .cloned()
+                    .collect::<Vec<_>>()
+                    .join(" ");
+                return run_counsel_cmd(&question, domain.as_deref(), json_output);
+            }
+            "--serve" => {
+                // HTTP server mode for swarm integration
+                let port: u16 = args.iter()
+                    .find(|a| a.starts_with("--port="))
+                    .and_then(|a| a.strip_prefix("--port=").and_then(|p| p.parse().ok()))
+                    .unwrap_or(3100);
+                return run_http_server(port).await;
+            }
+            "--sync-posteriors" => {
+                // Output posteriors as JSON for swarm sync
+                return run_sync_posteriors();
+            }
             s if !s.starts_with("--") => {
-                // One-shot counsel
+                // One-shot counsel (legacy)
                 let question = args[1..].join(" ");
                 return run_oneshot(&question);
             }
@@ -502,6 +527,245 @@ fn run_oneshot(question: &str) -> Result<()> {
     }
 
     Ok(())
+}
+
+// ============================================================================
+// SWARM INTEGRATION CLI COMMANDS
+// ============================================================================
+
+/// Counsel command with JSON output support for swarm integration
+fn run_counsel_cmd(question: &str, domain: Option<&str>, json_output: bool) -> Result<()> {
+    use std::time::Instant;
+    let start = Instant::now();
+
+    let data_dir = get_data_dir()?;
+    let db_path = data_dir.join("wisdom.db");
+    let conn = db::init_db(&db_path)?;
+    let key_path = data_dir.join("agent.key");
+    let provenance = Provenance::init(&key_path)?;
+
+    let engine = CounselEngine::new(&conn, &provenance);
+    let request = CounselRequest {
+        question: question.to_string(),
+        context: CounselContext {
+            domain: domain.map(String::from),
+            ..Default::default()
+        },
+    };
+
+    match engine.counsel(&request) {
+        Ok(response) => {
+            if json_output {
+                // JSON output for swarm integration
+                println!("{}", serde_json::to_string_pretty(&response)?);
+            } else {
+                print_decision_tree(&response, start.elapsed());
+            }
+        }
+        Err(e) => {
+            if json_output {
+                let error = serde_json::json!({"error": e.to_string()});
+                println!("{}", serde_json::to_string_pretty(&error)?);
+            } else {
+                eprintln!("Error: {}", e);
+            }
+        }
+    }
+
+    Ok(())
+}
+
+/// Sync posteriors command for swarm integration
+fn run_sync_posteriors() -> Result<()> {
+    let data_dir = get_data_dir()?;
+    let db_path = data_dir.join("wisdom.db");
+    let conn = db::init_db(&db_path)?;
+
+    // Initialize Thompson schema
+    eval::thompson::init_thompson_schema(&conn)?;
+
+    let response = outcome::sync_posteriors(&conn, None, None)?;
+    println!("{}", serde_json::to_string_pretty(&response)?);
+
+    Ok(())
+}
+
+/// HTTP server mode for swarm integration
+async fn run_http_server(port: u16) -> Result<()> {
+    use std::net::TcpListener;
+
+    eprintln!("🚀 100minds MCP Server starting on port {}...", port);
+
+    let data_dir = get_data_dir()?;
+    let db_path = data_dir.join("wisdom.db");
+    let key_path = data_dir.join("agent.key");
+
+    let listener = TcpListener::bind(format!("127.0.0.1:{}", port))?;
+    eprintln!("✅ Listening on http://localhost:{}/mcp", port);
+
+    for stream in listener.incoming() {
+        let stream = stream?;
+        let db_path = db_path.clone();
+        let key_path = key_path.clone();
+
+        // Handle each connection
+        std::thread::spawn(move || {
+            if let Err(e) = handle_http_request(stream, &db_path, &key_path) {
+                eprintln!("Request error: {}", e);
+            }
+        });
+    }
+
+    Ok(())
+}
+
+fn handle_http_request(
+    mut stream: std::net::TcpStream,
+    db_path: &std::path::Path,
+    key_path: &std::path::Path,
+) -> Result<()> {
+    use std::io::{BufRead, BufReader, Write};
+
+    let mut reader = BufReader::new(&stream);
+    let mut request_line = String::new();
+    reader.read_line(&mut request_line)?;
+
+    // Read headers
+    let mut content_length: usize = 0;
+    loop {
+        let mut header = String::new();
+        reader.read_line(&mut header)?;
+        if header.trim().is_empty() {
+            break;
+        }
+        if header.to_lowercase().starts_with("content-length:") {
+            content_length = header.split(':').nth(1)
+                .and_then(|s| s.trim().parse().ok())
+                .unwrap_or(0);
+        }
+    }
+
+    // Read body
+    let mut body = vec![0u8; content_length];
+    if content_length > 0 {
+        std::io::Read::read_exact(&mut reader, &mut body)?;
+    }
+
+    // Parse JSON-RPC request
+    let body_str = String::from_utf8_lossy(&body);
+    let json_req: serde_json::Value = serde_json::from_str(&body_str)
+        .unwrap_or(serde_json::json!({}));
+
+    let method = json_req.get("method").and_then(|m| m.as_str()).unwrap_or("");
+    let params = json_req.get("params").cloned().unwrap_or(serde_json::json!({}));
+    let id = json_req.get("id").cloned().unwrap_or(serde_json::json!(1));
+
+    // Route to handler
+    let conn = db::init_db(db_path)?;
+    let provenance = Provenance::init(key_path)?;
+
+    let result = match method {
+        "counsel" | "tools/call" => {
+            let tool_name = params.get("name").and_then(|n| n.as_str()).unwrap_or("counsel");
+            match tool_name {
+                "counsel" => handle_counsel_tool(&conn, &provenance, &params),
+                "record_outcome" => handle_record_outcome_tool(&conn, &params),
+                "sync_posteriors" => handle_sync_posteriors_tool(&conn, &params),
+                _ => Ok(serde_json::json!({"error": format!("Unknown tool: {}", tool_name)})),
+            }
+        }
+        _ => Ok(serde_json::json!({"error": format!("Unknown method: {}", method)})),
+    };
+
+    let response_body = match result {
+        Ok(r) => serde_json::json!({
+            "jsonrpc": "2.0",
+            "id": id,
+            "result": r
+        }),
+        Err(e) => serde_json::json!({
+            "jsonrpc": "2.0",
+            "id": id,
+            "error": {"code": -32000, "message": e.to_string()}
+        }),
+    };
+
+    let response_str = serde_json::to_string(&response_body)?;
+    let response = format!(
+        "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nAccess-Control-Allow-Origin: *\r\n\r\n{}",
+        response_str.len(),
+        response_str
+    );
+
+    stream.write_all(response.as_bytes())?;
+    stream.flush()?;
+
+    Ok(())
+}
+
+fn handle_counsel_tool(
+    conn: &rusqlite::Connection,
+    provenance: &Provenance,
+    params: &serde_json::Value,
+) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let question = args.get("question").and_then(|q| q.as_str()).unwrap_or("");
+    let domain = args.get("domain").and_then(|d| d.as_str());
+
+    let engine = CounselEngine::new(conn, provenance);
+    let request = CounselRequest {
+        question: question.to_string(),
+        context: CounselContext {
+            domain: domain.map(String::from),
+            ..Default::default()
+        },
+    };
+
+    let response = engine.counsel(&request)?;
+    Ok(serde_json::to_value(&response)?)
+}
+
+fn handle_record_outcome_tool(
+    conn: &rusqlite::Connection,
+    params: &serde_json::Value,
+) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let decision_id = args.get("decision_id").and_then(|d| d.as_str()).unwrap_or("");
+    let success = args.get("success").and_then(|s| s.as_bool()).unwrap_or(false);
+    let notes = args.get("notes").and_then(|n| n.as_str());
+    let principle_ids: Vec<String> = args.get("principle_ids")
+        .and_then(|p| p.as_array())
+        .map(|arr| arr.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+        .unwrap_or_default();
+    let domain = args.get("domain").and_then(|d| d.as_str());
+    let confidence_score = args.get("confidence_score").and_then(|c| c.as_f64());
+    let failure_stage = args.get("failure_stage").and_then(|f| f.as_str());
+
+    let request = RecordOutcomeRequest {
+        decision_id: decision_id.to_string(),
+        success,
+        notes: notes.map(String::from),
+        principle_ids,
+        domain: domain.map(String::from),
+        confidence_score,
+        failure_stage: failure_stage.map(String::from),
+    };
+
+    let result = outcome::record_outcome_v2(conn, &request)?;
+    Ok(serde_json::to_value(&result)?)
+}
+
+fn handle_sync_posteriors_tool(
+    conn: &rusqlite::Connection,
+    params: &serde_json::Value,
+) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let since_ts = args.get("since_ts").and_then(|t| t.as_i64());
+    let domain = args.get("domain").and_then(|d| d.as_str());
+
+    eval::thompson::init_thompson_schema(conn)?;
+    let response = outcome::sync_posteriors(conn, since_ts, domain)?;
+    Ok(serde_json::to_value(&response)?)
 }
 
 /// Print as a decision tree with reasoning chains
