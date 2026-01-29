@@ -166,7 +166,7 @@ fn import_directory(conn: &Connection, dir: &Path) -> Result<(usize, usize)> {
         })
     {
         let path = entry.path();
-        match import_canonical_thinker(&conn, path) {
+        match import_canonical_thinker(conn, path) {
             Ok((t, p)) => {
                 thinkers += t;
                 principles += p;
