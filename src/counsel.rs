@@ -1120,10 +1120,405 @@ impl<'a> CounselEngine<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::db;
+    use crate::provenance::Provenance;
+    use rusqlite::Connection;
+    use tempfile::tempdir;
+
+    fn setup_test_db() -> (Connection, tempfile::TempDir) {
+        let dir = tempdir().unwrap();
+        let db_path = dir.path().join("test.db");
+        let conn = db::init_db(&db_path).unwrap();
+        (conn, dir)
+    }
+
+    fn setup_provenance() -> (Provenance, tempfile::TempDir) {
+        let dir = tempdir().unwrap();
+        let key_path = dir.path().join("test.key");
+        let provenance = Provenance::init(&key_path).unwrap();
+        (provenance, dir)
+    }
+
+    // =========================================================================
+    // detect_domains tests
+    // =========================================================================
 
     #[test]
-    fn test_find_missing_considerations() {
-        // This would need a full engine setup for proper testing
-        // For now, just verify the logic compiles
+    fn test_detect_domains_entrepreneurship() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let domains = engine.detect_domains("How do we build a product customers will buy?");
+        assert!(domains.contains(&"entrepreneurship".to_string()));
+    }
+
+    #[test]
+    fn test_detect_domains_architecture() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let domains = engine.detect_domains("Should we use microservices or a monolith?");
+        assert!(domains.contains(&"software-architecture".to_string()));
+    }
+
+    #[test]
+    fn test_detect_domains_systems() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let domains = engine.detect_domains("How do we scale the system for more traffic?");
+        assert!(domains.contains(&"systems-thinking".to_string()));
+    }
+
+    #[test]
+    fn test_detect_domains_ai() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let domains = engine.detect_domains("Should we train our own AI model or use GPT?");
+        assert!(domains.contains(&"ai-ml".to_string()));
+    }
+
+    #[test]
+    fn test_detect_domains_testing() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let domains = engine.detect_domains("Should we write tests before or after code?");
+        assert!(domains.contains(&"software-practices".to_string()));
+    }
+
+    #[test]
+    fn test_detect_domains_default() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        // Random question should default to entrepreneurship
+        let domains = engine.detect_domains("What should I have for lunch?");
+        assert!(domains.contains(&"entrepreneurship".to_string()));
+    }
+
+    // =========================================================================
+    // expand_query_keywords tests
+    // =========================================================================
+
+    #[test]
+    fn test_expand_query_perf_keywords() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let expanded = engine.expand_query_keywords("Should we add caching?");
+        assert!(expanded.contains("YAGNI"), "Should expand with YAGNI");
+        assert!(expanded.contains("premature"), "Should expand with premature optimization");
+    }
+
+    #[test]
+    fn test_expand_query_rewrite_keywords() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let expanded = engine.expand_query_keywords("Should we rewrite the legacy system?");
+        assert!(expanded.contains("strangler"), "Should expand with strangler");
+        assert!(expanded.contains("incremental"), "Should expand with incremental");
+    }
+
+    #[test]
+    fn test_expand_query_team_keywords() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let expanded = engine.expand_query_keywords("Should we hire more developers?");
+        assert!(expanded.contains("Brooks"), "Should expand with Brooks Law");
+    }
+
+    #[test]
+    fn test_expand_query_test_keywords() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let expanded = engine.expand_query_keywords("Should we add more tests?");
+        assert!(expanded.contains("TDD"), "Should expand with TDD");
+        assert!(expanded.contains("Kent Beck"), "Should expand with Kent Beck");
+    }
+
+    #[test]
+    fn test_expand_query_no_expansion() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let original = "What color should the button be?";
+        let expanded = engine.expand_query_keywords(original);
+        assert_eq!(expanded, original, "Non-matching query should not expand");
+    }
+
+    // =========================================================================
+    // generate_socratic_question tests
+    // =========================================================================
+
+    #[test]
+    fn test_socratic_80_20() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let question = engine.generate_socratic_question("80/20 Rule", "Focus on high-impact");
+        assert!(question.contains("ACTION"), "Should be actionable");
+        assert!(question.contains("ONE"), "Should focus on single action");
+    }
+
+    #[test]
+    fn test_socratic_fear() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let question = engine.generate_socratic_question("Fear Setting", "Confront your fears");
+        assert!(question.contains("worst case"), "Should address worst case");
+        assert!(question.contains("recover"), "Should include recovery");
+    }
+
+    #[test]
+    fn test_socratic_focus() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let question = engine.generate_socratic_question("Deep Focus", "Eliminate distraction");
+        assert!(question.contains("stop doing"), "Should prompt elimination");
+    }
+
+    #[test]
+    fn test_socratic_default() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let question = engine.generate_socratic_question("Unknown", "Some description");
+        assert!(question.contains("ACTION"), "Default should be actionable");
+        assert!(question.contains("60 seconds"), "Should prompt immediate action");
+    }
+
+    // =========================================================================
+    // find_missing_considerations tests
+    // =========================================================================
+
+    #[test]
+    fn test_missing_considerations_no_team() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let request = CounselRequest {
+            question: "Should we use microservices?".to_string(),
+            context: CounselContext::default(),
+        };
+        let positions: Vec<CounselPosition> = vec![];
+
+        let missing = engine.find_missing_considerations(&request, &positions);
+        assert!(missing.iter().any(|m| m.contains("team")), "Should flag missing team consideration");
+    }
+
+    #[test]
+    fn test_missing_considerations_no_time() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let request = CounselRequest {
+            question: "Should we refactor the codebase?".to_string(),
+            context: CounselContext::default(),
+        };
+        let positions: Vec<CounselPosition> = vec![];
+
+        let missing = engine.find_missing_considerations(&request, &positions);
+        assert!(missing.iter().any(|m| m.contains("timeline")), "Should flag missing timeline");
+    }
+
+    #[test]
+    fn test_missing_considerations_has_context() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let request = CounselRequest {
+            question: "Should we hire more people to meet the deadline with cost constraints?".to_string(),
+            context: CounselContext {
+                constraints: vec!["Budget: $100k".to_string()],
+                ..Default::default()
+            },
+        };
+        let positions: Vec<CounselPosition> = vec![];
+
+        let missing = engine.find_missing_considerations(&request, &positions);
+        // Should NOT flag team, time, or cost since they're mentioned
+        assert!(!missing.iter().any(|m| m.contains("timeline")));
+        assert!(!missing.iter().any(|m| m.contains("team")));
+        assert!(!missing.iter().any(|m| m.contains("resource")));
+        // But explicit constraints should not be flagged
+        assert!(!missing.iter().any(|m| m.contains("explicit constraints")));
+    }
+
+    // =========================================================================
+    // detect_urgency tests (using mock positions)
+    // =========================================================================
+
+    fn mock_position_with_confidence(stance: Stance, confidence: f64) -> CounselPosition {
+        CounselPosition {
+            thinker: "Test".to_string(),
+            thinker_id: "test".to_string(),
+            stance,
+            argument: "Test argument".to_string(),
+            principles_cited: vec![],
+            confidence,
+            falsifiable_if: None,
+        }
+    }
+
+    #[test]
+    fn test_detect_urgency_security_escalates() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        // Need 2+ escalate keywords OR low confidence to trigger escalation
+        let request = CounselRequest {
+            question: "There's a critical security vulnerability in production".to_string(),
+            context: CounselContext::default(),
+        };
+        let positions = vec![mock_position_with_confidence(Stance::For, 0.8)];
+
+        let urgency = engine.detect_urgency(&request, &positions);
+        assert_eq!(urgency, Some("escalate".to_string()));
+    }
+
+    #[test]
+    fn test_detect_urgency_future_defers() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let request = CounselRequest {
+            question: "Eventually we should maybe consider exploring this for phase 2".to_string(),
+            context: CounselContext::default(),
+        };
+        let positions = vec![mock_position_with_confidence(Stance::For, 0.8)];
+
+        let urgency = engine.detect_urgency(&request, &positions);
+        assert_eq!(urgency, Some("defer".to_string()));
+    }
+
+    #[test]
+    fn test_detect_urgency_low_confidence_escalates() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let request = CounselRequest {
+            question: "Is there a security issue here?".to_string(),
+            context: CounselContext::default(),
+        };
+        // Low confidence positions on a security question
+        let positions = vec![mock_position_with_confidence(Stance::For, 0.3)];
+
+        let urgency = engine.detect_urgency(&request, &positions);
+        assert_eq!(urgency, Some("escalate".to_string()));
+    }
+
+    #[test]
+    fn test_detect_urgency_contentious_escalates() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let request = CounselRequest {
+            question: "Should we use approach A or B?".to_string(),
+            context: CounselContext::default(),
+        };
+        // Similar confidence FOR and AGAINST = contentious
+        let positions = vec![
+            mock_position_with_confidence(Stance::For, 0.8),
+            mock_position_with_confidence(Stance::Against, 0.75),
+        ];
+
+        let urgency = engine.detect_urgency(&request, &positions);
+        assert_eq!(urgency, Some("escalate".to_string()));
+    }
+
+    #[test]
+    fn test_detect_urgency_normal_returns_none() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let request = CounselRequest {
+            question: "What naming convention should we use?".to_string(),
+            context: CounselContext::default(),
+        };
+        let positions = vec![mock_position_with_confidence(Stance::For, 0.8)];
+
+        let urgency = engine.detect_urgency(&request, &positions);
+        assert_eq!(urgency, None);
+    }
+
+    // =========================================================================
+    // build_falsification tests
+    // =========================================================================
+
+    #[test]
+    fn test_build_falsification_for_stance() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let request = CounselRequest {
+            question: "Test".to_string(),
+            context: CounselContext::default(),
+        };
+        let principle = db::PrincipleMatch {
+            id: "test".to_string(),
+            thinker_id: "thinker".to_string(),
+            name: "YAGNI".to_string(),
+            description: "You Ain't Gonna Need It".to_string(),
+            confidence: 0.8,
+            relevance_score: 1.0,
+        };
+
+        let falsification = engine.build_falsification(&request, &principle, Stance::For);
+        assert!(falsification.contains("wrong"), "FOR stance should mention being wrong");
+        assert!(falsification.contains("YAGNI"), "Should reference principle name");
+    }
+
+    #[test]
+    fn test_build_falsification_against_stance() {
+        let (conn, _db_dir) = setup_test_db();
+        let (provenance, _dir) = setup_provenance();
+        let engine = CounselEngine::new(&conn, &provenance);
+
+        let request = CounselRequest {
+            question: "Test".to_string(),
+            context: CounselContext::default(),
+        };
+        let principle = db::PrincipleMatch {
+            id: "test".to_string(),
+            thinker_id: "thinker".to_string(),
+            name: "Brooks Law".to_string(),
+            description: "Adding people late makes projects later".to_string(),
+            confidence: 0.8,
+            relevance_score: 1.0,
+        };
+
+        let falsification = engine.build_falsification(&request, &principle, Stance::Against);
+        assert!(falsification.contains("unnecessary"), "AGAINST stance should mention being unnecessary");
     }
 }
