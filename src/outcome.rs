@@ -89,7 +89,7 @@ pub fn record_outcome(
             .unwrap_or(0.5);
 
         // Calculate new confidence (clamped to 0.1-0.95)
-        let new_confidence = (current + delta).max(0.1).min(0.95);
+        let new_confidence = (current + delta).clamp(0.1, 0.95);
 
         // Update principle confidence
         conn.execute(

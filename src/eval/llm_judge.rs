@@ -366,7 +366,7 @@ fn parse_judgment(content: &str, question: &str) -> Result<Judgment> {
         if let Some(line) = content.lines().find(|l| l.starts_with(criterion)) {
             if let Some(score_str) = line.split(':').nth(1) {
                 if let Ok(score) = score_str.trim().parse::<u8>() {
-                    scores.insert(criterion.to_string(), score.min(5).max(1));
+                    scores.insert(criterion.to_string(), score.clamp(1, 5));
                 }
             }
         }

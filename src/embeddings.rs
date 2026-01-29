@@ -133,7 +133,7 @@ impl SemanticEngine {
         // Mean pooling over sequence dimension
         // shape is [1, seq_len, embedding_dim], data is flat f32 slice
         // Convert shape to slice via its dimensions
-        let shape_vec: Vec<i64> = shape.iter().map(|&d| d).collect();
+        let shape_vec: Vec<i64> = shape.iter().copied().collect();
 
         // Copy data before borrow ends (for borrow checker)
         let data_vec: Vec<f32> = data.to_vec();
@@ -162,10 +162,10 @@ impl SemanticEngine {
         // Data is in row-major order: [batch][seq][embed]
         // batch_size = 1, so we skip batch dimension
         for i in 0..seq_len {
-            for j in 0..embed_dim.min(EMBEDDING_DIM) {
+            for (j, res) in result.iter_mut().enumerate().take(embed_dim.min(EMBEDDING_DIM)) {
                 let idx = i * embed_dim + j;
                 if idx < data.len() {
-                    result[j] += data[idx];
+                    *res += data[idx];
                 }
             }
         }

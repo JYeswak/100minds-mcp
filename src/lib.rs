@@ -1,3 +1,7 @@
+// Clippy allows for cleaner code
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::field_reassign_with_default)]
+
 //! 100minds - Adversarial Wisdom Council
 //!
 //! An MCP server that provides AI agents with decision intelligence

@@ -1067,7 +1067,7 @@ impl<'a> CounselEngine<'a> {
                 let explore_end = 20.min(scored.len());
                 let explore_range = explore_start..explore_end;
 
-                if explore_range.len() > 0 {
+                if !explore_range.is_empty() {
                     for _ in 0..10 {
                         // Try up to 10 times to find unused thinker
                         let idx = rng.gen_range(explore_range.clone());
@@ -1313,11 +1313,10 @@ impl<'a> CounselEngine<'a> {
         let missing_considerations = self.find_missing_considerations(request, positions);
 
         let argument = if missing_considerations.is_empty() {
-            format!(
-                "The positions above assume your question is well-formed. \
+            "The positions above assume your question is well-formed. \
                 Have you considered: What problem are you actually solving? \
                 What would 'success' look like? Who else should you consult?"
-            )
+                .to_string()
         } else {
             format!(
                 "Missing considerations: {}. \

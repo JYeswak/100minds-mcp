@@ -457,7 +457,7 @@ pub fn sample_contextual_arm(conn: &Connection, principle_id: &str, domain: &str
         .subsec_nanos();
     let random_factor = ((seed % 1000) as f64 / 1000.0 - 0.5) * 2.0; // [-1, 1]
 
-    Ok((mean + random_factor * std_dev).max(0.0).min(1.0))
+    Ok((mean + random_factor * std_dev).clamp(0.0, 1.0))
 }
 
 /// Record a hard negative (principle that failed for a question)

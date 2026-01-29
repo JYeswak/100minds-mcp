@@ -87,7 +87,7 @@ pub fn load_all_scenarios(dir: &Path) -> Result<Vec<ScenarioCase>> {
         for entry in std::fs::read_dir(dir)? {
             let entry = entry?;
             let path = entry.path();
-            if path.extension().map_or(false, |e| e == "json") {
+            if path.extension().is_some_and(|e| e == "json") {
                 match load_scenarios(&path) {
                     Ok(scenarios) => all_scenarios.extend(scenarios),
                     Err(e) => eprintln!("Warning: Failed to load {:?}: {}", path, e),

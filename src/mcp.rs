@@ -709,7 +709,7 @@ pub fn validate_prd(_conn: &Connection, prd_json: &str) -> Result<PrdValidation>
     }
 
     // Clamp score
-    score = score.max(0.0).min(100.0);
+    score = score.clamp(0.0, 100.0);
 
     let valid = score >= 70.0 && !warnings.iter().any(|w| w.severity == "error");
 

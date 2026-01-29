@@ -160,8 +160,8 @@ fn run_analyze_prd(prd_path: &str, output_path: Option<&str>) -> Result<()> {
         "⚠️ NEEDS WORK"
     };
     println!(
-        "Score: [{}{score_bar}{empty_bar}] {:.0}/100  {}",
-        "", metadata.validation_score, status
+        "Score: [{score_bar}{empty_bar}] {:.0}/100  {status}",
+        metadata.validation_score
     );
     println!();
 
@@ -268,8 +268,8 @@ fn run_validate_prd(prd_path: &str) -> Result<()> {
     };
 
     println!(
-        "Score: [{}{score_bar}{empty_bar}] {:.0}/100  {}",
-        "", result.score, status
+        "Score: [{score_bar}{empty_bar}] {:.0}/100  {status}",
+        result.score
     );
     println!();
 
@@ -987,11 +987,9 @@ fn wrap_lines(s: &str, width: usize) -> Vec<String> {
     let mut current = String::new();
 
     for word in s.split_whitespace() {
-        if current.len() + word.len() + 1 > width {
-            if !current.is_empty() {
-                lines.push(current);
-                current = String::new();
-            }
+        if current.len() + word.len() + 1 > width && !current.is_empty() {
+            lines.push(current);
+            current = String::new();
         }
         if !current.is_empty() {
             current.push(' ');
@@ -1208,7 +1206,7 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
         "scenarios" => {
             let scenario_dir = args
                 .first()
-                .map(|s| PathBuf::from(s))
+                .map(PathBuf::from)
                 .unwrap_or_else(|| data_dir.join("scenarios"));
 
             println!("Loading scenarios from {:?}...", scenario_dir);
@@ -1404,7 +1402,7 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
         "synthetic" => {
             let count = args.first().and_then(|s| s.parse().ok()).unwrap_or(1000);
 
-            let output_path = args.get(1).map(|s| PathBuf::from(s));
+            let output_path = args.get(1).map(PathBuf::from);
 
             println!("🧪 Generating {} synthetic questions...\n", count);
 
@@ -1646,7 +1644,7 @@ fn run_analyze(subcommand: &str) -> Result<()> {
             }
         }
 
-        "coverage" | _ => {
+        _ => {
             let analysis = eval::coverage::analyze_coverage(&conn)?;
             eval::coverage::print_coverage_analysis(&analysis);
         }
@@ -2097,8 +2095,6 @@ fn run_thompson(subcommand: &str) -> Result<()> {
                 ("software-practices", "practices"),
             ];
 
-            let mut total_created = 0;
-
             for (domain_tag, domain_name) in &domains {
                 // Find principles with this domain tag
                 let principles: Vec<(String, String, f64)> = conn
@@ -2127,7 +2123,6 @@ fn run_thompson(subcommand: &str) -> Result<()> {
                              VALUES (?1, ?2, ?3, ?4, 10)",
                             rusqlite::params![id, domain_name, alpha, beta],
                         )?;
-                        total_created += 1;
                     }
                 }
             }

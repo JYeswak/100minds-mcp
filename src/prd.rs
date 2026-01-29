@@ -250,7 +250,7 @@ pub fn analyze_prd(prd: &mut Prd) -> MindsMetadata {
     }
 
     MindsMetadata {
-        validation_score: score.max(0.0).min(100.0),
+        validation_score: score.clamp(0.0, 100.0),
         principles_applied: principles,
         split_recommendation: Some(split_recommendation),
         scope_analysis: ScopeAnalysis {
@@ -419,7 +419,7 @@ pub fn generate_prd(
     let mut cleanup_stories = Vec::new();
 
     // Process stories, separating cleanup from main
-    for (_i, raw) in raw_stories.into_iter().enumerate() {
+    for raw in raw_stories {
         let is_cleanup = raw.title.to_lowercase().contains("cleanup")
             || raw.title.to_lowercase().contains("verify")
             || raw.title.to_lowercase().contains("lint")
