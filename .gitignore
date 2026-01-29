@@ -1,0 +1,11 @@
+/target/
+*.db
+Cargo.lock
+# Temp files from eval runs
+--benchmark
+--thompson
+persist
+scenarios
+echo
+"Persisting Thompson stats..."
+"Scenario benchmark:"

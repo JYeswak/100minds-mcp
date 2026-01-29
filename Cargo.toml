@@ -1,0 +1,61 @@
+[package]
+name = "minds-mcp"
+version = "0.1.0"
+edition = "2021"
+description = "Adversarial Wisdom Council - MCP server for AI decision intelligence"
+license = "MIT"
+repository = "https://github.com/zeststream/100minds-mcp"
+
+[[bin]]
+name = "100minds"
+path = "src/main.rs"
+
+[[bin]]
+name = "import"
+path = "src/bin/import.rs"
+
+[lib]
+name = "minds_mcp"
+path = "src/lib.rs"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Database
+rusqlite = { version = "0.31", features = ["bundled"] }
+
+# Crypto (provenance)
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+sha2 = "0.10"
+rand = "0.8"
+hex = "0.4"
+
+# Utils
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+dirs = "5"
+walkdir = "2"
+glob = "0.3"
+
+# Evaluation framework
+statrs = "0.17"                  # Statistical distributions (Beta for Thompson Sampling)
+reqwest = { version = "0.12", features = ["json"] }  # HTTP client for LLM API calls
+
+# Semantic embeddings (100x improvement)
+ort = { version = "2.0.0-rc.9", features = ["load-dynamic"] }  # ONNX Runtime
+tokenizers = "0.20"              # HuggingFace tokenizers
+ndarray = "0.17"                 # Vector math for cosine similarity (must match ort)
+hf-hub = "0.3"                   # Download models from HuggingFace
+half = "2.4"                     # f16 support for efficient embeddings
+
+[dev-dependencies]
+tokio-test = "0.4"
+tempfile = "3"

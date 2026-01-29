@@ -1,0 +1,152 @@
+[
+  {
+    "id": "perf-001",
+    "category": "performance",
+    "question": "Should we add a Redis caching layer to improve performance?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Premature Optimization Is the Root of All Evil", "Profile Before Optimizing", "You Aren't Gonna Need It (YAGNI)"],
+    "expected_thinkers": ["Donald Knuth", "Kent Beck"],
+    "anti_principles": ["Cache Everything"],
+    "difficulty": 2
+  },
+  {
+    "id": "perf-002",
+    "category": "performance",
+    "question": "Our page load time is 5 seconds. What should we optimize first?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Profile Before Optimizing", "Profile Before Optimize", "Pareto Principle (80/20 Rule)", "Premature Optimization Is the Root of All Evil", "Loading Performance"],
+    "expected_thinkers": ["Donald Knuth", "Joseph Juran", "Brendan Gregg", "Addy Osmani"],
+    "anti_principles": ["Optimize Everything"],
+    "difficulty": 3
+  },
+  {
+    "id": "perf-003",
+    "category": "performance",
+    "question": "Should we rewrite our hot path in C++ for better performance?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Premature Optimization Is the Root of All Evil", "Profile Before Optimizing", "Maintainability"],
+    "expected_thinkers": ["Donald Knuth"],
+    "anti_principles": ["Faster Language Always Better"],
+    "difficulty": 4
+  },
+  {
+    "id": "perf-004",
+    "category": "performance",
+    "question": "Our database queries are slow. Should we add more indexes?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Profile Before Optimizing", "Right Tool for the Job", "Premature Optimization Is the Root of All Evil", "Profile Before Optimize"],
+    "expected_thinkers": ["Donald Knuth", "Brendan Gregg"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "perf-005",
+    "category": "performance",
+    "question": "Should we use a CDN for our static assets?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Do The Simplest Thing That Could Possibly Work", "Premature Optimization Is the Root of All Evil", "Profile Before Optimizing", "Loading Performance"],
+    "expected_thinkers": ["Martin Fowler", "Donald Knuth", "Addy Osmani"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "perf-006",
+    "category": "performance",
+    "question": "Our API endpoint takes 2 seconds. Is that acceptable?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["User Experience First", "Profile Before Optimizing", "Premature Optimization Is the Root of All Evil", "Do The Simplest Thing That Could Possibly Work"],
+    "expected_thinkers": ["Donald Knuth", "Brendan Gregg"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "perf-007",
+    "category": "performance",
+    "question": "Should we use connection pooling for our database connections?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Resource Management", "Do The Simplest Thing That Could Possibly Work", "You Aren't Gonna Need It (YAGNI)", "Strangler Fig Pattern", "Brooks's Law", "Incremental Migration"],
+    "expected_thinkers": ["Donald Knuth", "Kent Beck", "Martin Fowler", "Fred Brooks"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "perf-008",
+    "category": "performance",
+    "question": "Our mobile app is using too much memory. How should we optimize?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Profile Before Optimize", "Profile Before Optimizing", "Premature Optimization Is the Root of All Evil", "Loading Performance", "Resource Management"],
+    "expected_thinkers": ["Donald Knuth", "Brendan Gregg", "Addy Osmani"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "perf-009",
+    "category": "performance",
+    "question": "Should we precompute and cache expensive calculations?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Premature Optimization Is the Root of All Evil", "Cache Invalidation Complexity", "Profile Before Optimizing"],
+    "expected_thinkers": ["Donald Knuth", "Phil Karlton"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "perf-010",
+    "category": "performance",
+    "question": "Our report generation takes 30 minutes. Should we optimize or move to async?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "User Experience First", "Profile Before Optimizing", "Premature Optimization Is the Root of All Evil", "Do The Simplest Thing That Could Possibly Work"],
+    "expected_thinkers": ["Donald Knuth", "Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "perf-011",
+    "category": "performance",
+    "question": "Should we implement lazy loading for our images?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["User Experience First", "Do The Simplest Thing That Could Possibly Work", "Loading Performance", "Premature Optimization Is the Root of All Evil", "You Aren't Gonna Need It (YAGNI)"],
+    "expected_thinkers": ["Donald Knuth", "Kent Beck", "Addy Osmani"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "perf-012",
+    "category": "performance",
+    "question": "Our batch job runs for 8 hours. Should we parallelize it?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Amdahl's Law", "Profile Before Optimizing", "Premature Optimization Is the Root of All Evil", "Do The Simplest Thing That Could Possibly Work", "You Aren't Gonna Need It (YAGNI)"],
+    "expected_thinkers": ["Gene Amdahl", "Donald Knuth", "Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 4
+  },
+  {
+    "id": "perf-013",
+    "category": "performance",
+    "question": "Should we use a faster JSON library to improve API performance?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Profile Before Optimizing", "Premature Optimization Is the Root of All Evil", "Profile Before Optimize"],
+    "expected_thinkers": ["Donald Knuth"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "perf-014",
+    "category": "performance",
+    "question": "Our search is slow with 1M records. Should we use Elasticsearch?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Operational Complexity"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "perf-015",
+    "category": "performance",
+    "question": "Performance is fine in dev but slow in production. What should we investigate?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Production Parity", "Observability", "Measure in Production"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  }
+]

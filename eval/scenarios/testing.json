@@ -1,0 +1,52 @@
+[
+  {
+    "id": "test-001",
+    "category": "testing",
+    "question": "Should we write tests before or after writing code?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Test-Driven Development (TDD)", "Test First", "Red-Green-Refactor"],
+    "expected_thinkers": ["Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "test-002",
+    "category": "testing",
+    "question": "How much unit test coverage should we aim for?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Test Pyramid", "Pareto Principle (80/20 Rule)", "Coverage Is Not Quality"],
+    "expected_thinkers": ["Martin Fowler", "Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "test-003",
+    "category": "testing",
+    "question": "Should we mock external dependencies in our tests?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Test Isolation", "Test Pyramid", "Mock vs Fake"],
+    "expected_thinkers": ["Martin Fowler", "Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "test-004",
+    "category": "testing",
+    "question": "Should we invest more in unit tests or integration tests?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Test Pyramid", "Cost of Testing", "Feedback Speed"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "test-005",
+    "category": "testing",
+    "question": "Our test suite takes 2 hours to run. What should we do?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Test Pyramid", "Feedback Speed", "Parallelization"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  }
+]

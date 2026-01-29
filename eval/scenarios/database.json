@@ -1,0 +1,52 @@
+[
+  {
+    "id": "db-001",
+    "category": "database",
+    "question": "Should we use SQL or NoSQL for our new application?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Do The Simplest Thing That Could Possibly Work", "Data Modeling"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": ["NoSQL Everything"],
+    "difficulty": 3
+  },
+  {
+    "id": "db-002",
+    "category": "database",
+    "question": "Should we use a document database for our e-commerce catalog?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Query Patterns First"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "db-003",
+    "category": "database",
+    "question": "Should we use a time-series database for our metrics?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Do The Simplest Thing That Could Possibly Work"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "db-004",
+    "category": "database",
+    "question": "Should we denormalize our database for performance?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Profile Before Optimizing", "Premature Optimization Is the Root of All Evil", "Data Integrity"],
+    "expected_thinkers": ["Donald Knuth", "Martin Fowler"],
+    "anti_principles": ["Denormalize Everything"],
+    "difficulty": 4
+  },
+  {
+    "id": "db-005",
+    "category": "database",
+    "question": "Should we use a graph database for our social network features?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Query Patterns First"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 4
+  }
+]

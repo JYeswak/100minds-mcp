@@ -1,0 +1,252 @@
+[
+  {
+    "id": "arch-001",
+    "category": "architecture",
+    "question": "Should we move from our monolith to microservices?",
+    "context": {"domain": "software-architecture", "team_size": "15"},
+    "expected_principles": ["Monolith First", "Incremental Migration", "Strangler Fig Pattern", "Brooks's Law", "You Aren't Gonna Need It (YAGNI)", "Do The Simplest Thing That Could Possibly Work"],
+    "expected_thinkers": ["Sam Newman", "Martin Fowler", "Fred Brooks", "Kent Beck"],
+    "anti_principles": ["Always Use Microservices", "Decompose Everything"],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-002",
+    "category": "architecture",
+    "question": "We're building a new product. Should we start with microservices from day one?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Monolith First", "You Aren't Gonna Need It (YAGNI)", "Do The Simplest Thing That Could Possibly Work", "Incremental Design", "Brooks's Law", "Strangler Fig Pattern"],
+    "expected_thinkers": ["Martin Fowler", "Sam Newman", "Kent Beck", "Fred Brooks"],
+    "anti_principles": ["Microservices First"],
+    "difficulty": 2
+  },
+  {
+    "id": "arch-003",
+    "category": "architecture",
+    "question": "Should we use event sourcing for our e-commerce platform?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Do The Simplest Thing That Could Possibly Work", "You Aren't Gonna Need It (YAGNI)", "Right Tool for the Job"],
+    "expected_thinkers": ["Kent Beck", "Martin Fowler", "Greg Young"],
+    "anti_principles": ["Always Use Event Sourcing"],
+    "difficulty": 4
+  },
+  {
+    "id": "arch-004",
+    "category": "architecture",
+    "question": "Should we adopt CQRS for our reporting system?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Separation of Concerns", "Do The Simplest Thing That Could Possibly Work"],
+    "expected_thinkers": ["Greg Young", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 4
+  },
+  {
+    "id": "arch-005",
+    "category": "architecture",
+    "question": "Should we use GraphQL or REST for our API?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Do The Simplest Thing That Could Possibly Work", "You Aren't Gonna Need It (YAGNI)"],
+    "expected_thinkers": ["Martin Fowler", "Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-006",
+    "category": "architecture",
+    "question": "We want to add real-time features. Should we use WebSockets or Server-Sent Events?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Do The Simplest Thing That Could Possibly Work"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-007",
+    "category": "architecture",
+    "question": "Should we build our own message queue or use RabbitMQ/Kafka?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Build vs Buy", "Focus on Core Competency", "Not Invented Here"],
+    "expected_thinkers": ["Joel Spolsky", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-008",
+    "category": "architecture",
+    "question": "Should we use a service mesh like Istio for our Kubernetes cluster?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["You Aren't Gonna Need It (YAGNI)", "Do The Simplest Thing That Could Possibly Work", "Premature Optimization Is the Root of All Evil"],
+    "expected_thinkers": ["Kent Beck", "Donald Knuth"],
+    "anti_principles": [],
+    "difficulty": 4
+  },
+  {
+    "id": "arch-009",
+    "category": "architecture",
+    "question": "Our services have too many circular dependencies. How should we refactor?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Dependency Inversion", "Bounded Context", "Acyclic Dependencies"],
+    "expected_thinkers": ["Robert Martin", "Eric Evans", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 4
+  },
+  {
+    "id": "arch-010",
+    "category": "architecture",
+    "question": "Should we use a monorepo or multiple repositories?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Conway's Law", "Team Topology"],
+    "expected_thinkers": ["Melvin Conway", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-011",
+    "category": "architecture",
+    "question": "Should we use serverless functions for our API?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "You Aren't Gonna Need It (YAGNI)", "Operational Simplicity"],
+    "expected_thinkers": ["Martin Fowler", "Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-012",
+    "category": "architecture",
+    "question": "Should we use domain-driven design for our new system?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Bounded Context", "Ubiquitous Language", "Strategic Design"],
+    "expected_thinkers": ["Eric Evans", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 4
+  },
+  {
+    "id": "arch-013",
+    "category": "architecture",
+    "question": "How do we handle authentication across multiple microservices?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Single Responsibility", "Defense in Depth"],
+    "expected_thinkers": ["Sam Newman", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 4
+  },
+  {
+    "id": "arch-014",
+    "category": "architecture",
+    "question": "Should we implement the saga pattern for distributed transactions?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Eventual Consistency", "Do The Simplest Thing That Could Possibly Work"],
+    "expected_thinkers": ["Martin Fowler", "Sam Newman"],
+    "anti_principles": [],
+    "difficulty": 5
+  },
+  {
+    "id": "arch-015",
+    "category": "architecture",
+    "question": "How should we version our public API?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Backwards Compatibility", "Semantic Versioning"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-016",
+    "category": "architecture",
+    "question": "Should we use containers or VMs for our deployment?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Operational Simplicity"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "arch-017",
+    "category": "architecture",
+    "question": "Should we implement circuit breakers in our service calls?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Design for Failure", "Circuit Breaker Pattern", "You Aren't Gonna Need It (YAGNI)", "Do The Simplest Thing That Could Possibly Work", "Incremental Design"],
+    "expected_thinkers": ["Michael Nygard", "Sam Newman", "Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-018",
+    "category": "architecture",
+    "question": "How should we handle service discovery in our microservices?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Do The Simplest Thing That Could Possibly Work", "Operational Simplicity"],
+    "expected_thinkers": ["Sam Newman", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 4
+  },
+  {
+    "id": "arch-019",
+    "category": "architecture",
+    "question": "Should we use feature flags for our rollout strategy?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Continuous Delivery", "Incremental Change", "Risk Mitigation"],
+    "expected_thinkers": ["Martin Fowler", "Jez Humble"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "arch-020",
+    "category": "architecture",
+    "question": "Should we implement the strangler fig pattern for our legacy migration?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Strangler Fig Pattern", "Incremental Migration"],
+    "expected_thinkers": ["Martin Fowler", "Sam Newman"],
+    "anti_principles": ["Big Bang Rewrite"],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-021",
+    "category": "architecture",
+    "question": "How should we handle configuration management across environments?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Configuration as Code", "Twelve-Factor App"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "arch-022",
+    "category": "architecture",
+    "question": "Should we use a BFF (Backend for Frontend) pattern?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Separation of Concerns", "Right Tool for the Job"],
+    "expected_thinkers": ["Sam Newman", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-023",
+    "category": "architecture",
+    "question": "How should we implement logging and tracing across services?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Observability", "Correlation IDs"],
+    "expected_thinkers": ["Sam Newman", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-024",
+    "category": "architecture",
+    "question": "Should we use an API gateway?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Single Entry Point", "Separation of Concerns"],
+    "expected_thinkers": ["Sam Newman"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "arch-025",
+    "category": "architecture",
+    "question": "How do we handle data consistency in a distributed system?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["CAP Theorem", "Eventual Consistency", "BASE"],
+    "expected_thinkers": ["Eric Brewer", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 5
+  }
+]

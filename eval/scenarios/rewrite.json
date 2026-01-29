@@ -1,0 +1,152 @@
+[
+  {
+    "id": "rewrite-001",
+    "category": "rewrite",
+    "question": "Our codebase is 10 years old. Should we rewrite it from scratch?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Second-System Effect", "Strangler Fig Pattern", "Incremental Migration"],
+    "expected_thinkers": ["Fred Brooks", "Martin Fowler"],
+    "anti_principles": ["Big Bang Rewrite"],
+    "difficulty": 3
+  },
+  {
+    "id": "rewrite-002",
+    "category": "rewrite",
+    "question": "The original developers left and nobody understands the code. Should we rewrite?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Strangler Fig Pattern", "Working Effectively with Legacy Code"],
+    "expected_thinkers": ["Joel Spolsky", "Martin Fowler"],
+    "anti_principles": ["Rewrite Unknown Code"],
+    "difficulty": 4
+  },
+  {
+    "id": "rewrite-003",
+    "category": "rewrite",
+    "question": "Our tech stack is outdated. Should we migrate to a new framework?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Incremental Migration", "Strangler Fig Pattern"],
+    "expected_thinkers": ["Joel Spolsky", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "rewrite-004",
+    "category": "rewrite",
+    "question": "Our system has too much technical debt. Should we stop features and refactor?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Technical Debt", "Incremental Design"],
+    "expected_thinkers": ["Martin Fowler", "Kent Beck", "Ward Cunningham"],
+    "anti_principles": ["Feature Freeze"],
+    "difficulty": 3
+  },
+  {
+    "id": "rewrite-005",
+    "category": "rewrite",
+    "question": "Should we refactor our messy code before adding the next feature?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Incremental Design", "Technical Debt"],
+    "expected_thinkers": ["Kent Beck", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "rewrite-006",
+    "category": "rewrite",
+    "question": "Our Python system is slow. Should we rewrite it in Rust?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Premature Optimization Is the Root of All Evil", "Profile Before Optimizing"],
+    "expected_thinkers": ["Donald Knuth", "Martin Fowler"],
+    "anti_principles": ["Rewrite in Faster Language"],
+    "difficulty": 3
+  },
+  {
+    "id": "rewrite-007",
+    "category": "rewrite",
+    "question": "We want to modernize our UI. Should we rebuild from scratch with React?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Incremental Migration", "Strangler Fig Pattern"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "rewrite-008",
+    "category": "rewrite",
+    "question": "Our tests are flaky and slow. Should we rewrite the test suite?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Incremental Improvement", "Test Pyramid"],
+    "expected_thinkers": ["Martin Fowler", "Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "rewrite-009",
+    "category": "rewrite",
+    "question": "Should we migrate from our legacy Oracle database to PostgreSQL?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Risk Assessment", "Incremental Migration", "Data Gravity"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 4
+  },
+  {
+    "id": "rewrite-010",
+    "category": "rewrite",
+    "question": "A competitor rewrote their system and it's much better. Should we do the same?",
+    "context": {"domain": "entrepreneurship"},
+    "expected_principles": ["Second-System Effect", "No Silver Bullet"],
+    "expected_thinkers": ["Fred Brooks", "Joel Spolsky"],
+    "anti_principles": ["Copy Competitors"],
+    "difficulty": 3
+  },
+  {
+    "id": "rewrite-011",
+    "category": "rewrite",
+    "question": "Our API has poor design. Should we create a v2 from scratch?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Backwards Compatibility", "Incremental Migration", "Parallel Run"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "rewrite-012",
+    "category": "rewrite",
+    "question": "The code is so tangled that every change breaks something. What should we do?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Working Effectively with Legacy Code", "Strangler Fig Pattern", "Seams"],
+    "expected_thinkers": ["Michael Feathers", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 4
+  },
+  {
+    "id": "rewrite-013",
+    "category": "rewrite",
+    "question": "We acquired a company and need to integrate their system. Rewrite or adapt?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Risk Assessment", "Business Value", "Integration Over Rewrite", "Strangler Fig Pattern", "Working Effectively with Legacy Code", "Incremental Migration"],
+    "expected_thinkers": ["Martin Fowler", "Michael Feathers", "Sam Newman"],
+    "anti_principles": [],
+    "difficulty": 4
+  },
+  {
+    "id": "rewrite-014",
+    "category": "rewrite",
+    "question": "Our mobile app is written in native code. Should we rewrite in React Native?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Total Cost of Ownership", "Strangler Fig Pattern", "Incremental Migration", "Second-System Effect"],
+    "expected_thinkers": ["Martin Fowler", "Fred Brooks", "Sam Newman"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "rewrite-015",
+    "category": "rewrite",
+    "question": "Engineering wants to rewrite but the business says no. How do we resolve this?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["Business Value", "Incremental Improvement", "Technical Debt", "Strangler Fig Pattern", "Incremental Migration"],
+    "expected_thinkers": ["Ward Cunningham", "Martin Fowler", "Sam Newman"],
+    "anti_principles": [],
+    "difficulty": 4
+  }
+]

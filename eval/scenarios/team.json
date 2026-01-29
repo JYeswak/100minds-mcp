@@ -1,0 +1,102 @@
+[
+  {
+    "id": "team-001",
+    "category": "team",
+    "question": "Should we hire senior engineers or train juniors?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["Build vs Buy Talent", "Long-term Investment", "Brooks's Law", "Communication Overhead", "You Aren't Gonna Need It (YAGNI)"],
+    "expected_thinkers": ["Fred Brooks", "Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "team-002",
+    "category": "team",
+    "question": "Our team has too many meetings. How do we improve productivity?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["Maker Schedule", "Deep Work", "Communication Overhead", "Brooks's Law", "Focus", "You Aren't Gonna Need It (YAGNI)"],
+    "expected_thinkers": ["Paul Graham", "Cal Newport", "Fred Brooks", "Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "team-003",
+    "category": "team",
+    "question": "Should we adopt pair programming?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["Code Review", "Knowledge Sharing", "Quality First"],
+    "expected_thinkers": ["Kent Beck", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "team-004",
+    "category": "team",
+    "question": "How do we handle a 10x engineer who doesn't collaborate well?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["No Brilliant Jerks", "Team Health", "Bus Factor"],
+    "expected_thinkers": ["Reed Hastings"],
+    "anti_principles": [],
+    "difficulty": 4
+  },
+  {
+    "id": "team-005",
+    "category": "team",
+    "question": "Should we have dedicated QA or should developers test their own code?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["Quality First", "Shift Left", "Ownership"],
+    "expected_thinkers": ["Kent Beck", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "team-006",
+    "category": "team",
+    "question": "Should we have a dedicated DevOps team or embed DevOps in each team?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["You Build It You Run It", "Team Autonomy", "Conway's Law"],
+    "expected_thinkers": ["Werner Vogels", "Melvin Conway"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "team-007",
+    "category": "team",
+    "question": "Our remote team feels disconnected. How do we improve collaboration?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["Overcommunication", "Documentation", "Asynchronous Work"],
+    "expected_thinkers": [],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "team-008",
+    "category": "team",
+    "question": "Should we enforce coding standards strictly or let developers choose?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["Consistency", "Automate Standards", "Team Agreement"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "team-009",
+    "category": "team",
+    "question": "How do we prevent knowledge silos in our team?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["Bus Factor", "Knowledge Sharing", "Documentation"],
+    "expected_thinkers": ["Fred Brooks"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "team-010",
+    "category": "team",
+    "question": "Should engineers be on-call for the systems they build?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["You Build It You Run It", "Ownership", "Feedback Loop"],
+    "expected_thinkers": ["Werner Vogels"],
+    "anti_principles": [],
+    "difficulty": 2
+  }
+]

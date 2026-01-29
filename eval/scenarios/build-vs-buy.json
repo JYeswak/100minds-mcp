@@ -1,0 +1,102 @@
+[
+  {
+    "id": "bvb-001",
+    "category": "build-vs-buy",
+    "question": "Should we build our own authentication system or use Auth0?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Build vs Buy", "Focus on Core Competency", "Not Invented Here"],
+    "expected_thinkers": ["Joel Spolsky"],
+    "anti_principles": ["Build Everything"],
+    "difficulty": 2
+  },
+  {
+    "id": "bvb-002",
+    "category": "build-vs-buy",
+    "question": "Should we use a hosted database service or manage our own?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Operational Burden", "Focus on Core Competency", "Total Cost of Ownership"],
+    "expected_thinkers": ["Joel Spolsky"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "bvb-003",
+    "category": "build-vs-buy",
+    "question": "Should we build a custom CMS or use WordPress?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Build vs Buy", "You Aren't Gonna Need It (YAGNI)", "Focus on Core Competency"],
+    "expected_thinkers": ["Joel Spolsky", "Kent Beck"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "bvb-004",
+    "category": "build-vs-buy",
+    "question": "Should we build our own search or use Algolia?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Focus on Core Competency", "Build vs Buy", "Operational Complexity"],
+    "expected_thinkers": ["Joel Spolsky"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "bvb-005",
+    "category": "build-vs-buy",
+    "question": "Should we build our own analytics or use Google Analytics?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Build vs Buy", "Data Ownership", "Privacy"],
+    "expected_thinkers": ["Joel Spolsky"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "bvb-006",
+    "category": "build-vs-buy",
+    "question": "Should we build a custom ORM or use an existing one?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Not Invented Here", "Focus on Core Competency"],
+    "expected_thinkers": ["Joel Spolsky"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "bvb-007",
+    "category": "build-vs-buy",
+    "question": "Should we build our own CI/CD pipeline or use GitHub Actions?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Focus on Core Competency", "Operational Simplicity"],
+    "expected_thinkers": ["Joel Spolsky"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "bvb-008",
+    "category": "build-vs-buy",
+    "question": "Should we build our own payment processing or use Stripe?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Focus on Core Competency", "Compliance", "Risk"],
+    "expected_thinkers": ["Joel Spolsky"],
+    "anti_principles": ["Build Payment System"],
+    "difficulty": 2
+  },
+  {
+    "id": "bvb-009",
+    "category": "build-vs-buy",
+    "question": "Should we use a SaaS email service or run our own mail server?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Focus on Core Competency", "Operational Burden", "Deliverability"],
+    "expected_thinkers": ["Joel Spolsky"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "bvb-010",
+    "category": "build-vs-buy",
+    "question": "Should we build our own recommendation engine or use a service?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Build vs Buy", "Core vs Context", "Competitive Advantage"],
+    "expected_thinkers": ["Joel Spolsky"],
+    "anti_principles": [],
+    "difficulty": 3
+  }
+]

@@ -1,0 +1,152 @@
+[
+  {
+    "id": "scale-001",
+    "category": "scaling",
+    "question": "We're behind schedule. Should we add more engineers to the project?",
+    "context": {"domain": "management-theory", "deadline": "2 weeks"},
+    "expected_principles": ["Brooks's Law", "Communication Overhead", "Mythical Man-Month"],
+    "expected_thinkers": ["Fred Brooks"],
+    "anti_principles": ["More People Faster"],
+    "difficulty": 2
+  },
+  {
+    "id": "scale-002",
+    "category": "scaling",
+    "question": "Our traffic is increasing 10x. How should we approach scaling?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Premature Optimization Is the Root of All Evil", "Profile Before Optimizing", "Do The Simplest Thing That Could Possibly Work"],
+    "expected_thinkers": ["Donald Knuth", "Kent Beck"],
+    "anti_principles": ["Scale Everything"],
+    "difficulty": 3
+  },
+  {
+    "id": "scale-003",
+    "category": "scaling",
+    "question": "Should we split our large team into smaller squads?",
+    "context": {"domain": "management-theory", "team_size": "20"},
+    "expected_principles": ["Two Pizza Teams", "Communication Overhead", "Conway's Law"],
+    "expected_thinkers": ["Jeff Bezos", "Melvin Conway", "Fred Brooks"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "scale-004",
+    "category": "scaling",
+    "question": "We need to handle millions of concurrent users. Should we rewrite our system?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Incremental Improvement", "Strangler Fig Pattern", "Profile Before Optimizing"],
+    "expected_thinkers": ["Martin Fowler", "Donald Knuth"],
+    "anti_principles": ["Big Bang Rewrite"],
+    "difficulty": 4
+  },
+  {
+    "id": "scale-005",
+    "category": "scaling",
+    "question": "Should we horizontally or vertically scale our database?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Profile Before Optimizing", "Do The Simplest Thing That Could Possibly Work"],
+    "expected_thinkers": ["Donald Knuth", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "scale-006",
+    "category": "scaling",
+    "question": "Our startup is growing. When should we hire a dedicated DevOps person?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["80/20 Rule", "Focus on Bottlenecks"],
+    "expected_thinkers": ["Eliyahu Goldratt", "Vilfredo Pareto"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "scale-007",
+    "category": "scaling",
+    "question": "Should we add contractors to meet our deadline?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["Brooks's Law", "Communication Overhead", "Onboarding Cost"],
+    "expected_thinkers": ["Fred Brooks"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "scale-008",
+    "category": "scaling",
+    "question": "Our API response times are increasing. Should we add more servers?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Profile Before Optimizing", "Premature Optimization Is the Root of All Evil", "Profile Before Optimize"],
+    "expected_thinkers": ["Donald Knuth"],
+    "anti_principles": ["Throw Hardware At It"],
+    "difficulty": 3
+  },
+  {
+    "id": "scale-009",
+    "category": "scaling",
+    "question": "When should we start worrying about scalability?",
+    "context": {"domain": "entrepreneurship"},
+    "expected_principles": ["You Aren't Gonna Need It (YAGNI)", "Premature Optimization Is the Root of All Evil", "Ship Fast"],
+    "expected_thinkers": ["Donald Knuth", "Reid Hoffman", "Kent Beck"],
+    "anti_principles": ["Scale Day One"],
+    "difficulty": 2
+  },
+  {
+    "id": "scale-010",
+    "category": "scaling",
+    "question": "Should we use auto-scaling for our infrastructure?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Right Tool for the Job", "Operational Simplicity"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 2
+  },
+  {
+    "id": "scale-011",
+    "category": "scaling",
+    "question": "Our database is becoming a bottleneck. Should we shard it?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Do The Simplest Thing That Could Possibly Work", "Profile Before Optimizing", "Last Resort"],
+    "expected_thinkers": ["Martin Fowler", "Donald Knuth"],
+    "anti_principles": ["Shard Everything"],
+    "difficulty": 4
+  },
+  {
+    "id": "scale-012",
+    "category": "scaling",
+    "question": "How do we maintain code quality as the team grows?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["Code Review", "Continuous Integration", "Team Standards"],
+    "expected_thinkers": ["Kent Beck", "Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "scale-013",
+    "category": "scaling",
+    "question": "Should we implement read replicas for our database?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Profile Before Optimizing", "Right Tool for the Job"],
+    "expected_thinkers": ["Martin Fowler"],
+    "anti_principles": [],
+    "difficulty": 3
+  },
+  {
+    "id": "scale-014",
+    "category": "scaling",
+    "question": "Our monolith is slow. Should we extract high-traffic features into services?",
+    "context": {"domain": "software-architecture"},
+    "expected_principles": ["Strangler Fig Pattern", "Profile Before Optimizing", "Incremental Change"],
+    "expected_thinkers": ["Martin Fowler", "Sam Newman"],
+    "anti_principles": ["Extract Everything"],
+    "difficulty": 4
+  },
+  {
+    "id": "scale-015",
+    "category": "scaling",
+    "question": "We're opening international offices. How do we scale our engineering org?",
+    "context": {"domain": "management-theory"},
+    "expected_principles": ["Conway's Law", "Communication Overhead", "Team Topology"],
+    "expected_thinkers": ["Melvin Conway", "Fred Brooks"],
+    "anti_principles": [],
+    "difficulty": 4
+  }
+]
