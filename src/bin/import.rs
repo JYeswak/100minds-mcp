@@ -18,6 +18,25 @@ struct ThinkerProfile {
     principles: Option<Vec<PrincipleVariant>>,
 }
 
+/// Canonical thinker format (data/thinkers/<domain>/<thinker>.json)
+#[derive(Debug, Deserialize)]
+struct CanonicalThinker {
+    id: String,
+    name: String,
+    domain: String,
+    background: String,
+    principles: Vec<CanonicalPrinciple>,
+}
+
+#[derive(Debug, Deserialize)]
+struct CanonicalPrinciple {
+    name: String,
+    description: String,
+    domain_tags: Vec<String>,
+    #[serde(default)]
+    falsification: Option<String>,
+}
+
 #[derive(Debug, Deserialize)]
 #[serde(untagged)]
 enum PrincipleVariant {
@@ -133,7 +152,34 @@ fn import_directory(conn: &Connection, dir: &Path) -> Result<(usize, usize)> {
         }
     }
 
-    // Second: Try profile.json format (nested directories)
+    // Second: Try canonical thinker format (data/thinkers/<domain>/<thinker>.json)
+    // These files have "id", "name", "domain", "background", "principles" fields
+    for entry in walkdir::WalkDir::new(dir)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| {
+            let name = e.file_name().to_str().unwrap_or("");
+            // JSON files that aren't profile.json and don't have -- (operator format)
+            name.ends_with(".json") && name != "profile.json" && !name.contains("--")
+        })
+    {
+        let path = entry.path();
+        match import_canonical_thinker(&conn, path) {
+            Ok((t, p)) => {
+                thinkers += t;
+                principles += p;
+                if p > 0 {
+                    let fname = path.file_name().and_then(|n| n.to_str()).unwrap_or("?");
+                    println!("  ✓ {} ({} principles)", fname, p);
+                }
+            }
+            Err(_) => {
+                // Not canonical format, will try profile.json next
+            }
+        }
+    }
+
+    // Third: Try profile.json format (nested directories)
     for entry in walkdir::WalkDir::new(dir)
         .into_iter()
         .filter_map(|e| e.ok())
@@ -311,6 +357,59 @@ fn import_profile(
              (id, thinker_id, name, description, domain_tags, base_confidence, learned_confidence)
              VALUES (?1, ?2, ?3, ?4, ?5, 0.5, 0.5)",
             params![principle_id, thinker_id, name, description, domain_tags,],
+        )?;
+
+        principle_count += 1;
+    }
+
+    Ok((1, principle_count))
+}
+
+/// Import a canonical thinker file (data/thinkers/<domain>/<thinker>.json)
+fn import_canonical_thinker(conn: &Connection, path: &Path) -> Result<(usize, usize)> {
+    let content = fs::read_to_string(path)?;
+    let thinker: CanonicalThinker = serde_json::from_str(&content)?;
+
+    // Insert thinker
+    conn.execute(
+        "INSERT OR REPLACE INTO thinkers (id, name, domain, background, profile_json)
+         VALUES (?1, ?2, ?3, ?4, ?5)",
+        params![
+            thinker.id,
+            thinker.name,
+            thinker.domain,
+            thinker.background,
+            content,
+        ],
+    )?;
+
+    // Import principles with falsification support
+    let mut principle_count = 0;
+    for (i, principle) in thinker.principles.iter().enumerate() {
+        let principle_id = format!("{}-{}", thinker.id, i + 1);
+        let domain_tags = serde_json::to_string(&principle.domain_tags)?;
+
+        // Store falsification in description if present
+        let full_description = if let Some(ref falsification) = principle.falsification {
+            format!(
+                "{}\n\nFalsifiable when: {}",
+                principle.description, falsification
+            )
+        } else {
+            principle.description.clone()
+        };
+
+        conn.execute(
+            "INSERT OR REPLACE INTO principles
+             (id, thinker_id, name, description, domain_tags, base_confidence, learned_confidence)
+             VALUES (?1, ?2, ?3, ?4, ?5, 0.7, 0.7)",
+            params![
+                principle_id,
+                thinker.id,
+                principle.name,
+                full_description,
+                domain_tags,
+            ],
         )?;
 
         principle_count += 1;
