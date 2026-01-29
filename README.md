@@ -4,9 +4,21 @@
 
 100minds channels 70 legendary thinkers—from Dijkstra to Taleb, Feynman to Brooks—into an adversarial council that challenges your decisions before they fail in production.
 
-[![Rust](https://img.shields.io/badge/rust-1.75+-orange.svg)](https://www.rust-lang.org/)
+[![CI](https://github.com/zeststream/100minds-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/zeststream/100minds-mcp/actions/workflows/ci.yml)
+[![Crates.io](https://img.shields.io/crates/v/minds-mcp.svg)](https://crates.io/crates/minds-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-151%20passing-brightgreen.svg)]()
+[![Rust](https://img.shields.io/badge/rust-1.75+-orange.svg)](https://www.rust-lang.org/)
+
+## One-Line Install
+
+```bash
+cargo install --git https://github.com/zeststream/100minds-mcp.git
+```
+
+Or from crates.io (when published):
+```bash
+cargo install minds-mcp
+```
 
 ## The Problem
 
@@ -70,15 +82,13 @@ Falsifiable if: Rewrite takes >2x estimated time OR
 ### Installation
 
 ```bash
-# Clone the repository
+# One-line install
+cargo install --git https://github.com/zeststream/100minds-mcp.git
+
+# Or clone and build
 git clone https://github.com/zeststream/100minds-mcp.git
 cd 100minds-mcp
-
-# Build
 cargo build --release
-
-# Run tests
-cargo test
 ```
 
 ### CLI Usage
