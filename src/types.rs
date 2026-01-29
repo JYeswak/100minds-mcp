@@ -172,6 +172,19 @@ pub struct RecordOutcomesBatchRequest {
     pub outcomes: Vec<RecordOutcomeRequest>,
 }
 
+/// Response from counterfactual simulation
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CounterfactualResponse {
+    pub question: String,
+    pub excluded_principles: Vec<String>,
+    pub excluded_count: usize,
+    pub alternative_positions: Vec<CounselPosition>,
+    pub original_principle_ids: Vec<String>,
+    pub new_principle_ids: Vec<String>,
+    /// Jaccard distance: 1 - (intersection / union) of principle sets
+    pub diversity_delta: f64,
+}
+
 /// Response from sync_posteriors
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SyncPosteriorsResponse {

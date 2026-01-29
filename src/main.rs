@@ -671,6 +671,7 @@ fn handle_http_request(
                 "counsel" => handle_counsel_tool(&conn, &provenance, &params),
                 "record_outcome" => handle_record_outcome_tool(&conn, &params),
                 "sync_posteriors" => handle_sync_posteriors_tool(&conn, &params),
+                "counterfactual_sim" => handle_counterfactual_sim_tool(&conn, &provenance, &params),
                 _ => Ok(serde_json::json!({"error": format!("Unknown tool: {}", tool_name)})),
             }
         }
@@ -765,6 +766,32 @@ fn handle_sync_posteriors_tool(
 
     eval::thompson::init_thompson_schema(conn)?;
     let response = outcome::sync_posteriors(conn, since_ts, domain)?;
+    Ok(serde_json::to_value(&response)?)
+}
+
+fn handle_counterfactual_sim_tool(
+    conn: &rusqlite::Connection,
+    provenance: &Provenance,
+    params: &serde_json::Value,
+) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let question = args.get("question").and_then(|q| q.as_str()).unwrap_or("");
+    let domain = args.get("domain").and_then(|d| d.as_str());
+    let excluded_principles: Vec<String> = args.get("excluded_principles")
+        .and_then(|p| p.as_array())
+        .map(|arr| arr.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+        .unwrap_or_default();
+
+    let engine = CounselEngine::new(conn, provenance);
+    let request = CounselRequest {
+        question: question.to_string(),
+        context: CounselContext {
+            domain: domain.map(String::from),
+            ..Default::default()
+        },
+    };
+
+    let response = engine.counterfactual_counsel(&request, &excluded_principles)?;
     Ok(serde_json::to_value(&response)?)
 }
 

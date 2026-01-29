@@ -133,6 +133,101 @@ impl<'a> CounselEngine<'a> {
         None
     }
 
+    /// Counterfactual simulation - what would we recommend without certain principles?
+    /// Used to discover overlooked wisdom and understand principle importance
+    pub fn counterfactual_counsel(
+        &self,
+        request: &CounselRequest,
+        excluded_principles: &[String],
+    ) -> Result<CounterfactualResponse> {
+        // 1. Get original response for comparison
+        let original = self.counsel(request)?;
+        let original_principle_ids: std::collections::HashSet<String> =
+            original.principle_ids.iter().cloned().collect();
+
+        // 2. Find principles with exclusions
+        let all_principles = self.find_relevant_principles(request)?;
+        let filtered_principles: Vec<PrincipleMatch> = all_principles
+            .into_iter()
+            .filter(|p| !excluded_principles.contains(&p.id))
+            .collect();
+
+        // 3. Generate positions from remaining principles
+        let alternative_positions = self.build_positions_from_principles(request, &filtered_principles)?;
+
+        // 4. Calculate diversity delta
+        let new_principle_ids: std::collections::HashSet<String> = alternative_positions
+            .iter()
+            .flat_map(|p| p.principles_cited.clone())
+            .collect();
+
+        // Jaccard distance: 1 - (intersection / union)
+        let intersection = original_principle_ids.intersection(&new_principle_ids).count();
+        let union = original_principle_ids.union(&new_principle_ids).count();
+        let diversity_delta = if union > 0 {
+            1.0 - (intersection as f64 / union as f64)
+        } else {
+            0.0
+        };
+
+        Ok(CounterfactualResponse {
+            question: request.question.clone(),
+            excluded_principles: excluded_principles.to_vec(),
+            excluded_count: excluded_principles.len(),
+            alternative_positions,
+            original_principle_ids: original.principle_ids,
+            new_principle_ids: new_principle_ids.into_iter().collect(),
+            diversity_delta,
+        })
+    }
+
+    /// Build positions from a set of principles (used by counterfactual)
+    fn build_positions_from_principles(
+        &self,
+        request: &CounselRequest,
+        principles: &[PrincipleMatch],
+    ) -> Result<Vec<CounselPosition>> {
+        let mut positions = Vec::new();
+        let num_positions = match request.context.depth {
+            CounselDepth::Quick => 3,
+            CounselDepth::Standard => 4,
+            CounselDepth::Deep => 6,
+        };
+
+        // Alternate stances for balance
+        let stances = [Stance::For, Stance::Against, Stance::Synthesize, Stance::Against, Stance::For, Stance::Synthesize];
+
+        for (i, principle) in principles.iter().take(num_positions).enumerate() {
+            let stance = stances[i % stances.len()];
+            let thinker_name = self.conn.query_row(
+                "SELECT name FROM thinkers WHERE id = ?1",
+                [&principle.thinker_id],
+                |row| row.get::<_, String>(0),
+            ).unwrap_or_else(|_| principle.thinker_id.clone());
+
+            let position = CounselPosition {
+                thinker: thinker_name,
+                thinker_id: principle.thinker_id.clone(),
+                stance,
+                argument: format!(
+                    "{}\n   → ACTION: Apply this in the next 60 seconds. What's ONE concrete step?",
+                    principle.description
+                ),
+                principles_cited: vec![principle.id.clone()],
+                confidence: principle.confidence,
+                falsifiable_if: Some(format!(
+                    "This {} is {} if the {} principle doesn't apply to this context",
+                    if stance == Stance::For { "recommendation" } else { "caution" },
+                    if stance == Stance::For { "wrong" } else { "unnecessary" },
+                    principle.name
+                )),
+            };
+            positions.push(position);
+        }
+
+        Ok(positions)
+    }
+
     /// Find principles relevant to the question
     fn find_relevant_principles(&self, request: &CounselRequest) -> Result<Vec<PrincipleMatch>> {
         let mut all_matches = Vec::new();
