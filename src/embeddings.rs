@@ -162,7 +162,11 @@ impl SemanticEngine {
         // Data is in row-major order: [batch][seq][embed]
         // batch_size = 1, so we skip batch dimension
         for i in 0..seq_len {
-            for (j, res) in result.iter_mut().enumerate().take(embed_dim.min(EMBEDDING_DIM)) {
+            for (j, res) in result
+                .iter_mut()
+                .enumerate()
+                .take(embed_dim.min(EMBEDDING_DIM))
+            {
                 let idx = i * embed_dim + j;
                 if idx < data.len() {
                     *res += data[idx];
