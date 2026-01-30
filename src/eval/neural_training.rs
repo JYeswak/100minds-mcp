@@ -140,7 +140,7 @@ impl Default for TrainingConfig {
             domain_match_bonus: 0.15, // Reduced from 0.25
             relevance_bonus: 0.20,    // V3: For exponential decay
             difficulty_penalty: 0.08,
-            noise_factor: 0.08,       // Reduced from 0.1 for cleaner signal
+            noise_factor: 0.08, // Reduced from 0.1 for cleaner signal
             // V2 improvements
             confidence_weight: 0.20,       // Reduced from 0.3
             thinker_expertise_bonus: 0.15, // Bonus for expert thinker
@@ -201,41 +201,94 @@ impl Default for GroundTruthHeuristics {
     fn default() -> Self {
         Self {
             scaling_patterns: vec![
-                "scale", "traffic", "load", "horizontal", "vertical",
-                "performance", "bottleneck", "servers", "capacity",
+                "scale",
+                "traffic",
+                "load",
+                "horizontal",
+                "vertical",
+                "performance",
+                "bottleneck",
+                "servers",
+                "capacity",
             ],
             architecture_patterns: vec![
-                "microservice", "monolith", "rewrite", "refactor", "decompose",
-                "migrate", "architecture", "service", "api",
+                "microservice",
+                "monolith",
+                "rewrite",
+                "refactor",
+                "decompose",
+                "migrate",
+                "architecture",
+                "service",
+                "api",
             ],
             testing_patterns: vec![
-                "test", "tdd", "coverage", "unit", "integration",
-                "flaky", "quality", "bug", "regression",
+                "test",
+                "tdd",
+                "coverage",
+                "unit",
+                "integration",
+                "flaky",
+                "quality",
+                "bug",
+                "regression",
             ],
             management_patterns: vec![
-                "team", "engineer", "hire", "process", "agile",
-                "sprint", "morale", "communication", "deadline",
+                "team",
+                "engineer",
+                "hire",
+                "process",
+                "agile",
+                "sprint",
+                "morale",
+                "communication",
+                "deadline",
             ],
 
             scaling_principles: [
-                "brooks law", "horizontal scaling", "vertical scaling",
-                "premature optimization", "measure first", "profile before optimize",
-            ].into_iter().collect(),
+                "brooks law",
+                "horizontal scaling",
+                "vertical scaling",
+                "premature optimization",
+                "measure first",
+                "profile before optimize",
+            ]
+            .into_iter()
+            .collect(),
 
             architecture_principles: [
-                "strangler fig", "yagni", "kiss", "single responsibility",
-                "separation of concerns", "incremental change", "small steps",
-            ].into_iter().collect(),
+                "strangler fig",
+                "yagni",
+                "kiss",
+                "single responsibility",
+                "separation of concerns",
+                "incremental change",
+                "small steps",
+            ]
+            .into_iter()
+            .collect(),
 
             testing_principles: [
-                "test first", "red green refactor", "fast feedback",
-                "test pyramid", "mutation testing", "coverage is not quality",
-            ].into_iter().collect(),
+                "test first",
+                "red green refactor",
+                "fast feedback",
+                "test pyramid",
+                "mutation testing",
+                "coverage is not quality",
+            ]
+            .into_iter()
+            .collect(),
 
             management_principles: [
-                "brooks law", "two pizza team", "conway's law",
-                "mythical man month", "communication overhead", "team autonomy",
-            ].into_iter().collect(),
+                "brooks law",
+                "two pizza team",
+                "conway's law",
+                "mythical man month",
+                "communication overhead",
+                "team autonomy",
+            ]
+            .into_iter()
+            .collect(),
         }
     }
 }
@@ -255,9 +308,7 @@ fn get_thinker_expert_domains(thinker: &str) -> Vec<&'static str> {
     }
 
     // Scaling experts
-    if thinker_lower.contains("vogels")
-        || thinker_lower.contains("hamilton")
-    {
+    if thinker_lower.contains("vogels") || thinker_lower.contains("hamilton") {
         domains.push("scaling");
     }
 
@@ -295,16 +346,12 @@ fn get_thinker_expert_domains(thinker: &str) -> Vec<&'static str> {
     }
 
     // Database experts
-    if thinker_lower.contains("stonebraker")
-        || thinker_lower.contains("lamport")
-    {
+    if thinker_lower.contains("stonebraker") || thinker_lower.contains("lamport") {
         domains.push("database");
     }
 
     // DevOps experts
-    if thinker_lower.contains("humble")
-        || thinker_lower.contains("kim")
-    {
+    if thinker_lower.contains("humble") || thinker_lower.contains("kim") {
         domains.push("devops");
     }
 
@@ -335,8 +382,14 @@ impl GroundTruthHeuristics {
         let is_scaling_principle = self.scaling_principles.iter().any(|p| p_lower.contains(p));
 
         // Check architecture
-        let is_arch_question = self.architecture_patterns.iter().any(|p| q_lower.contains(p));
-        let is_arch_principle = self.architecture_principles.iter().any(|p| p_lower.contains(p));
+        let is_arch_question = self
+            .architecture_patterns
+            .iter()
+            .any(|p| q_lower.contains(p));
+        let is_arch_principle = self
+            .architecture_principles
+            .iter()
+            .any(|p| p_lower.contains(p));
 
         // Check testing
         let is_testing_question = self.testing_patterns.iter().any(|p| q_lower.contains(p));
@@ -344,7 +397,10 @@ impl GroundTruthHeuristics {
 
         // Check management
         let is_mgmt_question = self.management_patterns.iter().any(|p| q_lower.contains(p));
-        let is_mgmt_principle = self.management_principles.iter().any(|p| p_lower.contains(p));
+        let is_mgmt_principle = self
+            .management_principles
+            .iter()
+            .any(|p| p_lower.contains(p));
 
         // Good match if categories align
         (is_scaling_question && is_scaling_principle)
@@ -386,7 +442,7 @@ pub fn generate_training_data(
                 prefer_thinkers: vec![],
                 depth: CounselDepth::Standard,
             },
-            decision_id: None,  // Auto-generate UUID (training data)
+            decision_id: None, // Auto-generate UUID (training data)
         };
 
         let response = match engine.counsel(&request) {
@@ -445,7 +501,8 @@ pub fn generate_training_data(
                 }
 
                 // 5. Thinker expertise bonus (some thinkers specialize in domains)
-                let thinker_is_expert = is_thinker_domain_expert(&position.thinker, &question.domain);
+                let thinker_is_expert =
+                    is_thinker_domain_expert(&position.thinker, &question.domain);
                 if thinker_is_expert {
                     success_prob += config.thinker_expertise_bonus;
                 }
@@ -476,12 +533,13 @@ pub fn generate_training_data(
 
                 // V3: Causal adversarial flip for domain mismatches
                 // This teaches the model that wrong-domain experts CAUSALLY lead to failure
-                let causal_flipped = if is_wrong_domain && rng.gen::<f64>() < config.causal_adversarial_rate {
-                    success = 0.0; // Force failure for wrong-domain experts
-                    true
-                } else {
-                    false
-                };
+                let causal_flipped =
+                    if is_wrong_domain && rng.gen::<f64>() < config.causal_adversarial_rate {
+                        success = 0.0; // Force failure for wrong-domain experts
+                        true
+                    } else {
+                        false
+                    };
 
                 let reasoning = format!(
                     "v3:pattern={},conf={:.2},rank={},rank_bonus={:.3},domain_aligned={},expert={},wrong_domain={},diff={},prob={:.2},causal_flip={}",
@@ -574,9 +632,17 @@ pub fn export_to_csv(batch: &TrainingBatch, path: &std::path::Path) -> Result<()
             ex.context_features.stakeholder,
             ex.context_features.company_stage,
             ex.context_features.urgency,
-            if ex.context_features.domain_match { 1 } else { 0 },
+            if ex.context_features.domain_match {
+                1
+            } else {
+                0
+            },
             ex.context_features.total_principles_selected,
-            if ex.context_features.is_for_position { 1 } else { 0 },
+            if ex.context_features.is_for_position {
+                1
+            } else {
+                0
+            },
             ex.success as i32,
         )?;
     }
@@ -594,18 +660,25 @@ pub fn print_batch_summary(batch: &TrainingBatch) {
 
     println!("OVERVIEW:");
     println!("   Total examples:     {:>8}", meta.total_examples);
-    println!("   Positive (success): {:>8} ({:.1}%)",
-             meta.positive_examples,
-             100.0 * meta.positive_examples as f64 / meta.total_examples.max(1) as f64);
-    println!("   Negative (failure): {:>8} ({:.1}%)",
-             meta.negative_examples,
-             100.0 * meta.negative_examples as f64 / meta.total_examples.max(1) as f64);
+    println!(
+        "   Positive (success): {:>8} ({:.1}%)",
+        meta.positive_examples,
+        100.0 * meta.positive_examples as f64 / meta.total_examples.max(1) as f64
+    );
+    println!(
+        "   Negative (failure): {:>8} ({:.1}%)",
+        meta.negative_examples,
+        100.0 * meta.negative_examples as f64 / meta.total_examples.max(1) as f64
+    );
 
     println!("\nDIVERSITY:");
     println!("   Unique questions:   {:>8}", meta.unique_questions);
     println!("   Unique principles:  {:>8}", meta.unique_principles);
     println!("   Unique thinkers:    {:>8}", meta.unique_thinkers);
-    println!("   Avg examples/q:     {:>8.1}", meta.avg_examples_per_question);
+    println!(
+        "   Avg examples/q:     {:>8.1}",
+        meta.avg_examples_per_question
+    );
 
     println!("\nDOMAINS:");
     let mut domains: Vec<_> = meta.domains.iter().collect();
@@ -628,16 +701,10 @@ mod tests {
         let h = GroundTruthHeuristics::default();
 
         // Scaling question should match scaling principles
-        assert!(h.is_good_match(
-            "We need to handle 100x traffic",
-            "Brooks Law"
-        ));
+        assert!(h.is_good_match("We need to handle 100x traffic", "Brooks Law"));
 
         // Architecture question should match architecture principles
-        assert!(h.is_good_match(
-            "Should we rewrite our monolith?",
-            "Strangler Fig Pattern"
-        ));
+        assert!(h.is_good_match("Should we rewrite our monolith?", "Strangler Fig Pattern"));
     }
 
     #[test]

@@ -431,7 +431,7 @@ mod tests {
             positions,
             challenge,
             mock_provenance(),
-            None,  // Auto-generate UUID
+            None, // Auto-generate UUID
         );
 
         assert!(!response.decision_id.is_empty());
@@ -456,7 +456,7 @@ mod tests {
             positions,
             challenge,
             mock_provenance(),
-            None,  // Auto-generate UUID
+            None, // Auto-generate UUID
         );
 
         assert!(response.principle_ids.contains(&"tdd".to_string()));
@@ -469,8 +469,13 @@ mod tests {
         let positions = vec![mock_position(Stance::For, "Kent Beck", vec!["tdd"])];
         let challenge = mock_position(Stance::Challenge, "Taleb", vec![]);
 
-        let response =
-            CounselResponse::new("Test".to_string(), positions, challenge, mock_provenance(), None);
+        let response = CounselResponse::new(
+            "Test".to_string(),
+            positions,
+            challenge,
+            mock_provenance(),
+            None,
+        );
 
         assert!(!response.causal_hints.is_empty());
         assert!(response.causal_hints[0].contains("Kent Beck"));
@@ -487,8 +492,13 @@ mod tests {
         ];
         let challenge = mock_position(Stance::Challenge, "D", vec![]);
 
-        let response =
-            CounselResponse::new("Test".to_string(), positions, challenge, mock_provenance(), None);
+        let response = CounselResponse::new(
+            "Test".to_string(),
+            positions,
+            challenge,
+            mock_provenance(),
+            None,
+        );
 
         assert!(response.summary.contains("2 position(s) FOR"));
         assert!(response.summary.contains("1 AGAINST"));

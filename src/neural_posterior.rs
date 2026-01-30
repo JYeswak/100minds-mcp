@@ -40,10 +40,9 @@ pub struct NeuralVocab {
 impl NeuralVocab {
     /// Load vocabulary from JSON file
     pub fn from_file(path: &Path) -> Result<Self> {
-        let content = std::fs::read_to_string(path)
-            .context("Failed to read vocabulary file")?;
-        let vocab: NeuralVocab = serde_json::from_str(&content)
-            .context("Failed to parse vocabulary JSON")?;
+        let content = std::fs::read_to_string(path).context("Failed to read vocabulary file")?;
+        let vocab: NeuralVocab =
+            serde_json::from_str(&content).context("Failed to parse vocabulary JSON")?;
         Ok(vocab)
     }
 
