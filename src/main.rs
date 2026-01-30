@@ -784,12 +784,28 @@ fn handle_http_request(
         _ => Ok(serde_json::json!({"error": format!("Unknown method: {}", method)})),
     };
 
+    // Check if this was a tools/call - those need MCP content wrapper
+    let is_tool_call = method == "tools/call" || method == "counsel";
+
     let response_body = match result {
-        Ok(r) => serde_json::json!({
-            "jsonrpc": "2.0",
-            "id": id,
-            "result": r
-        }),
+        Ok(r) => {
+            let wrapped_result = if is_tool_call {
+                // MCP protocol requires content blocks for tool responses
+                let text_content = serde_json::to_string(&r).unwrap_or_default();
+                serde_json::json!({
+                    "content": [{"type": "text", "text": text_content}],
+                    "structuredContent": r,
+                    "isError": false
+                })
+            } else {
+                r
+            };
+            serde_json::json!({
+                "jsonrpc": "2.0",
+                "id": id,
+                "result": wrapped_result
+            })
+        },
         Err(e) => serde_json::json!({
             "jsonrpc": "2.0",
             "id": id,
