@@ -1,0 +1,23 @@
+{
+  "task": "[AUDIT-100minds-mcp] Create AGENTS.md",
+  "status": "completed",
+  "summary": "Enhanced AGENTS.md with comprehensive project structure, development workflow, testing, deployment, and troubleshooting sections. Added quick reference commands, module documentation, and agent-friendly integration guides.",
+  "changes": [
+    "Added Project Structure section with core components and key modules table",
+    "Added Dependencies section listing async, database, crypto, ML, and utils dependencies",
+    "Added Development Workflow section with building, key commands, and CLI options",
+    "Added Testing section with structure, running tests, and test categories",
+    "Added Deployment section with production build, Docker, system dependencies, and data directories",
+    "Added Library Usage section with basic integration and Zesty convenience API examples",
+    "Added Common Patterns section for decision workflow and swarm integration",
+    "Added Troubleshooting section with build issues, runtime issues, and performance issues"
+  ],
+  "assumptions": [
+    "Project uses standard Rust development practices (cargo build/test/fmt/clippy)",
+    "Testing follows Rust conventions with tokio-test for async tests",
+    "ONNX Runtime is required for semantic embeddings functionality",
+    "SQLite database with bundled rusqlite works on all platforms",
+    "Docker deployment follows standard Rust containerization patterns"
+  ],
+  "confidence": 0.95
+}

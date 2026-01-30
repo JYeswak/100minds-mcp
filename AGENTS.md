@@ -5,15 +5,255 @@ This document helps AI coding agents (Claude Code, Cursor, Copilot, swarm worker
 ## Quick Reference
 
 ```bash
-# Run as HTTP server (production mode)
-100minds --serve --port=3100
+# Build and run
+cargo build --release
+./target/release/100minds --stats
 
 # Get counsel (CLI)
-100minds counsel "Should we use microservices?" --json
+./target/release/100minds counsel "Should we use microservices?"
+
+# Run as HTTP server (production mode)
+./target/release/100minds --serve --port=3100
 
 # Record outcome (CLI)
-100minds --outcome bead-josh-abc123 --success
+./target/release/100minds --outcome bead-josh-abc123 --success
+
+# Validate PRD
+./target/release/100minds --validate-prd path/to/prd.json
 ```
+
+## Project Structure
+
+### Core Components
+- **`src/main.rs`**: CLI entry point with command-line interface
+- **`src/lib.rs`**: Main library exposing all modules
+- **`src/bin/import.rs`**: Data import utility for thinker/principle data
+
+### Key Modules
+| Module | Purpose |
+|--------|---------|
+| `counsel` | Adversarial decision engine (FOR/AGAINST/CHALLENGE) |
+| `db` | SQLite database operations and schema |
+| `embeddings` | ONNX Runtime semantic search (100x improvement) |
+| `mcp` | MCP server protocol implementation |
+| `outcome` | Learning loop - Thompson Sampling on decision outcomes |
+| `prd` | PRD validation against philosophical frameworks |
+| `provenance` | Ed25519 cryptographic signatures and audit trails |
+| `templates` | Decision templates for common scenarios |
+| `types` | Core data structures and enums |
+
+### Dependencies
+- **Async**: tokio (full features)
+- **Database**: rusqlite (bundled SQLite)
+- **Crypto**: ed25519-dalek, sha2 for provenance
+- **ML**: ort (ONNX Runtime), tokenizers, ndarray for embeddings
+- **Utils**: serde, uuid, chrono, dirs, walkdir
+
+## Development Workflow
+
+### Building
+```bash
+# Debug build
+cargo build
+
+# Release build (recommended for performance)
+cargo build --release
+
+# Run tests
+cargo test
+
+# Check and format
+cargo check
+cargo fmt
+cargo clippy
+```
+
+### Key Commands
+
+#### Core Commands
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `counsel` | Get adversarial wisdom council | `100minds counsel "Should we add caching?"` |
+| `--serve` | HTTP server for MCP integration | `100minds --serve --port=3100` |
+| `--outcome` | Record decision outcome for learning | `100minds --outcome bead-123 --success` |
+
+#### Analysis Commands
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `--validate-prd` | Check PRD against frameworks | `100minds --validate-prd prd.json` |
+| `--analyze-prd` | Enhanced PRD with 100minds metadata | `100minds --analyze-prd input.json output.json` |
+| `--stats` | Database statistics | `100minds --stats` |
+| `--learning-stats` | Thompson Sampling performance | `100minds --learning-stats` |
+
+#### Development Commands
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `--benchmark` | Performance testing | `100minds --benchmark scenarios` |
+| `--thompson` | Sampling statistics | `100minds --thompson stats` |
+| `--compute-embeddings` | Generate semantic embeddings | `100minds --compute-embeddings` |
+
+### Command Line Options
+
+#### Counsel Command
+```bash
+100minds counsel "question" [--json] [--domain=category]
+# --json: JSON output for automation
+# --domain: software-development, architecture, performance, etc.
+```
+
+#### Server Mode
+```bash
+100minds --serve --port=3100
+# Runs HTTP server for MCP integration
+# Default port: 3100
+```
+
+#### Outcome Recording
+```bash
+100minds --outcome <decision-id> --success|--failure [--notes="details"]
+# Critical for learning loop - updates Thompson posteriors
+```
+
+## Testing
+
+### Test Structure
+- **Unit tests**: In each module file (`src/*.rs`)
+- **Integration tests**: In `tests/` directory (if present)
+- **Dev dependencies**: tokio-test, tempfile
+
+### Running Tests
+```bash
+# All tests
+cargo test
+
+# Specific test
+cargo test test_name
+
+# With output
+cargo test -- --nocapture
+
+# Benchmark tests
+cargo test --bench
+```
+
+### Test Categories
+- **Database tests**: SQLite operations and schema
+- **Counsel tests**: Adversarial debate generation
+- **Embedding tests**: ONNX Runtime semantic search
+- **MCP tests**: JSON-RPC protocol handling
+- **Outcome tests**: Thompson Sampling learning loop
+
+## Deployment
+
+### Production Build
+```bash
+# Optimized release build
+cargo build --release
+
+# Binary location
+./target/release/100minds
+```
+
+### Docker Deployment
+```bash
+# Build container
+docker build -t 100minds-mcp .
+
+# Run with port mapping
+docker run -p 3100:3100 100minds-mcp
+```
+
+### System Dependencies
+- **ONNX Runtime**: Required for semantic embeddings
+  ```bash
+  # macOS
+  brew install onnxruntime
+
+  # Linux
+  apt install libonnxruntime-dev
+  ```
+
+### Data Directory
+- **Default location**: `~/Library/Application Support/100minds/` (macOS)
+- **Alternative**: `~/.local/share/100minds/` (Linux)
+- **Contents**: `wisdom.db`, `agent.key`, thinker data
+
+## Library Usage
+
+### Basic Integration
+```rust
+use minds_mcp::{init_db, CounselEngine, Provenance};
+
+// Initialize
+let conn = init_db(&db_path)?;
+let provenance = Provenance::init(&key_path)?;
+let engine = CounselEngine::new(&conn, &provenance);
+
+// Get counsel
+let response = engine.counsel(&request)?;
+
+// Record outcome
+outcome::record_outcome(&conn, decision_id, success, &principle_ids, notes, context)?;
+```
+
+### Zesty Convenience API
+```rust
+use minds_mcp::convenience::{ZestyEngine, get_counsel};
+
+// Full mode with provenance
+let engine = ZestyEngine::init(&db_path, &key_path)?;
+let response = engine.counsel("Should we add caching?", Some("architecture"))?;
+engine.record_outcome(&response.decision_id, true, &principle_ids, "Worked well")?;
+
+// Simple mode
+let counsel = get_counsel(&conn, "Should we refactor?", Some("code-quality"), 5)?;
+```
+
+## Common Patterns
+
+### Decision Workflow
+1. **Pre-work**: Get counsel before starting task
+2. **Execute**: Implement the decision
+3. **Post-work**: Record outcome for learning
+
+### Swarm Integration
+- Use `--serve` mode for HTTP API
+- Record outcomes with `--outcome` to enable learning
+- Decision IDs link counsel to outcomes
+
+### Error Handling
+- Check database initialization: `100minds --stats`
+- Verify ONNX Runtime: embeddings require ORT
+- Test counsel: `100minds counsel "test question"`
+
+## Troubleshooting
+
+### Build Issues
+```bash
+# Clean and rebuild
+cargo clean
+cargo build
+
+# Update dependencies
+cargo update
+```
+
+### Runtime Issues
+```bash
+# Check database
+100minds --stats
+
+# Test counsel
+100minds counsel "test question"
+
+# Check embeddings
+100minds --compute-embeddings
+```
+
+### Performance Issues
+- Use `--release` builds for production
+- Embeddings require ONNX Runtime
+- Database operations are SQLite-based
 
 ## HTTP Server Mode
 
