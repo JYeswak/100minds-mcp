@@ -23,6 +23,26 @@ For production swarm integration, run 100minds as an HTTP server:
 100minds --serve --port=3100
 ```
 
+### MCP Protocol Compliance
+
+The server returns **MCP-compliant responses** for `tools/call`:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "content": [{ "type": "text", "text": "..." }],
+    "structuredContent": { ... },
+    "isError": false
+  }
+}
+```
+
+This ensures compatibility with Claude Code and other MCP clients.
+
+### Example Request
+
 The server accepts JSON-RPC 2.0 requests at `http://localhost:3100/mcp`:
 
 ```bash
@@ -557,6 +577,16 @@ CREATE TABLE contextual_arms (
 | `DB_NOT_INITIALIZED` | First run | Run `100minds --stats` to auto-initialize |
 | `INVALID_DECISION_ID` | Unknown decision | Check decision exists before recording |
 | `MCP_UNAVAILABLE` | Server not running | Start with `100minds --serve --port=3100` |
+
+## Auto-Start Configuration (macOS)
+
+For persistent operation, install the launchd plist:
+
+```bash
+# Location: ~/Library/LaunchAgents/com.zeststream.100minds.plist
+# Features: RunAtLoad, KeepAlive (auto-restart on crash)
+# Logs: ~/.zesty/100minds.log
+```
 
 ## Testing Integration
 
