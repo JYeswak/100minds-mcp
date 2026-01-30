@@ -585,7 +585,7 @@ fn run_oneshot(question: &str) -> Result<()> {
     let request = CounselRequest {
         question: question.to_string(),
         context: CounselContext::default(),
-        decision_id: None,  // Auto-generate UUID
+        decision_id: None, // Auto-generate UUID
     };
 
     match engine.counsel(&request) {
@@ -618,7 +618,7 @@ fn run_counsel_cmd(question: &str, domain: Option<&str>, json_output: bool) -> R
             domain: domain.map(String::from),
             ..Default::default()
         },
-        decision_id: None,  // Auto-generate UUID
+        decision_id: None, // Auto-generate UUID
     };
 
     match engine.counsel(&request) {
@@ -820,7 +820,10 @@ fn handle_counsel_tool(
     let domain = args.get("domain").and_then(|d| d.as_str());
 
     // Allow client to specify decision_id (e.g., bead ID for swarm tracking)
-    let decision_id = args.get("decision_id").and_then(|d| d.as_str()).map(String::from);
+    let decision_id = args
+        .get("decision_id")
+        .and_then(|d| d.as_str())
+        .map(String::from);
 
     let engine = CounselEngine::new(conn, provenance);
     let request = CounselRequest {
@@ -829,7 +832,7 @@ fn handle_counsel_tool(
             domain: domain.map(String::from),
             ..Default::default()
         },
-        decision_id,  // Pass through explicit ID or None for auto-generate
+        decision_id, // Pass through explicit ID or None for auto-generate
     };
 
     let response = engine.counsel(&request)?;
@@ -915,7 +918,7 @@ fn handle_counterfactual_sim_tool(
             domain: domain.map(String::from),
             ..Default::default()
         },
-        decision_id: None,  // Counterfactual doesn't need ID linkage
+        decision_id: None, // Counterfactual doesn't need ID linkage
     };
 
     let response = engine.counterfactual_counsel(&request, &excluded_principles)?;
@@ -1045,10 +1048,7 @@ fn handle_search_principles(
 ) -> Result<serde_json::Value> {
     let args = params.get("arguments").unwrap_or(params);
     let query = args.get("query").and_then(|q| q.as_str()).unwrap_or("");
-    let limit = args
-        .get("limit")
-        .and_then(|l| l.as_i64())
-        .unwrap_or(10) as usize;
+    let limit = args.get("limit").and_then(|l| l.as_i64()).unwrap_or(10) as usize;
 
     let results = db::search_principles(conn, query, limit)?;
     // Convert to JSON manually since PrincipleMatch may not be Serialize
@@ -1091,7 +1091,10 @@ fn handle_get_synergies(params: &serde_json::Value) -> Result<serde_json::Value>
         let p_lower = p.to_lowercase();
         for template in &all_templates {
             for s in &template.synergies {
-                let matches = s.principles.iter().any(|pr| pr.to_lowercase().contains(&p_lower));
+                let matches = s
+                    .principles
+                    .iter()
+                    .any(|pr| pr.to_lowercase().contains(&p_lower));
                 if matches {
                     synergies.push(serde_json::json!({
                         "principles": s.principles,
@@ -1249,10 +1252,7 @@ fn handle_audit_decision(
         .get("decision_id")
         .and_then(|d| d.as_str())
         .unwrap_or("");
-    let verify = args
-        .get("verify")
-        .and_then(|v| v.as_bool())
-        .unwrap_or(true);
+    let verify = args.get("verify").and_then(|v| v.as_bool()).unwrap_or(true);
 
     // Get decision from provenance chain
     let mut stmt = conn.prepare(
@@ -1510,7 +1510,7 @@ async fn run_cli_mode(conn: &rusqlite::Connection, provenance: &Provenance) -> R
             let request = CounselRequest {
                 question: line.to_string(),
                 context: CounselContext::default(),
-                decision_id: None,  // Interactive mode - auto-generate UUID
+                decision_id: None, // Interactive mode - auto-generate UUID
             };
 
             match engine.counsel(&request) {
@@ -1949,7 +1949,7 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
                         domain: Some(q.domain.clone()),
                         ..Default::default()
                     },
-                    decision_id: None,  // Eval mode - auto-generate UUID
+                    decision_id: None, // Eval mode - auto-generate UUID
                 };
 
                 if let Ok(response) = engine.counsel(&request) {
@@ -2056,7 +2056,9 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             let question = args.join(" ");
             if question.is_empty() {
                 println!("Usage: 100minds --benchmark neural-score <question>");
-                println!("\nExample: 100minds --benchmark neural-score Should we rewrite our monolith?");
+                println!(
+                    "\nExample: 100minds --benchmark neural-score Should we rewrite our monolith?"
+                );
                 return Ok(());
             }
 
@@ -2084,22 +2086,25 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             let request = CounselRequest {
                 question: question.clone(),
                 context: CounselContext::default(),
-                decision_id: None,  // Neural inference - auto-generate UUID
+                decision_id: None, // Neural inference - auto-generate UUID
             };
             let response = engine.counsel(&request)?;
 
             // Detect domain from question (simple heuristic)
             let domain = if question.to_lowercase().contains("microservice")
                 || question.to_lowercase().contains("monolith")
-                || question.to_lowercase().contains("architect") {
+                || question.to_lowercase().contains("architect")
+            {
                 "architecture"
             } else if question.to_lowercase().contains("scale")
-                || question.to_lowercase().contains("traffic") {
+                || question.to_lowercase().contains("traffic")
+            {
                 "scaling"
             } else if question.to_lowercase().contains("test") {
                 "testing"
             } else if question.to_lowercase().contains("team")
-                || question.to_lowercase().contains("hire") {
+                || question.to_lowercase().contains("hire")
+            {
                 "management"
             } else {
                 "architecture" // default
@@ -2141,7 +2146,11 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             all_results.sort_by(|a, b| b.1.ucb_score.partial_cmp(&a.1.ucb_score).unwrap());
 
             for (i, (thinker, result)) in all_results.iter().enumerate().take(10) {
-                let known = if neural.knows_principle(&result.principle_id) { "✓" } else { "?" };
+                let known = if neural.knows_principle(&result.principle_id) {
+                    "✓"
+                } else {
+                    "?"
+                };
                 println!(
                     "{:2}. [{known}] {:.2} (p={:.2}, u={:.2}) - {} [{}]",
                     i + 1,
@@ -2165,8 +2174,12 @@ fn run_benchmark_cmd(subcommand: &str, args: &[String]) -> Result<()> {
             println!("  monte-carlo [n]     Run n Monte Carlo simulations (default 1000)");
             println!("  coverage            Analyze thinker/principle coverage");
             println!("  synthetic [n] [out] Generate n synthetic questions");
-            println!("  neural-training [n] [format] Generate n training examples for neural bandits");
-            println!("  neural-score <q>    Score principles for a question using neural posterior");
+            println!(
+                "  neural-training [n] [format] Generate n training examples for neural bandits"
+            );
+            println!(
+                "  neural-score <q>    Score principles for a question using neural posterior"
+            );
             println!("  eval-synthetic [n]  Generate + evaluate synthetic questions");
             println!("  data-driven [n]     DATA-DRIVEN evaluation (no hardcoded expectations)");
             println!("  all                 Run full benchmark suite");

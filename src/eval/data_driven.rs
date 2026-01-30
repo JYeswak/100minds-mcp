@@ -204,7 +204,7 @@ fn evaluate_single_question(
             prefer_thinkers: vec![],
             depth: CounselDepth::Standard,
         },
-        decision_id: None,  // Auto-generate UUID (eval data)
+        decision_id: None, // Auto-generate UUID (eval data)
     };
 
     let response = engine.counsel(&request)?;

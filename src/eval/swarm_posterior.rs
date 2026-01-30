@@ -39,7 +39,7 @@ pub struct PosteriorState {
 impl Default for PosteriorState {
     fn default() -> Self {
         Self {
-            alpha: 1.0,  // Uniform prior
+            alpha: 1.0, // Uniform prior
             beta: 1.0,
             observations: 0,
             last_updated: 0,
@@ -72,8 +72,8 @@ impl PosteriorState {
 
     /// Sample from posterior (Thompson Sampling)
     pub fn sample(&self) -> f64 {
-        use statrs::distribution::{Beta, ContinuousCDF};
         use rand::prelude::*;
+        use statrs::distribution::{Beta, ContinuousCDF};
         let mut rng = rand::thread_rng();
         let u: f64 = rng.gen();
         // Use inverse CDF for sampling
@@ -177,21 +177,21 @@ impl SwarmPosterior {
             posteriors: HashMap::new(),
             pending_deltas: Vec::new(),
             base_sync_interval: 10,
-            sync_interval: 10,  // Starts at base, adapts 3-20 range
+            sync_interval: 10, // Starts at base, adapts 3-20 range
             outcomes_since_sync: 0,
-            base_forgetting_factor: 0.95,  // V6: baseline
-            forgetting_factor: 0.95,       // V6: dynamic (0.92-0.98)
+            base_forgetting_factor: 0.95, // V6: baseline
+            forgetting_factor: 0.95,      // V6: dynamic (0.92-0.98)
             // V5: Drift detection
             peer_means: HashMap::new(),
-            drift_threshold: 0.02,  // 2pp drift triggers adaptive sync
+            drift_threshold: 0.02, // 2pp drift triggers adaptive sync
             high_drift_count: 0,
-            drift_learning_boost: 1.5,  // 50% boost when drift detected
+            drift_learning_boost: 1.5, // 50% boost when drift detected
             // V6: Long-term drift protection
             total_syncs: 0,
             drift_syncs: 0,
-            long_term_drift_threshold: 0.30,  // 30% drift ratio = aggressive decay
-            max_sync_interval: 20,  // NeurIPS 2026: cap at 20
-            min_sync_interval: 3,   // NeurIPS 2026: floor at 3
+            long_term_drift_threshold: 0.30, // 30% drift ratio = aggressive decay
+            max_sync_interval: 20,           // NeurIPS 2026: cap at 20
+            min_sync_interval: 3,            // NeurIPS 2026: floor at 3
         }
     }
 
@@ -274,7 +274,7 @@ impl SwarmPosterior {
             // V5: Boost learning rate when drift detected
             if drift_detected {
                 peer_weight *= self.drift_learning_boost;
-                peer_weight = peer_weight.min(0.8);  // Cap at 80% peer influence
+                peer_weight = peer_weight.min(0.8); // Cap at 80% peer influence
             }
 
             // Apply weighted delta
@@ -391,7 +391,10 @@ impl SwarmPosterior {
     /// Get number of observations for a principle-domain pair
     pub fn get_observations(&self, principle_id: &str, domain: &str) -> u32 {
         let key = Self::key(principle_id, domain);
-        self.posteriors.get(&key).map(|p| p.observations).unwrap_or(0)
+        self.posteriors
+            .get(&key)
+            .map(|p| p.observations)
+            .unwrap_or(0)
     }
 
     /// Export state for persistence
@@ -421,7 +424,8 @@ impl SwarmCoordinator {
 
     /// Register an agent
     pub fn register_agent(&mut self, agent_id: &str) {
-        self.agents.insert(agent_id.to_string(), SwarmPosterior::new(agent_id));
+        self.agents
+            .insert(agent_id.to_string(), SwarmPosterior::new(agent_id));
     }
 
     /// Perform sync round (collect and distribute deltas)
@@ -447,7 +451,9 @@ impl SwarmCoordinator {
             return 0.5;
         }
 
-        let sum: f64 = self.agents.values()
+        let sum: f64 = self
+            .agents
+            .values()
             .map(|a| a.get_probability(principle_id, domain))
             .sum();
 
@@ -500,24 +506,32 @@ mod tests {
         }
 
         // Before sync
-        let agent1_before = coordinator.agents.get("agent-1")
+        let agent1_before = coordinator
+            .agents
+            .get("agent-1")
             .map(|a| a.get_probability("yagni", "architecture"))
             .unwrap_or(0.0);
-        let agent2_before = coordinator.agents.get("agent-2")
+        let agent2_before = coordinator
+            .agents
+            .get("agent-2")
             .map(|a| a.get_probability("yagni", "architecture"))
             .unwrap_or(0.0);
 
-        assert!(agent1_before > 0.8);  // High after successes
-        assert!(agent2_before < 0.2);  // Low after failures
+        assert!(agent1_before > 0.8); // High after successes
+        assert!(agent2_before < 0.2); // Low after failures
 
         // Sync
         coordinator.sync_round();
 
         // After sync: should converge toward consensus
-        let agent1_after = coordinator.agents.get("agent-1")
+        let agent1_after = coordinator
+            .agents
+            .get("agent-1")
             .map(|a| a.get_probability("yagni", "architecture"))
             .unwrap_or(0.0);
-        let agent2_after = coordinator.agents.get("agent-2")
+        let agent2_after = coordinator
+            .agents
+            .get("agent-2")
             .map(|a| a.get_probability("yagni", "architecture"))
             .unwrap_or(0.0);
 
@@ -560,12 +574,17 @@ mod tests {
         // V6: Should have tracked drift statistics
         assert!(agent.total_syncs > 0);
         let drift_ratio = agent.get_long_term_drift_ratio();
-        println!("V6 Test: drift_ratio={:.2}, forgetting={:.2}, syncs={}",
-                 drift_ratio, agent.forgetting_factor, agent.total_syncs);
+        println!(
+            "V6 Test: drift_ratio={:.2}, forgetting={:.2}, syncs={}",
+            drift_ratio, agent.forgetting_factor, agent.total_syncs
+        );
 
         // V6: Forgetting factor should have adapted
         // With 30% drift, should be in aggressive decay mode (0.92) or moderate (0.95)
-        assert!(agent.forgetting_factor <= 0.95, "Should decay more aggressively under drift");
+        assert!(
+            agent.forgetting_factor <= 0.95,
+            "Should decay more aggressively under drift"
+        );
 
         // V6: Sync interval should have adapted to handle drift
         assert!(agent.sync_interval >= agent.min_sync_interval);
@@ -587,7 +606,7 @@ mod tests {
             let deltas = vec![PosteriorDelta {
                 agent_id: "peer".to_string(),
                 key: "p1:d1".to_string(),
-                alpha_delta: 0.1 * (i as f64),  // Increasing drift
+                alpha_delta: 0.1 * (i as f64), // Increasing drift
                 beta_delta: 0.1,
                 confidence: 0.5,
                 timestamp: i as u64,

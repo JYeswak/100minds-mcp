@@ -141,7 +141,7 @@ pub fn run_simulation(
         let request = CounselRequest {
             question: question.clone(),
             context: CounselContext::default(),
-            decision_id: None,  // Auto-generate UUID (Monte Carlo sim)
+            decision_id: None, // Auto-generate UUID (Monte Carlo sim)
         };
 
         // Run counsel (but don't store decisions to avoid polluting DB)

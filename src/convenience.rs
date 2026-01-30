@@ -59,7 +59,7 @@ impl ZestyEngine {
                 domain: domain.map(|s| s.to_string()),
                 ..Default::default()
             },
-            decision_id: None,  // Auto-generate UUID
+            decision_id: None, // Auto-generate UUID
         };
         engine.counsel(&request)
     }
