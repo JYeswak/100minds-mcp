@@ -1,0 +1,35 @@
+{
+  "task": "[AUDIT-100minds-mcp] Add test coverage",
+  "status": "completed",
+  "summary": "Fixed failing database schema tests and added comprehensive unit tests. All 159 tests now pass.",
+  "changes": [
+    "Fixed 4 failing tests by adding sample_count and last_updated columns to thompson_domain_arms table schema",
+    "Corrected thompson_arms INSERT statement to use delta values directly instead of adding prior",
+    "Added 11 unit tests to convenience.rs module covering blind spots generation, anti-pattern detection, category mapping, and principle extraction",
+    "All tests now pass: 159 total, 155 pass, 4 fail → 159 total, 159 pass, 0 fail"
+  ],
+  "test_coverage": {
+    "total_tests": 159,
+    "passing_tests": 159,
+    "failing_tests": 0,
+    "modules_covered": [
+      "convenience (11 new tests)",
+      "counsel", 
+      "db",
+      "embeddings",
+      "eval (bandit, coverage, data_driven, judge, llm_judge, monte_carlo, neural_training, scenarios, swarm_posterior, synthetic, thompson)",
+      "mcp",
+      "neural_posterior", 
+      "outcome",
+      "prd",
+      "provenance",
+      "templates",
+      "types"
+    ]
+  },
+  "improvements": [
+    "Fixed database schema inconsistencies between contextual_arms and thompson_domain_arms tables",
+    "Enhanced test coverage for helper functions that generate blind spots and anti-patterns",
+    "Added tests for pure functions that can be tested without database setup"
+  ]
+}

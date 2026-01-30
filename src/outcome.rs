@@ -159,7 +159,7 @@ fn update_thompson_params(
 
     conn.execute(
         "INSERT INTO thompson_arms (principle_id, alpha, beta, pulls)
-         VALUES (?1, 1.0 + ?2, 1.0 + ?3, 1)
+         VALUES (?1, ?2, ?3, 1)
          ON CONFLICT(principle_id) DO UPDATE SET
             alpha = alpha + ?2,
             beta = beta + ?3,

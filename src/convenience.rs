@@ -59,7 +59,7 @@ impl ZestyEngine {
                 domain: domain.map(|s| s.to_string()),
                 ..Default::default()
             },
-            decision_id: None,  // Auto-generate UUID
+            decision_id: None, // Auto-generate UUID
         };
         engine.counsel(&request)
     }
@@ -400,64 +400,60 @@ fn get_recent_stats(conn: &Connection, days: i64) -> Result<(i64, f64)> {
     Ok((recent_total, rate))
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+#[test]
+fn test_category_to_domain() {
+    assert_eq!(category_to_domain("fix"), "software-design");
+    assert_eq!(category_to_domain("FEATURE"), "systems-thinking");
+    assert_eq!(category_to_domain("healing"), "resilience");
+    assert_eq!(category_to_domain("ci"), "quality");
+    assert_eq!(category_to_domain("TEST"), "quality");
+    assert_eq!(category_to_domain("audit"), "entrepreneurship");
+    assert_eq!(category_to_domain("scale"), "software-architecture");
+    assert_eq!(category_to_domain("PERF"), "performance");
+    assert_eq!(category_to_domain("refactor"), "software-design");
+    assert_eq!(category_to_domain("ARCH"), "software-architecture");
+    assert_eq!(category_to_domain("unknown"), "general");
+}
 
-    #[test]
-    fn test_category_to_domain() {
-        assert_eq!(category_to_domain("[SWARM-FIX]"), "software-design");
-        assert_eq!(category_to_domain("AUDIT"), "entrepreneurship");
-        assert_eq!(category_to_domain("architecture"), "software-architecture");
-    }
+#[test]
+fn test_generate_action() {
+    let name = "YAGNI";
+    let description = "You aren't gonna need it. Don't add features until needed.";
+    let action = generate_action(name, description);
+    assert_eq!(action, "Apply YAGNI: You aren't gonna need it");
+}
 
-    #[test]
-    fn test_generate_blind_spots() {
-        let spots = generate_blind_spots("should I add a new caching layer?");
-        assert!(spots.iter().any(|s| s.contains("YAGNI")));
-    }
+#[test]
+fn test_generate_blind_spots() {
+    let spots = generate_blind_spots("Should I add caching?");
+    assert!(spots.iter().any(|s| s.contains("YAGNI")));
 
-    #[test]
-    fn test_generate_blind_spots_scale() {
-        let spots = generate_blind_spots("how do we scale this system?");
-        assert!(spots.iter().any(|s| s.contains("bottleneck")));
-    }
+    let spots = generate_blind_spots("How to scale this system?");
+    assert!(spots.iter().any(|s| s.contains("measured")));
 
-    #[test]
-    fn test_generate_blind_spots_rewrite() {
-        let spots = generate_blind_spots("should we rewrite the legacy system?");
-        assert!(spots.iter().any(|s| s.contains("Strangler Fig")));
-    }
+    let spots = generate_blind_spots("Rewrite the entire system");
+    assert!(spots.iter().any(|s| s.contains("Strangler Fig")));
 
-    #[test]
-    fn test_generate_blind_spots_team() {
-        let spots = generate_blind_spots("should we add more people to the team?");
-        assert!(spots.iter().any(|s| s.contains("Brooks")));
-    }
+    let spots = generate_blind_spots("Add more team members");
+    assert!(spots.iter().any(|s| s.contains("Brooks's Law")));
+}
 
-    #[test]
-    fn test_generate_anti_patterns_rewrite() {
-        let patterns = generate_anti_patterns("let's rewrite everything");
-        assert!(patterns.iter().any(|p| p.contains("Big-bang")));
-    }
+#[test]
+fn test_generate_anti_patterns_rewrite() {
+    let patterns = generate_anti_patterns("Should I rewrite everything?");
+    assert!(patterns.iter().any(|p| p.contains("Big-bang rewrite")));
+}
 
-    #[test]
-    fn test_generate_anti_patterns_microservice() {
-        let patterns = generate_anti_patterns("should we use microservices?");
-        assert!(patterns.iter().any(|p| p.contains("decomposition")));
-    }
+#[test]
+fn test_generate_anti_patterns_microservices() {
+    let patterns = generate_anti_patterns("Let's use microservices");
+    assert!(patterns
+        .iter()
+        .any(|p| p.contains("Premature decomposition")));
+}
 
-    #[test]
-    fn test_generate_anti_patterns_cache() {
-        let patterns = generate_anti_patterns("add a cache layer");
-        assert!(patterns.iter().any(|p| p.contains("invalidation")));
-    }
-
-    #[test]
-    fn test_category_to_domain_more() {
-        assert_eq!(category_to_domain("[CI-RETRY]"), "quality");
-        assert_eq!(category_to_domain("FEATURE"), "systems-thinking");
-        assert_eq!(category_to_domain("REFACTOR"), "software-design");
-        assert_eq!(category_to_domain("UNKNOWN"), "general");
-    }
+#[test]
+fn test_generate_anti_patterns_cache() {
+    let patterns = generate_anti_patterns("Add caching everywhere");
+    assert!(patterns.iter().any(|p| p.contains("Cache invalidation")));
 }

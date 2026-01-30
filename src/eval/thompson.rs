@@ -579,7 +579,8 @@ pub fn init_thompson_schema(conn: &Connection) -> Result<()> {
             domain TEXT NOT NULL,
             alpha REAL NOT NULL DEFAULT 1.0,
             beta REAL NOT NULL DEFAULT 1.0,
-            updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            sample_count INTEGER NOT NULL DEFAULT 0,
+            last_updated TEXT DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (principle_id, domain)
         );
     "#,
