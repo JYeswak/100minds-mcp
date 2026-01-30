@@ -741,6 +741,22 @@ fn handle_http_request(
     let provenance = Provenance::init(key_path)?;
 
     let result = match method {
+        // MCP Protocol: Initialize handshake
+        "initialize" => Ok(serde_json::json!({
+            "protocolVersion": "2024-11-05",
+            "capabilities": {
+                "tools": {}
+            },
+            "serverInfo": {
+                "name": "100minds",
+                "version": "0.1.0"
+            }
+        })),
+        // MCP Protocol: List available tools
+        "tools/list" => Ok(serde_json::json!({
+            "tools": mcp::get_tools()
+        })),
+        // MCP Protocol: Call a tool
         "counsel" | "tools/call" => {
             let tool_name = params
                 .get("name")
@@ -748,8 +764,19 @@ fn handle_http_request(
                 .unwrap_or("counsel");
             match tool_name {
                 "counsel" => handle_counsel_tool(&conn, &provenance, &params),
+                "get_decision_template" => handle_get_decision_template(&params),
+                "check_blind_spots" => handle_check_blind_spots(&params),
+                "detect_anti_patterns" => handle_detect_anti_patterns(&params),
+                "validate_prd" => handle_validate_prd(&conn, &params),
+                "pre_work_context" => handle_pre_work_context(&conn, &params),
                 "record_outcome" => handle_record_outcome_tool(&conn, &params),
+                "search_principles" => handle_search_principles(&conn, &params),
+                "get_synergies" => handle_get_synergies(&params),
+                "get_tensions" => handle_get_tensions(&params),
+                "wisdom_stats" => handle_wisdom_stats(&conn, &params),
+                "audit_decision" => handle_audit_decision(&conn, &provenance, &params),
                 "sync_posteriors" => handle_sync_posteriors_tool(&conn, &params),
+                "record_outcomes_batch" => handle_record_outcomes_batch(&conn, &params),
                 "counterfactual_sim" => handle_counterfactual_sim_tool(&conn, &provenance, &params),
                 _ => Ok(serde_json::json!({"error": format!("Unknown tool: {}", tool_name)})),
             }
@@ -893,6 +920,429 @@ fn handle_counterfactual_sim_tool(
 
     let response = engine.counterfactual_counsel(&request, &excluded_principles)?;
     Ok(serde_json::to_value(&response)?)
+}
+
+fn handle_get_decision_template(params: &serde_json::Value) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let template_id = args.get("template_id").and_then(|t| t.as_str());
+    let question = args.get("question").and_then(|q| q.as_str());
+
+    // If question provided, match templates
+    if let Some(q) = question {
+        let matches = mcp::get_matching_templates(q);
+        return Ok(serde_json::to_value(&matches)?);
+    }
+
+    // If template_id provided, get specific template
+    if let Some(tid) = template_id {
+        let all_templates = templates::get_templates();
+        if let Some(template) = all_templates.into_iter().find(|t| t.id == tid) {
+            return Ok(serde_json::to_value(&template)?);
+        }
+        return Ok(serde_json::json!({"error": format!("Template not found: {}", tid)}));
+    }
+
+    // Return all templates
+    let all_templates = templates::get_templates();
+    Ok(serde_json::to_value(&all_templates)?)
+}
+
+fn handle_check_blind_spots(params: &serde_json::Value) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let context = args
+        .get("decision_context")
+        .and_then(|c| c.as_str())
+        .unwrap_or("");
+    let template_id = args.get("template_id").and_then(|t| t.as_str());
+
+    let analysis = mcp::check_blind_spots(context, template_id);
+    Ok(serde_json::to_value(&analysis)?)
+}
+
+fn handle_detect_anti_patterns(params: &serde_json::Value) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let description = args
+        .get("description")
+        .and_then(|d| d.as_str())
+        .unwrap_or("");
+    let domain = args.get("domain").and_then(|d| d.as_str());
+
+    // Get matching templates for context
+    let matches = mcp::get_matching_templates(description);
+    let mut anti_patterns: Vec<serde_json::Value> = Vec::new();
+
+    for m in matches.iter().take(3) {
+        for ap in &m.template.anti_patterns {
+            anti_patterns.push(serde_json::json!({
+                "name": ap.name,
+                "symptoms": ap.symptoms,
+                "thinker": ap.source_thinker,
+                "cure": ap.cure,
+                "template": m.template.id
+            }));
+        }
+    }
+
+    // Also add generic anti-patterns based on keywords
+    if description.to_lowercase().contains("rewrite") {
+        anti_patterns.push(serde_json::json!({
+            "name": "Second System Effect",
+            "symptom": "Planning to rewrite from scratch",
+            "thinker": "Fred Brooks",
+            "cure": "Consider strangler fig pattern instead"
+        }));
+    }
+
+    Ok(serde_json::json!({
+        "description": description,
+        "domain": domain,
+        "anti_patterns": anti_patterns
+    }))
+}
+
+fn handle_validate_prd(
+    conn: &rusqlite::Connection,
+    params: &serde_json::Value,
+) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let prd_path = args.get("prd_path").and_then(|p| p.as_str());
+    let prd_content = args.get("prd_content").and_then(|c| c.as_str());
+
+    let prd_json = if let Some(path) = prd_path {
+        std::fs::read_to_string(path)?
+    } else if let Some(content) = prd_content {
+        content.to_string()
+    } else {
+        return Ok(serde_json::json!({"error": "Either prd_path or prd_content required"}));
+    };
+
+    let validation = mcp::validate_prd(conn, &prd_json)?;
+    Ok(serde_json::to_value(&validation)?)
+}
+
+fn handle_pre_work_context(
+    conn: &rusqlite::Connection,
+    params: &serde_json::Value,
+) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let task_title = args
+        .get("task_title")
+        .and_then(|t| t.as_str())
+        .unwrap_or("");
+    let task_description = args
+        .get("task_description")
+        .and_then(|d| d.as_str())
+        .unwrap_or("");
+    let task_type = args.get("task_type").and_then(|t| t.as_str());
+
+    let context = mcp::get_pre_work_context(conn, task_title, task_description, task_type)?;
+    Ok(serde_json::to_value(&context)?)
+}
+
+fn handle_search_principles(
+    conn: &rusqlite::Connection,
+    params: &serde_json::Value,
+) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let query = args.get("query").and_then(|q| q.as_str()).unwrap_or("");
+    let limit = args
+        .get("limit")
+        .and_then(|l| l.as_i64())
+        .unwrap_or(10) as usize;
+
+    let results = db::search_principles(conn, query, limit)?;
+    // Convert to JSON manually since PrincipleMatch may not be Serialize
+    let json_results: Vec<serde_json::Value> = results
+        .iter()
+        .map(|r| {
+            serde_json::json!({
+                "id": r.id,
+                "thinker_id": r.thinker_id,
+                "name": r.name,
+                "description": r.description,
+                "confidence": r.confidence,
+                "relevance_score": r.relevance_score
+            })
+        })
+        .collect();
+    Ok(serde_json::json!({"results": json_results}))
+}
+
+fn handle_get_synergies(params: &serde_json::Value) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let principle = args.get("principle").and_then(|p| p.as_str());
+    let template_id = args.get("template_id").and_then(|t| t.as_str());
+
+    let all_templates = templates::get_templates();
+    let mut synergies: Vec<serde_json::Value> = Vec::new();
+
+    if let Some(tid) = template_id {
+        if let Some(template) = all_templates.iter().find(|t| t.id == tid) {
+            for s in &template.synergies {
+                synergies.push(serde_json::json!({
+                    "principles": s.principles,
+                    "thinkers": s.thinkers,
+                    "why": s.why,
+                    "combined_power": s.combined_power
+                }));
+            }
+        }
+    } else if let Some(p) = principle {
+        let p_lower = p.to_lowercase();
+        for template in &all_templates {
+            for s in &template.synergies {
+                let matches = s.principles.iter().any(|pr| pr.to_lowercase().contains(&p_lower));
+                if matches {
+                    synergies.push(serde_json::json!({
+                        "principles": s.principles,
+                        "thinkers": s.thinkers,
+                        "why": s.why,
+                        "combined_power": s.combined_power,
+                        "template": template.id
+                    }));
+                }
+            }
+        }
+    }
+
+    Ok(serde_json::json!({
+        "synergies": synergies
+    }))
+}
+
+fn handle_get_tensions(params: &serde_json::Value) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let principle_a = args.get("principle_a").and_then(|p| p.as_str());
+    let principle_b = args.get("principle_b").and_then(|p| p.as_str());
+    let template_id = args.get("template_id").and_then(|t| t.as_str());
+
+    let all_templates = templates::get_templates();
+    let mut tensions: Vec<serde_json::Value> = Vec::new();
+
+    if let Some(tid) = template_id {
+        if let Some(template) = all_templates.iter().find(|t| t.id == tid) {
+            for t in &template.tensions {
+                tensions.push(serde_json::json!({
+                    "principle_a": t.principle_a,
+                    "principle_b": t.principle_b,
+                    "thinker_a": t.thinker_a,
+                    "thinker_b": t.thinker_b,
+                    "when_to_pick_a": t.when_to_pick_a,
+                    "when_to_pick_b": t.when_to_pick_b
+                }));
+            }
+        }
+    } else if principle_a.is_some() || principle_b.is_some() {
+        let pa = principle_a.unwrap_or("").to_lowercase();
+        let pb = principle_b.unwrap_or("").to_lowercase();
+        for template in &all_templates {
+            for t in &template.tensions {
+                let matches_a = t.principle_a.to_lowercase().contains(&pa)
+                    || t.principle_b.to_lowercase().contains(&pa);
+                let matches_b = pb.is_empty()
+                    || t.principle_a.to_lowercase().contains(&pb)
+                    || t.principle_b.to_lowercase().contains(&pb);
+                if matches_a && matches_b {
+                    tensions.push(serde_json::json!({
+                        "principle_a": t.principle_a,
+                        "principle_b": t.principle_b,
+                        "thinker_a": t.thinker_a,
+                        "thinker_b": t.thinker_b,
+                        "when_to_pick_a": t.when_to_pick_a,
+                        "when_to_pick_b": t.when_to_pick_b,
+                        "template": template.id
+                    }));
+                }
+            }
+        }
+    }
+
+    Ok(serde_json::json!({
+        "tensions": tensions
+    }))
+}
+
+fn handle_wisdom_stats(
+    conn: &rusqlite::Connection,
+    params: &serde_json::Value,
+) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let domain = args.get("domain").and_then(|d| d.as_str());
+    let min_decisions = args
+        .get("min_decisions")
+        .and_then(|m| m.as_i64())
+        .unwrap_or(3) as i32;
+
+    // Check if table exists
+    let table_exists: bool = conn
+        .query_row(
+            "SELECT COUNT(*) > 0 FROM sqlite_master WHERE type='table' AND name='principle_outcomes'",
+            [],
+            |row| row.get(0),
+        )
+        .unwrap_or(false);
+
+    if !table_exists {
+        return Ok(serde_json::json!({
+            "domain": domain,
+            "min_decisions": min_decisions,
+            "principles": [],
+            "message": "No outcomes recorded yet. Use record_outcome to start learning."
+        }));
+    }
+
+    // Get principle outcomes
+    let query = if let Some(d) = domain {
+        format!(
+            "SELECT principle_id, SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successes,
+             SUM(CASE WHEN success = 0 THEN 1 ELSE 0 END) as failures,
+             COUNT(*) as total
+             FROM principle_outcomes
+             WHERE domain = '{}'
+             GROUP BY principle_id
+             HAVING total >= {}
+             ORDER BY (successes * 1.0 / total) DESC
+             LIMIT 20",
+            d, min_decisions
+        )
+    } else {
+        format!(
+            "SELECT principle_id, SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END) as successes,
+             SUM(CASE WHEN success = 0 THEN 1 ELSE 0 END) as failures,
+             COUNT(*) as total
+             FROM principle_outcomes
+             GROUP BY principle_id
+             HAVING total >= {}
+             ORDER BY (successes * 1.0 / total) DESC
+             LIMIT 20",
+            min_decisions
+        )
+    };
+
+    let mut stmt = conn.prepare(&query)?;
+    let rows = stmt.query_map([], |row| {
+        Ok(serde_json::json!({
+            "principle_id": row.get::<_, String>(0)?,
+            "successes": row.get::<_, i64>(1)?,
+            "failures": row.get::<_, i64>(2)?,
+            "total": row.get::<_, i64>(3)?,
+            "success_rate": row.get::<_, i64>(1)? as f64 / row.get::<_, i64>(3)? as f64
+        }))
+    })?;
+
+    let stats: Vec<serde_json::Value> = rows.filter_map(|r| r.ok()).collect();
+
+    Ok(serde_json::json!({
+        "domain": domain,
+        "min_decisions": min_decisions,
+        "principles": stats
+    }))
+}
+
+fn handle_audit_decision(
+    conn: &rusqlite::Connection,
+    provenance: &Provenance,
+    params: &serde_json::Value,
+) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let decision_id = args
+        .get("decision_id")
+        .and_then(|d| d.as_str())
+        .unwrap_or("");
+    let verify = args
+        .get("verify")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(true);
+
+    // Get decision from provenance chain
+    let mut stmt = conn.prepare(
+        "SELECT content_hash, previous_hash, signature, created_at
+         FROM provenance_chain
+         WHERE decision_id = ?
+         ORDER BY created_at DESC
+         LIMIT 1",
+    )?;
+
+    let result = stmt.query_row([decision_id], |row| {
+        Ok(serde_json::json!({
+            "decision_id": decision_id,
+            "content_hash": row.get::<_, String>(0)?,
+            "previous_hash": row.get::<_, String>(1)?,
+            "signature": row.get::<_, String>(2)?,
+            "created_at": row.get::<_, String>(3)?,
+            "agent_pubkey": provenance.public_key_hex(),
+            "verified": verify
+        }))
+    });
+
+    match result {
+        Ok(audit) => Ok(audit),
+        Err(_) => Ok(serde_json::json!({
+            "error": format!("Decision not found: {}", decision_id)
+        })),
+    }
+}
+
+fn handle_record_outcomes_batch(
+    conn: &rusqlite::Connection,
+    params: &serde_json::Value,
+) -> Result<serde_json::Value> {
+    let args = params.get("arguments").unwrap_or(params);
+    let outcomes = args
+        .get("outcomes")
+        .and_then(|o| o.as_array())
+        .cloned()
+        .unwrap_or_default();
+
+    let mut results = Vec::new();
+    for outcome_val in outcomes {
+        let decision_id = outcome_val
+            .get("decision_id")
+            .and_then(|d| d.as_str())
+            .unwrap_or("");
+        let success = outcome_val
+            .get("success")
+            .and_then(|s| s.as_bool())
+            .unwrap_or(false);
+        let notes = outcome_val.get("notes").and_then(|n| n.as_str());
+        let principle_ids: Vec<String> = outcome_val
+            .get("principle_ids")
+            .and_then(|p| p.as_array())
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|v| v.as_str().map(String::from))
+                    .collect()
+            })
+            .unwrap_or_default();
+
+        let request = RecordOutcomeRequest {
+            decision_id: decision_id.to_string(),
+            success,
+            notes: notes.map(String::from),
+            principle_ids,
+            domain: None,
+            confidence_score: None,
+            failure_stage: None,
+        };
+
+        match outcome::record_outcome_v2(conn, &request) {
+            Ok(r) => results.push(serde_json::json!({
+                "decision_id": decision_id,
+                "success": true,
+                "result": r
+            })),
+            Err(e) => results.push(serde_json::json!({
+                "decision_id": decision_id,
+                "success": false,
+                "error": e.to_string()
+            })),
+        }
+    }
+
+    Ok(serde_json::json!({
+        "processed": results.len(),
+        "results": results
+    }))
 }
 
 /// Print as a decision tree with reasoning chains
