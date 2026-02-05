@@ -51,7 +51,7 @@ reqwest = { version = "0.12", features = ["json"] }  # HTTP client for LLM API c
 
 # Semantic embeddings (100x improvement)
 ort = { version = "2.0.0-rc.9", features = ["load-dynamic"] }  # ONNX Runtime
-tokenizers = "0.20"              # HuggingFace tokenizers
+tokenizers = "0.22"              # HuggingFace tokenizers
 ndarray = "0.17"                 # Vector math for cosine similarity (must match ort)
 hf-hub = "0.3"                   # Download models from HuggingFace
 half = "2.4"                     # f16 support for efficient embeddings
