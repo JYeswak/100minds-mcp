@@ -47,7 +47,7 @@ glob = "0.3"
 
 # Evaluation framework
 statrs = "0.17"                  # Statistical distributions (Beta for Thompson Sampling)
-reqwest = { version = "0.12", features = ["json"] }  # HTTP client for LLM API calls
+reqwest = { version = "0.13", features = ["json"] }  # HTTP client for LLM API calls
 
 # Semantic embeddings (100x improvement)
 ort = { version = "2.0.0-rc.9", features = ["load-dynamic"] }  # ONNX Runtime
